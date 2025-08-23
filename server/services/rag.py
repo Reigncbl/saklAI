@@ -10,7 +10,7 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 # LlamaIndex imports
 from llama_index.core import VectorStoreIndex, StorageContext
-from llama_index.readers.json import JSONReader  # ✅ correct import path
+from llama_index.readers.file import PDFReader  # Updated to use PDFReader
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.groq import Groq
 from llama_index.core.vector_stores import SimpleVectorStore
@@ -38,24 +38,29 @@ def load_prompt(yaml_path: str) -> str:
 # ------------------------------
 async def suggestion_generation(
     user_id: str,
-    file_path: str,
     yaml_path: str,
     groq_api_key: Optional[str] = None,
     vector_store_path: str = "./rag_store",
     reset_index: bool = False,
     top_k: int = 5,
+    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
+    conversation_context: str = "",
 ) -> Dict[str, Any]:
     """
-    Build/Query a per-user file-based vector store and return JSON suggestions.
+    Build/Query a per-user PDF-based vector store and return JSON suggestions.
 
     Args:
         user_id: unique identifier for the user/session (e.g., "u_123").
-        file_path: path to JSON data to index (same format you used with JSONReader).
         yaml_path: path to YAML config containing `prompt`.
         groq_api_key: your Groq API key (or set via env var GROQ_API_KEY).
         vector_store_path: base path for vector store files (will append user_id).
         reset_index: if True, clears the user's vector store before re-indexing.
         top_k: retrieval depth.
+        embedding_model: HuggingFace embedding model name. Options:
+            - "sentence-transformers/all-MiniLM-L6-v2" (fastest, English-optimized)
+            - "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2" (fast, multilingual)
+            - "sentence-transformers/paraphrase-multilingual-mpnet-base-v2" (slow, best quality)
+        conversation_context: previous conversation context to provide continuity.
 
     Returns:
         dict parsed from model JSON, or error dict.
@@ -71,13 +76,25 @@ async def suggestion_generation(
     model_cache_dir.mkdir(exist_ok=True)
     
     embed_model = HuggingFaceEmbedding(
-        model_name="intfloat/multilingual-e5-large",
+        model_name=embedding_model,
         cache_folder=str(model_cache_dir)
     )
 
-    # --- Load documents ---
-    loader = JSONReader()
-    documents = loader.load_data(Path(file_path))
+    # --- Load documents from BPI PDF ---
+    # Define the path to the BPI PDF file
+    current_dir = Path(__file__).parent  # services folder
+    server_dir = current_dir.parent      # server folder
+    pdf_file_path = server_dir / "BPI" / "BPI Product Data for RAG_.pdf"
+    
+    if not pdf_file_path.exists():
+        return {
+            "error": "BPI PDF file not found",
+            "expected_path": str(pdf_file_path),
+            "detail": "Please ensure the BPI Product Data for RAG_.pdf file exists in the server/BPI folder"
+        }
+    
+    loader = PDFReader()
+    documents = loader.load_data(pdf_file_path)
 
     # --- Simple Vector Store with file persistence ---
     vector_store_file = f"{vector_store_path}_{user_id}.json"
@@ -106,6 +123,11 @@ async def suggestion_generation(
 
     # --- Query with YAML Prompt ---
     prompt = load_prompt(yaml_path)
+    
+    # Add conversation context if available
+    if conversation_context:
+        prompt = f"{prompt}\n\nConversation Context:\n{conversation_context}\n\nPlease consider this context when generating your response."
+    
     query_engine = index.as_query_engine(similarity_top_k=top_k, llm=llm)
     response = query_engine.query(prompt)
 
@@ -123,55 +145,3 @@ async def suggestion_generation(
             "exception": str(e),
         }
 
-
-# ------------------------------
-# Entrypoint (example)
-# ------------------------------
-
-from dotenv import load_dotenv
-load_dotenv()
-
-api_key = os.getenv("api_key")
-model = os.getenv("model")
-
-if __name__ == "__main__":
-    # Example usage - use dynamic paths to find existing files
-    current_dir = Path(__file__).parent  # services folder
-    server_dir = current_dir.parent      # server folder
-    project_dir = server_dir.parent      # project root folder
-    
-    # Look for conversation data in project root
-    test_json_file = project_dir / "conversation_data.json"
-    # Look for config in Prompts folder
-    test_yaml_file = server_dir / "Prompts" / "config.yaml"
-    
-    if test_json_file.exists() and test_yaml_file.exists():
-        print(f"Found JSON file: {test_json_file}")
-        print(f"Found YAML file: {test_yaml_file}")
-        print("Running RAG suggestion generation...\n")
-        
-        result = asyncio.run(
-            suggestion_generation(
-                user_id="demo_user",
-                file_path=str(test_json_file),
-                yaml_path=str(test_yaml_file),
-                groq_api_key=api_key,
-                vector_store_path="./rag_store",
-                reset_index=True,
-                top_k=5,
-            )
-        )
-        print(json.dumps(result, indent=2, ensure_ascii=False))
-    else:
-        print("Test files not found. Expected locations:")
-        print(f"- JSON file: {test_json_file}")
-        print(f"- YAML file: {test_yaml_file}")
-        print(f"\nJSON exists: {test_json_file.exists()}")
-        print(f"YAML exists: {test_yaml_file.exists()}")
-        print("\nExample usage:")
-        print("result = await suggestion_generation(")
-        print("    user_id='your_user_id',")
-        print("    file_path='your_data.json',")
-        print("    yaml_path='your_prompt.yaml',")
-        print("    groq_api_key='your_api_key'")
-        print(")")

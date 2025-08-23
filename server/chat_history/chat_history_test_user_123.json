@@ -1,0 +1,164 @@
+[
+  {
+    "timestamp": "2025-08-23T23:20:14.301501",
+    "role": "user",
+    "content": "hi",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:20:24.278890",
+    "role": "user",
+    "content": "I want to open a savings account",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:20:32.616510",
+    "role": "assistant",
+    "content": "",
+    "response": {
+      "status": "error",
+      "message": "RAG processing failed: The paging file is too small for this operation to complete. (os error 1455)",
+      "fallback_suggestions": [
+        {
+          "analysis": "Error",
+          "category": "System",
+          "suggestion": "I'm having trouble processing your request right now. Please try again or contact support."
+        }
+      ]
+    },
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:30:08.760420",
+    "role": "user",
+    "content": "Hello, how can you help me with banking?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:30:08.779186",
+    "role": "assistant",
+    "content": "I can help you with various banking services. What specifically would you like to know?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:30:08.797647",
+    "role": "user",
+    "content": "I want to know about savings accounts",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:30:08.825652",
+    "role": "assistant",
+    "content": "Our savings accounts offer competitive interest rates and flexible terms...",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:30:38.778370",
+    "role": "user",
+    "content": "Hello, how can you help me with banking?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:30:38.801822",
+    "role": "assistant",
+    "content": "I can help you with various banking services. What specifically would you like to know?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:30:38.818030",
+    "role": "user",
+    "content": "I want to know about savings accounts",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:30:38.840350",
+    "role": "assistant",
+    "content": "Our savings accounts offer competitive interest rates and flexible terms...",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:30:51.752377",
+    "role": "user",
+    "content": "Hello, how can you help me with banking?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:30:51.763372",
+    "role": "assistant",
+    "content": "I can help you with various banking services. What specifically would you like to know?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:30:51.774621",
+    "role": "user",
+    "content": "I want to know about savings accounts",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:30:51.786844",
+    "role": "assistant",
+    "content": "Our savings accounts offer competitive interest rates and flexible terms...",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:31:14.787292",
+    "role": "user",
+    "content": "Hello, how can you help me with banking?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:31:14.798968",
+    "role": "assistant",
+    "content": "I can help you with various banking services. What specifically would you like to know?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:31:14.813378",
+    "role": "user",
+    "content": "I want to know about savings accounts",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:31:14.824522",
+    "role": "assistant",
+    "content": "Our savings accounts offer competitive interest rates and flexible terms...",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  }
+]

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SaklAI - Customer Chat (Debug)</title>
+  <style>
+    body {
+      margin: 0;
+      background: #fff;
+      height: 100vh;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 500px;
+      width: 400px;
+      padding: 24px;
+      box-sizing: border-box;
+      border-radius: 14px;
+      background: #faf9f9;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    }
+    .chat-title {
+      font-size: 2em;
+      color: #991515;
+      margin-bottom: 16px;
+      font-weight: bold;
+    }
+    .chat-messages {
+      flex: 1;
+      width: 100%;
+      background: #fff;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+      overflow-y: auto;
+      border: 1px solid #eee;
+      font-size: 16px;
+      text-align: left;
+      min-height: 250px;
+      max-height: 300px;
+    }
+    .chat-input-area {
+      display: flex;
+      width: 100%;
+      gap: 8px;
+    }
+    .chat-input {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .chat-send {
+      padding: 0 26px;
+      background: #991515;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 500;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .chat-send:hover {
+      background: #b91c1c;
+    }
+    .message {
+      display: block; /* Changed from inline-block to block */
+      margin: 8px 0;
+      padding: 8px 14px;
+      border-radius: 8px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+    .message.user {
+      background: #991515;
+      color: #fff;
+      margin-left: auto;
+      margin-right: 0;
+      text-align: right;
+      border-radius: 8px 8px 0 8px;
+    }
+    .message.bot {
+      background: #ffe6c8;
+      color: #991515;
+      margin-left: 0;
+      margin-right: auto;
+      text-align: left;
+      border-radius: 8px 8px 8px 0;
+    }
+    .debug-info {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #333;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      max-width: 300px;
+    }
+  </style>
+</head>
+<body>
+  <div class="debug-info" id="debugInfo">
+    Debug Info:<br>
+    Messages count: <span id="messageCount">1</span><br>
+    Last action: <span id="lastAction">Page loaded</span>
+  </div>
+  
+  <div class="chat-container">
+    <div class="chat-title">SaklAI Chat (Debug)</div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot">Hello! I'm SaklAI, your intelligent BPI banking assistant. I can help you with savings accounts, credit cards, loans, remittances, digital banking, and more. What can I assist you with today?</div>
+    </div>
+    <form class="chat-input-area" onsubmit="sendMessage(event)">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." autocomplete="off" required />
+      <button type="submit" class="chat-send">Send</button>
+    </form>
+  </div>
+  
+  <script>
+    let userId = 'customer_' + Math.random().toString(36).substr(2, 9);
+    let messageCount = 1; // Start with 1 for the initial message
+    
+    function updateDebugInfo(action) {
+      document.getElementById('lastAction').textContent = action;
+      document.getElementById('messageCount').textContent = messageCount;
+      console.log(`Debug: ${action}, Total messages: ${messageCount}`);
+    }
+    
+    async function sendMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const msg = input.value.trim();
+      if (!msg) return;
+      
+      updateDebugInfo(`Sending message: "${msg}"`);
+      
+      // Add user message to chat
+      appendMessage('user', msg);
+      input.value = '';
+
+      try {
+        updateDebugInfo('Sending request to backend...');
+        console.log('Sending request to backend...');
+        const response = await fetch('http://localhost:8002/rag/suggestions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: userId,
+            message: msg,
+            prompt_type: 'auto'
+          })
+        });
+        console.log('Response status:', response.status, response.statusText);
+        updateDebugInfo(`Response status: ${response.status}`);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Network error response:', errorText);
+          throw new Error(`Network response was not ok: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+        const data = await response.json();
+        console.log('Backend response JSON:', data);
+        updateDebugInfo('Received response, processing...');
+        
+        if (data.suggestions && Array.isArray(data.suggestions) && data.suggestions.length > 0) {
+          const first = data.suggestions[0];
+          console.log('First suggestion object:', first);
+          let botMsg = '';
+          if (first.category) {
+            botMsg += `[${first.category}] `;
+          }
+          botMsg += first.suggestion || first.message || 'No message.';
+          console.log('Bot message to display:', botMsg);
+          appendMessage('bot', botMsg);
+          updateDebugInfo(`Bot replied: "${botMsg.substring(0, 30)}..."`);
+        } else {
+          console.warn('No suggestions found in response:', data);
+          appendMessage('bot', "Sorry, I couldn't find a response.");
+          updateDebugInfo('No suggestions in response');
+        }
+      } catch (error) {
+        console.error('Fetch Error:', error);
+        appendMessage('bot', 'Error: Could not connect to the server. Please check the console for details.');
+        updateDebugInfo(`Error: ${error.message}`);
+      }
+    }
+
+    function appendMessage(sender, text, className = '') {
+      console.log('appendMessage called:', sender, text, className);
+      const messages = document.getElementById('chatMessages');
+      console.log('Messages container:', messages);
+      const div = document.createElement('div');
+      div.className = `message ${sender} ${className}`;
+      div.textContent = text;
+      console.log('Created div:', div);
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+      messageCount++;
+      console.log(`Message added. New count: ${messageCount}`);
+      return div;
+    }
+    
+    // Test function to add a message manually
+    function testMessage() {
+      appendMessage('bot', 'This is a test message added manually');
+      updateDebugInfo('Test message added');
+    }
+    
+    // Add test button programmatically
+    window.addEventListener('load', function() {
+      updateDebugInfo('Page loaded');
+      console.log('Debug chat loaded, userId:', userId);
+    });
+  </script>
+</body>
+</html>

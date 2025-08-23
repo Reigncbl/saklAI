@@ -1,0 +1,98 @@
+[
+  {
+    "timestamp": "2025-08-23T23:36:59.783942",
+    "role": "user",
+    "content": "Hi, I want to open a savings account",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:36:59.840173",
+    "role": "assistant",
+    "content": "Hello! I'd be happy to help you with opening a savings account. BPI offers several savings account options with competitive interest rates and flexible terms.",
+    "response": {
+      "suggestions": [
+        {
+          "suggestion": "Hello! I'd be happy to help you with opening a savings account. BPI offers several savings account options with competitive interest rates and flexible terms."
+        }
+      ],
+      "template_used": "savings_accounts.yaml",
+      "processing_method": "rag"
+    },
+    "template_used": "savings_accounts.yaml",
+    "processing_method": "rag"
+  },
+  {
+    "timestamp": "2025-08-23T23:36:59.861237",
+    "role": "user",
+    "content": "What are the requirements?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:36:59.904557",
+    "role": "assistant",
+    "content": "For our regular savings account, you'll need: 1) Valid ID, 2) Initial deposit of ₱500, 3) Filled application form. Would you like me to provide more details about our savings account features?",
+    "response": {
+      "suggestions": [
+        {
+          "suggestion": "For our regular savings account, you'll need: 1) Valid ID, 2) Initial deposit of ₱500, 3) Filled application form. Would you like me to provide more details about our savings account features?"
+        }
+      ],
+      "template_used": "savings_accounts.yaml",
+      "processing_method": "rag"
+    },
+    "template_used": "savings_accounts.yaml",
+    "processing_method": "rag"
+  },
+  {
+    "timestamp": "2025-08-23T23:36:59.929411",
+    "role": "user",
+    "content": "What about interest rates?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:36:59.956694",
+    "role": "assistant",
+    "content": "Our regular savings account offers 0.25% annual interest rate with daily interest computation. For higher interest rates, you might want to consider our BPI Maxi-Saver which offers up to 1.5% annually.",
+    "response": {
+      "suggestions": [
+        {
+          "suggestion": "Our regular savings account offers 0.25% annual interest rate with daily interest computation. For higher interest rates, you might want to consider our BPI Maxi-Saver which offers up to 1.5% annually."
+        }
+      ],
+      "template_used": "savings_accounts.yaml",
+      "processing_method": "rag"
+    },
+    "template_used": "savings_accounts.yaml",
+    "processing_method": "rag"
+  },
+  {
+    "timestamp": "2025-08-23T23:36:59.986067",
+    "role": "user",
+    "content": "How can I apply online?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:37:00.008339",
+    "role": "assistant",
+    "content": "You can start your application online through BPI Online or visit any BPI branch. For online applications, you'll need to schedule an appointment for document verification.",
+    "response": {
+      "suggestions": [
+        {
+          "suggestion": "You can start your application online through BPI Online or visit any BPI branch. For online applications, you'll need to schedule an appointment for document verification."
+        }
+      ],
+      "template_used": "savings_accounts.yaml",
+      "processing_method": "rag"
+    },
+    "template_used": "savings_accounts.yaml",
+    "processing_method": "rag"
+  }
+]

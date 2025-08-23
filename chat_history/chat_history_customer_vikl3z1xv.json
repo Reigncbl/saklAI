@@ -1,0 +1,57 @@
+[
+  {
+    "timestamp": "2025-08-23T23:45:50.570138",
+    "role": "user",
+    "content": "hi",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:46:06.116211",
+    "role": "assistant",
+    "content": "Hey! Ano’ng balita, kaibigan? 😊",
+    "response": {
+      "status": "success",
+      "user_id": "customer_vikl3z1xv",
+      "message": "hi",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hey! Ano’ng balita, kaibigan? 😊"
+        },
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hi! Ready na ‘ko tumulong, anong kailangan mo?"
+        },
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hello ulit! Tara, usap tayo."
+        },
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Musta? Andito lang ako kung may tanong ka."
+        },
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Yo! Anong plano natin ngayon?"
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "greeting",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  }
+]

@@ -6,4 +6,4 @@ class Message(SQLModel, table=True):
     sender_id: str
     receiver_id: str
     message: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=datetime.now)

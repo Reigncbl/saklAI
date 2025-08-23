@@ -25,3 +25,5 @@ yarn-error.log*
 .venv/
 emotion_model/
 .env
+models/
+__pycache__/

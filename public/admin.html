@@ -1,22 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>AI Monitor - Admin</title>
-  <link rel="stylesheet" href="./css/admin.css">
+  <link rel="stylesheet" href="./css/admin.css" />
 </head>
 <body>
   <div class="header">
     <span>AI Monitor</span>
     <span class="agent">Agent: John Doe</span>
   </div>
-  <div class="tabs">
-    <button class="tab active" id="autoTab">Auto Chats</button>
-    <button class="tab secondary" id="activeTab">Active Chats (4)</button>
-  </div>
-  <div id="admin-container">
+
+  <!-- PANEL 1: Dashboard (Tabs + Grid) -->
+  <div id="panel1">
+    <div class="tabs">
+      <button class="tab active" id="autoTab">Auto Chats</button>
+      <button class="tab" id="activeTab">Active Chats</button>
+    </div>
+    <div id="admin-container">
       <div class="grid" id="chatGrid"></div>
+    </div>
   </div>
-  <script src="./js/adminTabs.js"></script>
+
+  <!-- PANEL 2: Human Takeover View -->
+<div id="panel2" class="hidden">
+  <div class="tabs">
+    <button class="tab" id="autoTab2">Auto Chats</button>
+    <button class="tab active" id="activeTab2">Active Chats</button>
+  </div>
+  <div class="active-chats">
+    <div id="sidebar" class="sidebar"></div>
+    <div id="chatPanel" class="chat-panel"></div>
+    <div id="recPanel" class="rec-panel"></div>
+  </div>
+</div>
+
+  <script src="./js/admin.js"></script>
 </body>
 </html>

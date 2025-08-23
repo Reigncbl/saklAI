@@ -158,60 +158,7 @@ async def health_check():
     """Simple health check endpoint"""
     return {"status": "ok", "message": "Server is running"}
 
-# Chat history endpoints
-@app.get("/chat/history/{user_id}")
-async def get_chat_history(user_id: str, limit: int = 20):
-    """Get chat history for a user"""
-    try:
-        history = chat_history_service.get_history(user_id, limit=limit)
-        return {
-            "status": "success",
-            "user_id": user_id,
-            "history": history,
-            "count": len(history)
-        }
-    except Exception as e:
-        return {
-            "status": "error",
-            "message": f"Failed to get chat history: {str(e)}"
-        }
-
-@app.delete("/chat/history/{user_id}")
-async def clear_chat_history(user_id: str):
-    """Clear chat history for a user"""
-    try:
-        success = chat_history_service.clear_history(user_id)
-        if success:
-            return {
-                "status": "success",
-                "message": f"Chat history cleared for user {user_id}"
-            }
-        else:
-            return {
-                "status": "error",
-                "message": "Failed to clear chat history"
-            }
-    except Exception as e:
-        return {
-            "status": "error",
-            "message": f"Error clearing chat history: {str(e)}"
-        }
-
-@app.get("/chat/summary/{user_id}")
-async def get_user_summary(user_id: str):
-    """Get summary of user's chat history"""
-    try:
-        summary = chat_history_service.get_user_summary(user_id)
-        return {
-            "status": "success",
-            "user_id": user_id,
-            "summary": summary
-        }
-    except Exception as e:
-        return {
-            "status": "error",
-            "message": f"Failed to get user summary: {str(e)}"
-        }
+# Chat history endpoints - keeping the properly typed versions
 
 @app.post("/rag/suggestions")
 async def get_rag_suggestions(request: SuggestionRequest):

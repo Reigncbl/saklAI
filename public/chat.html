@@ -120,10 +120,22 @@
     // Generate a unique user ID for this session
     const userId = 'customer_' + Math.random().toString(36).substr(2, 9);
     
-    // API base URL - change this to match your server
-    const API_BASE_URL = window.location.hostname === 'localhost' && window.location.port !== '8000' 
-      ? 'http://localhost:8000'  // Live Server or other port
-      : '';  // Same origin (when served from the actual server)
+    // API base URL - handles all scenarios including direct file access
+    const API_BASE_URL = (() => {
+      // If opened as file:// protocol, always use absolute URL
+      if (window.location.protocol === 'file:') {
+        return 'http://localhost:8000';
+      }
+      // If on localhost but not port 8000, use absolute URL (Live Server)
+      if (window.location.hostname === 'localhost' && window.location.port !== '8000') {
+        return 'http://localhost:8000';
+      }
+      // Otherwise use same origin (when served from SaklAI server)
+      return '';
+    })();
+    
+    console.log('Current location:', window.location.href);
+    console.log('API_BASE_URL determined as:', API_BASE_URL);
     
     async function sendMessage(e) {
       e.preventDefault();

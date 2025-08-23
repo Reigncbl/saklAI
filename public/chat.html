@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SaklAI - Customer Chat</title>
+  <style>
+    body {
+      margin: 0;
+      background: #fff;
+      height: 100vh;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 500px;
+      width: 400px;
+      padding: 24px;
+      box-sizing: border-box;
+      border-radius: 14px;
+      background: #faf9f9;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    }
+    .chat-title {
+      font-size: 2em;
+      color: #991515;
+      margin-bottom: 16px;
+      font-weight: bold;
+    }
+    .chat-messages {
+      flex: 1;
+      width: 100%;
+      background: #fff;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+      overflow-y: auto;
+      border: 1px solid #eee;
+      font-size: 16px;
+      text-align: left;
+      min-height: 250px;
+      max-height: 300px;
+    }
+    .chat-input-area {
+      display: flex;
+      width: 100%;
+      gap: 8px;
+    }
+    .chat-input {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .chat-send {
+      padding: 0 26px;
+      background: #991515;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 500;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .chat-send:hover {
+      background: #b91c1c;
+    }
+    .message.user {
+      text-align: right;
+      color: #fff;
+      background: #991515;
+      border-radius: 8px 8px 0 8px;
+      display: inline-block;
+      padding: 8px 14px;
+      margin: 8px 0;
+      clear: both;
+    }
+    .message.bot {
+      text-align: left;
+      color: #991515;
+      background: #ffe6c8;
+      border-radius: 8px 8px 8px 0;
+      display: inline-block;
+      padding: 8px 14px;
+      margin: 8px 0;
+      clear: both;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-title">SaklAI Chat</div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot">Hello! How can I help you today?</div>
+    </div>
+    <form class="chat-input-area" onsubmit="sendMessage(event)">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." autocomplete="off" required />
+      <button type="submit" class="chat-send">Send</button>
+    </form>
+  </div>
+  <script>
+    function sendMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const msg = input.value.trim();
+      if (!msg) return;
+      appendMessage('user', msg);
+      input.value = '';
+      // Simulated bot reply (static for demo)
+      setTimeout(() => {
+        appendMessage('bot', 'Thank you for your message!');
+      }, 800);
+    }
+
+    function appendMessage(sender, text) {
+      const messages = document.getElementById('chatMessages');
+      const div = document.createElement('div');
+      div.className = 'message ' + sender;
+      div.textContent = text;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+  </script>
+</body>
+</html>

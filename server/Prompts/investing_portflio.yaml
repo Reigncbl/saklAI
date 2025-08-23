@@ -1,0 +1,26 @@
+Quarterly attribution
+{UPLOAD PORTFOLIO}
+Create a quarterly attribution report for this portfolio. Ground yourself in real-time understanding of macro factors. Compare against {INSERT BENCHMARKS} and indicate overperformance or underperformance and provide a brief explanatory narrative.
+Overlapping holdings
+{UPLOAD ALL PORTFOLIO HOLDINGS}
+These are separate portfolios. Create a heatmap of overlapping securities weighted by market value. Highlight any positions where the aggregate exposure exceeds {PERCENTAGE} of combined portfolio value.
+
+Fee optimizer
+
+{UPLOAD SHARE CLASS DETAILS}
+
+
+
+{UPLOAD REBATE SCHEDULE}
+
+
+
+Compare the share classes and expense ratios against my custodial platform rebates. Propose the optimal share class mix that minimizes net fees without triggering new 12b‑1 charges
+
+Liquidity stress test
+
+{UPLOAD PORTFOLIO HOLDINGS}
+
+
+
+For this portfolio, simulate a widening of 3 standard deviations in bid ask spreads and redemption outflows of 15%. Estimate the time to cash and price impact for each position, and rank funds by liquidation risk.

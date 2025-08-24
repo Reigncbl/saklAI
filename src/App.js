@@ -1,10 +1,17 @@
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Landing from "./pages/Landing";
+import AdminPage from "./pages/AdminPage";
+import ClientPage from "./pages/ClientPage";
 
 function App() {
   return (
-    <div className="App">
-      {/* Main App UI goes here */}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/chat" element={<ClientPage />} />
+      </Routes>
+    </Router>
   );
 }
 

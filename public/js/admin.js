@@ -61,6 +61,7 @@ const recommendations = [
  ********************/
 const el = (id) => document.getElementById(id);
 
+// Auto Chats - Reusable Component
 function renderCard(card) {
     const isYellow = ["assigned", "complex"].includes(card.status);
     const percentClass =

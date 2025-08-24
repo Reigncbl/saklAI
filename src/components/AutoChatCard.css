@@ -1,0 +1,135 @@
+/* Card styles */
+.chat-card {
+  border: 2px solid #db8e8e;
+  border-radius: 16px;
+  background: #fff;
+  padding: 18px 16px 14px 16px;
+  box-sizing: border-box;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.chat-card.yellow {
+  border: 2px solid #ffd97a;
+  background: #fffbea;
+}
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+.chat-user {
+  font-weight: 600;
+  font-size: 1.08em;
+}
+.chat-type {
+  font-size: 0.98em;
+  color: #888;
+  margin-top: 2px;
+}
+.chat-meta {
+  text-align: right;
+}
+.chat-meta .percent {
+  font-size: 0.95em;
+  font-weight: 700;
+  background: #eafbf2;
+  color: #34c759;
+  border-radius: 8px;
+  padding: 2px 12px;
+  margin-right: 7px;
+}
+.chat-meta .percent.low {
+  background: #fff4f4;
+  color: #ff4c4c;
+}
+.chat-meta .percent.yellow {
+  background: #fffbe7;
+  color: #b8860b;
+}
+.chat-meta .percent.zero {
+  background: #fffbe7;
+  color: #b8860b;
+}
+.chat-meta .time {
+  font-size: 0.92em;
+  color: #888;
+}
+.chat-content {
+  margin: 18px 0 12px;
+  min-height: 54px;
+}
+
+.chat-bubble {
+  background: #eaf1fa;
+  border-radius: 8px;
+  color: #7082a0;
+  font-size: 0.97em;
+  padding: 12px 10px;
+  margin-bottom: 7px;
+  width: 85%;
+}
+
+.chat-bubble-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* pushes label + bubble to the right */
+  margin-bottom: 12px;   /* space between messages */
+}
+
+.chat-bubble.agent {
+  background: #fdeaea;
+  color: #991515;
+  margin-left: auto;
+  margin-right: 0;
+  width: 70%;
+}
+
+.chat-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #991515;
+  margin-bottom: 2px; /* small space before the bubble */
+  margin-right: 5px;  /* shift label slightly inside */
+}
+
+.chat-bubble.yellow {
+  background: #fffbea;
+  color: #991515;
+  font-weight: 500;
+  font-size: 0.97em;
+  margin-left: 0;
+  width: 92%;
+  border: 1px solid #ffd97a;
+  text-align: left;
+}
+.chat-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 14px;
+}
+.btn {
+  padding: 8px 24px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.13s;
+}
+.btn.takeover {
+  background: #991515;
+  color: #fff;
+  border: 2px solid #991515;
+}
+.btn.takeover:hover {
+  background: #b91c1c;
+}
+.btn.assigned {
+  background: #ffd97a;
+  color: #991515;
+  border: 2px solid #ffd97a;
+}

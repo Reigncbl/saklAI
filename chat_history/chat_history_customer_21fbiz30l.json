@@ -1,0 +1,37 @@
+[
+  {
+    "timestamp": "2025-08-24T11:29:47.955705",
+    "role": "user",
+    "content": "HI",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-24T11:29:49.722932",
+    "role": "assistant",
+    "content": "Hello! Welcome to BPI! I'm SaklAI, ready to help with your banking needs - whether it's checking your account, applying for a credit card, or using our digital services. How may I assist you today?",
+    "response": {
+      "status": "success",
+      "user_id": "customer_21fbiz30l",
+      "message": "HI",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hello! Welcome to BPI! I'm SaklAI, ready to help with your banking needs - whether it's checking your account, applying for a credit card, or using our digital services. How may I assist you today?"
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "greeting",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  }
+]

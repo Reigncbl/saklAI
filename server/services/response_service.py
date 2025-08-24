@@ -3,9 +3,12 @@ Response generation service for handling direct Groq responses.
 """
 
 import json
+import os
 import yaml
 from groq import Groq
-
+from dotenv import load_dotenv
+load_dotenv()
+model = os.getenv('model')   
 
 async def generate_direct_groq_response(message: str, yaml_path: str, groq_api_key: str, conversation_context: str = "") -> list:
     """
@@ -31,7 +34,7 @@ async def generate_direct_groq_response(message: str, yaml_path: str, groq_api_k
         groq_client = Groq(api_key=groq_api_key)
         
         response = groq_client.chat.completions.create(
-            model="llama3-8b-8192",
+            model=model,
             messages=[{"role": "user", "content": full_prompt}],
             temperature=0.7,
             max_tokens=1000

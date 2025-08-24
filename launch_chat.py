@@ -126,7 +126,7 @@ def main():
             print("\n" + "=" * 50)
             print("🎉 SaklAI Chat is now running!")
             print("📱 Chat interface: http://localhost:8000")
-            print("🔧 Admin interface: http://localhost:8000/static/admin.html")
+            print("🔧 Admin interface: http://localhost:8000/admin")
             print("💡 Press Ctrl+C to stop the server")
             print("=" * 50)
             

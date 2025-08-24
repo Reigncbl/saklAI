@@ -1,0 +1,367 @@
+[
+  {
+    "timestamp": "2025-08-23T23:48:18.015965",
+    "role": "user",
+    "content": "hello",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:48:30.500141",
+    "role": "assistant",
+    "content": "Hey! Ano’ng balita, kaibigan?",
+    "response": {
+      "status": "success",
+      "user_id": "test_user",
+      "message": "hello",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hey! Ano’ng balita, kaibigan?"
+        },
+        {
+          "analysis": "question",
+          "category": "Information",
+          "suggestion": "Sure, anong kailangan mo malaman?"
+        },
+        {
+          "analysis": "statement",
+          "category": "Empathy",
+          "suggestion": "Gets ko, ganun talaga minsan."
+        },
+        {
+          "analysis": "request",
+          "category": "Assistance",
+          "suggestion": "Game, tutulungan kita dyan!"
+        },
+        {
+          "analysis": "complaint",
+          "category": "Empathy",
+          "suggestion": "Ay, nakaka-frustrate nga yan. Tara, sama tayo maghanap ng solusyon."
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "greetings",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  },
+  {
+    "timestamp": "2025-08-23T23:49:34.708329",
+    "role": "user",
+    "content": "hello",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:49:46.716549",
+    "role": "assistant",
+    "content": "Hey! Ready to help—what’s up?",
+    "response": {
+      "status": "success",
+      "user_id": "test_user",
+      "message": "hello",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hey! Ready to help—what’s up?"
+        },
+        {
+          "analysis": "question",
+          "category": "Information",
+          "suggestion": "Got it! Let me check that for you real quick."
+        },
+        {
+          "analysis": "statement",
+          "category": "Empathy",
+          "suggestion": "Totally feel you, happens to me too!"
+        },
+        {
+          "analysis": "request",
+          "category": "Assistance",
+          "suggestion": "Sure thing, I’ll sort that out for you."
+        },
+        {
+          "analysis": "complaint",
+          "category": "Empathy",
+          "suggestion": "Ay, that’s frustrating—let’s fix it together."
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "greeting",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  },
+  {
+    "timestamp": "2025-08-23T23:58:27.471259",
+    "role": "user",
+    "content": "hello",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-23T23:58:37.557445",
+    "role": "assistant",
+    "content": "Hey! Ready when you are—just drop your question or kwento. 😊",
+    "response": {
+      "status": "success",
+      "user_id": "test_user",
+      "message": "hello",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hey! Ready when you are—just drop your question or kwento. 😊"
+        },
+        {
+          "analysis": "question",
+          "category": "Information",
+          "suggestion": "Got it! Let me check the details for you real quick."
+        },
+        {
+          "analysis": "statement",
+          "category": "Empathy",
+          "suggestion": "Totally feel you—been there too. Let’s figure this out together!"
+        },
+        {
+          "analysis": "request",
+          "category": "Assistance",
+          "suggestion": "Sure thing! I’ll walk you through it step by step."
+        },
+        {
+          "analysis": "complaint",
+          "category": "Empathy",
+          "suggestion": "Ay, hassle nga ‘yan. Tell me more so I can help make it right."
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "greeting",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  },
+  {
+    "timestamp": "2025-08-24T00:29:55.632480",
+    "role": "user",
+    "content": "hello",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-24T00:29:56.710698",
+    "role": "assistant",
+    "content": "Hey! You're consistent with the hellos today! 😊",
+    "response": {
+      "status": "success",
+      "user_id": "test_user",
+      "message": "hello",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hey! You're consistent with the hellos today! 😊"
+        },
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hi! I'm ready to chat again—what's on your mind?"
+        },
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hi again! Ready to help with your question or just chat?"
+        },
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hey! It's good to see you're feeling chatty today!"
+        },
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hi! I'm here to listen—what's new with you?"
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "greeting",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  },
+  {
+    "timestamp": "2025-08-24T01:07:25.384781",
+    "role": "user",
+    "content": "I want to apply for a savings account",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-24T01:07:43.659533",
+    "role": "assistant",
+    "content": "Since you’re looking for the easiest way to start, I’d recommend #SaveUp or #MySaveUp. Both are 100 % digital—open in under 5 minutes through the BPI Mobile app with just Php 1 initial deposit and zero maintaining balance. Once you keep Php 5,000 in the account, you’ll earn 0.0925 % p.a. interest. Great if you plan to bank mostly on your phone.",
+    "response": {
+      "status": "success",
+      "user_id": "test_user",
+      "message": "I want to apply for a savings account",
+      "translated_message": "Here is the translation:\n\n\"I would like to open a savings account.\"\n\n(Note: \"apply\" is not the most common way to express this idea in English, especially in a banking context. \"Open\" or \"apply for\" are more common ways to express this idea.)",
+      "template_used": "savings_accounts.yaml",
+      "suggestions": [
+        {
+          "analysis": "customer_intent: new_account",
+          "category": "Product Recommendation",
+          "suggestion": "Since you’re looking for the easiest way to start, I’d recommend #SaveUp or #MySaveUp. Both are 100 % digital—open in under 5 minutes through the BPI Mobile app with just Php 1 initial deposit and zero maintaining balance. Once you keep Php 5,000 in the account, you’ll earn 0.0925 % p.a. interest. Great if you plan to bank mostly on your phone."
+        },
+        {
+          "analysis": "customer_intent: account_comparison",
+          "category": "Account Comparison",
+          "suggestion": "If you’d like a passbook for kids or teens, Jumpstart Savings is perfect: Php 100 to open, Php 1,000 monthly average daily balance (ADB), and the Php 1,000 maintaining balance is waived for the first year. Interest of 0.0625 % p.a. starts once the daily balance hits Php 2,000."
+        },
+        {
+          "analysis": "customer_intent: interest_rates",
+          "category": "Interest Calculation",
+          "suggestion": "Saver-Plus offers tiered interest up to 0.0625 % p.a., but you’ll need Php 50,000 daily balance to earn the top rate. If you can keep at least Php 3,000 to open and Php 50,000 day-to-day, this account gives you higher returns than Regular Savings."
+        },
+        {
+          "analysis": "customer_intent: requirements",
+          "category": "Requirements Clarification",
+          "suggestion": "Regular Savings is the classic passbook account: Php 3,000 to open, Php 3,000 monthly ADB, and Php 5,000 daily balance to earn 0.0625 % p.a. Choose this if you prefer face-to-face service at branches and don’t mind the higher maintaining balance."
+        },
+        {
+          "analysis": "customer_intent: new_account",
+          "category": "Product Recommendation",
+          "suggestion": "For OFWs or relatives receiving remittances, Pamana Savings (US Dollar) is ideal. Open with USD 500, keep USD 1,000 daily balance to earn 0.050 % p.a., and enjoy free life insurance worth 3× your average balance (up to USD 40,000). If you receive US pension credits, the Direct Deposit US Pension account is another option with only USD 100 to open."
+        }
+      ],
+      "processing_method": "rag",
+      "classification": {
+        "detected_category": "savings account inquiry",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      }
+    },
+    "template_used": "savings_accounts.yaml",
+    "processing_method": "rag"
+  },
+  {
+    "timestamp": "2025-08-24T01:07:45.321089",
+    "role": "user",
+    "content": "I want to apply for a savings account",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-24T01:08:01.952694",
+    "role": "assistant",
+    "content": "Since you’re all about digital convenience, #SaveUp is your best bet. Open it in the BPI Mobile app in under 5 minutes with just Php 1 initial deposit and zero maintaining balance. Once your daily balance hits Php 5,000, you’ll earn 0.0925 % p.a. interest—perfect for starting small and growing your savings entirely on your phone.",
+    "response": {
+      "status": "success",
+      "user_id": "test_user",
+      "message": "I want to apply for a savings account",
+      "translated_message": "Here is the translation:\n\n\"I would like to open a savings account.\"\n\n(Note: In Tagalog, \"apply\" is often used to mean \"to open\" or \"to start\", so the translation is adjusted to convey the correct meaning in the context of banking.)",
+      "template_used": "savings_accounts.yaml",
+      "suggestions": [
+        {
+          "analysis": "customer_intent: new_account",
+          "category": "Product Recommendation",
+          "suggestion": "Since you’re all about digital convenience, #SaveUp is your best bet. Open it in the BPI Mobile app in under 5 minutes with just Php 1 initial deposit and zero maintaining balance. Once your daily balance hits Php 5,000, you’ll earn 0.0925 % p.a. interest—perfect for starting small and growing your savings entirely on your phone."
+        },
+        {
+          "analysis": "customer_intent: account_comparison",
+          "category": "Account Comparison",
+          "suggestion": "If you’d like a passbook option for kids or teens, Jumpstart Savings is great: Php 100 to open, Php 1,000 monthly ADB (waived the first year), and 0.0625 % p.a. interest once you keep Php 2,000 daily. For adults who prefer a traditional passbook, Regular Savings needs Php 3,000 to open and the same amount as maintaining balance, earning 0.0625 % p.a. at Php 5,000 daily balance."
+        },
+        {
+          "analysis": "customer_intent: requirements",
+          "category": "Requirements Clarification",
+          "suggestion": "For #SaveUp or #MySaveUp, you only need one valid government ID and your mobile number for OTP—no income docs required. Everything is verified digitally. If you later choose Regular Savings or Saver-Plus, bring the same ID plus Php 3,000 (Regular) or Php 50,000 (Saver-Plus) initial deposit."
+        },
+        {
+          "analysis": "customer_intent: interest_rates",
+          "category": "Interest Calculation",
+          "suggestion": "#SaveUp/#MySaveUp: 0.0925 % p.a. at Php 5,000 daily balance. Jumpstart: 0.0625 % p.a. at Php 2,000 daily. Regular Savings: 0.0625 % p.a. at Php 5,000 daily. Saver-Plus: 0.125 % p.a. but requires Php 50,000 daily balance—ideal when you’re ready to keep larger amounts."
+        },
+        {
+          "analysis": "customer_intent: digital_features",
+          "category": "Digital Features",
+          "suggestion": "#SaveUp and #MySaveUp are fully digital—no passbook, no branch visits. Jumpstart, Regular Savings, and Saver-Plus support online fund transfers and mobile check deposits, but you may need to visit a branch for passbook updates or large cash deposits. Stick with #SaveUp if you want everything done on your phone."
+        }
+      ],
+      "processing_method": "rag",
+      "classification": {
+        "detected_category": "savings account inquiry",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      }
+    },
+    "template_used": "savings_accounts.yaml",
+    "processing_method": "rag"
+  },
+  {
+    "timestamp": "2025-08-24T01:17:00.479925",
+    "role": "user",
+    "content": "Hello",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-24T01:17:01.543673",
+    "role": "assistant",
+    "content": "Hey! Nice to chat with you again! What's new with your banking needs today?",
+    "response": {
+      "status": "success",
+      "user_id": "test_user",
+      "message": "Hello",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hey! Nice to chat with you again! What's new with your banking needs today?"
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "greeting",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  }
+]

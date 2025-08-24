@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SaklAI - BPI Banking Assistant</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .chat-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 450px;
+      height: 600px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background: #991515;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 20px 20px 0 0;
+    }
+
+    .chat-header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .chat-header p {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #f8f9fa;
+    }
+
+    .message {
+      margin: 10px 0;
+      display: flex;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .message.bot {
+      justify-content: flex-start;
+    }
+
+    .message-bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      word-wrap: break-word;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .message.user .message-bubble {
+      background: #991515;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.bot .message-bubble {
+      background: white;
+      color: #333;
+      border: 1px solid #e9ecef;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .message-category {
+      font-size: 12px;
+      font-weight: 600;
+      color: #991515;
+      margin-bottom: 4px;
+    }
+
+    .chat-input-container {
+      padding: 20px;
+      background: white;
+      border-top: 1px solid #e9ecef;
+    }
+
+    .chat-input-form {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 25px;
+      outline: none;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+    }
+
+    .chat-input:focus {
+      border-color: #991515;
+    }
+
+    .send-button {
+      background: #991515;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease;
+      font-size: 16px;
+    }
+
+    .send-button:hover {
+      background: #7a1010;
+    }
+
+    .send-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .typing-indicator {
+      display: none;
+      padding: 10px 16px;
+      background: white;
+      border-radius: 18px;
+      border-bottom-left-radius: 4px;
+      max-width: 80%;
+      border: 1px solid #e9ecef;
+      margin: 10px 0;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: #999;
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes typing {
+      0%, 60%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+      }
+      30% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+    }
+
+    /* Scrollbar styling */
+    .chat-messages::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: #ddd;
+      border-radius: 3px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+      background: #bbb;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      <h1>SaklAI</h1>
+      <p>Your BPI Banking Assistant</p>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot">
+        <div class="message-bubble">
+          Hello! I'm SaklAI, your intelligent BPI banking assistant. I can help you with savings accounts, credit cards, loans, remittances, digital banking, and more. What can I assist you with today?
+        </div>
+      </div>
+    </div>
+
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="typing-dots">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    </div>
+    
+    <div class="chat-input-container">
+      <form class="chat-input-form" id="chatForm">
+        <input 
+          type="text" 
+          class="chat-input" 
+          id="chatInput" 
+          placeholder="Type your message..." 
+          autocomplete="off" 
+          required 
+        />
+        <button type="submit" class="send-button" id="sendButton">
+          ➤
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Generate unique user ID for this session
+    const userId = 'customer_' + Math.random().toString(36).substr(2, 9);
+    
+    // DOM elements
+    const chatMessages = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const sendButton = document.getElementById('sendButton');
+    const typingIndicator = document.getElementById('typingIndicator');
+
+    // Initialize chat
+    function init() {
+      chatForm.addEventListener('submit', handleSubmit);
+      chatInput.addEventListener('keypress', handleKeyPress);
+      console.log('SaklAI Chat initialized with user ID:', userId);
+    }
+
+    // Handle form submission
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const message = chatInput.value.trim();
+      
+      if (!message) return;
+      
+      // Add user message
+      addMessage('user', message);
+      
+      // Clear input and disable form
+      chatInput.value = '';
+      setLoading(true);
+      
+      try {
+        // Send message to backend
+        await sendMessageToBot(message);
+      } catch (error) {
+        console.error('Error sending message:', error);
+        addMessage('bot', 'Sorry, I\'m having trouble connecting right now. Please try again in a moment.', 'System');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // Handle key press
+    function handleKeyPress(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSubmit(e);
+      }
+    }
+
+    // Send message to bot
+    async function sendMessageToBot(message) {
+      try {
+        const response = await fetch('http://localhost:8000/rag/suggestions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id: userId,
+            message: message,
+            prompt_type: 'auto'
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Backend response:', data);
+
+        // Handle successful response
+        if (data.status === 'success' && data.suggestions && Array.isArray(data.suggestions)) {
+          const suggestion = data.suggestions[0]; // Use first suggestion
+          if (suggestion && suggestion.suggestion) {
+            addMessage('bot', suggestion.suggestion, suggestion.category);
+          } else {
+            addMessage('bot', 'I understand your message, but I\'m not sure how to respond right now.', 'System');
+          }
+        } else {
+          // Handle error response
+          const errorMsg = data.message || 'I encountered an issue processing your request.';
+          addMessage('bot', errorMsg, 'System');
+        }
+
+      } catch (error) {
+        console.error('Network error:', error);
+        throw error;
+      }
+    }
+
+    // Add message to chat
+    function addMessage(sender, text, category = null) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}`;
+      
+      const bubbleDiv = document.createElement('div');
+      bubbleDiv.className = 'message-bubble';
+      
+      // Add category for bot messages if provided
+      if (sender === 'bot' && category && category !== 'System') {
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'message-category';
+        categoryDiv.textContent = category;
+        bubbleDiv.appendChild(categoryDiv);
+      }
+      
+      const textDiv = document.createElement('div');
+      textDiv.textContent = text;
+      bubbleDiv.appendChild(textDiv);
+      
+      messageDiv.appendChild(bubbleDiv);
+      chatMessages.appendChild(messageDiv);
+      
+      // Scroll to bottom
+      scrollToBottom();
+    }
+
+    // Set loading state
+    function setLoading(isLoading) {
+      sendButton.disabled = isLoading;
+      chatInput.disabled = isLoading;
+      
+      if (isLoading) {
+        typingIndicator.style.display = 'block';
+        scrollToBottom();
+      } else {
+        typingIndicator.style.display = 'none';
+        chatInput.focus();
+      }
+    }
+
+    // Scroll to bottom of messages
+    function scrollToBottom() {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

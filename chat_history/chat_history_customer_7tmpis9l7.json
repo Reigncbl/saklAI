@@ -1,0 +1,57 @@
+[
+  {
+    "timestamp": "2025-08-24T00:13:35.616817",
+    "role": "user",
+    "content": "hi",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-24T00:13:36.863097",
+    "role": "assistant",
+    "content": "Hey! How's it going?",
+    "response": {
+      "status": "success",
+      "user_id": "customer_7tmpis9l7",
+      "message": "hi",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hey! How's it going?"
+        },
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hi back! What's up?"
+        },
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hi! Glad you're here. How can I help?"
+        },
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hey! Long time no talk. How's life been?"
+        },
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hi! Nice to see you again. What's on your mind?"
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "greeting",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "timestamp": "2025-08-24T00:46:58.676731",
+    "role": "user",
+    "content": "hi",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-24T00:47:00.056789",
+    "role": "assistant",
+    "content": "Hi there! Welcome to BPI's online banking service. How can I assist you today?",
+    "response": {
+      "status": "success",
+      "user_id": "customer_t3dzcm0b3",
+      "message": "hi",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "greeting",
+          "category": "Acknowledgment",
+          "suggestion": "Hi there! Welcome to BPI's online banking service. How can I assist you today?"
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "greeting",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  }
+]

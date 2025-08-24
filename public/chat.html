@@ -92,13 +92,24 @@
       margin: 8px 0;
       clear: both;
     }
+    .typing-indicator {
+      font-style: italic;
+      opacity: 0.7;
+    }
+    .dots {
+      animation: blink 1.4s infinite;
+    }
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
   </style>
 </head>
 <body>
   <div class="chat-container">
     <div class="chat-title">SaklAI Chat</div>
     <div class="chat-messages" id="chatMessages">
-      <div class="message bot">Hello! How can I help you today?</div>
+      <!-- Messages will be loaded dynamically -->
     </div>
     <form class="chat-input-area" onsubmit="sendMessage(event)">
       <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." autocomplete="off" required />
@@ -106,17 +117,111 @@
     </form>
   </div>
   <script>
-    function sendMessage(e) {
+    // Generate a unique user ID for this session
+    const userId = 'customer_' + Math.random().toString(36).substr(2, 9);
+    
+    // API base URL - handles all scenarios including direct file access
+    const API_BASE_URL = (() => {
+      // If opened as file:// protocol, always use absolute URL
+      if (window.location.protocol === 'file:') {
+        return 'http://localhost:8000';
+      }
+      // If on localhost but not port 8000, use absolute URL (Live Server)
+      if (window.location.hostname === 'localhost' && window.location.port !== '8000') {
+        return 'http://localhost:8000';
+      }
+      // Otherwise use same origin (when served from SaklAI server)
+      return '';
+    })();
+    
+    console.log('Current location:', window.location.href);
+    console.log('API_BASE_URL determined as:', API_BASE_URL);
+    
+    async function sendMessage(e) {
       e.preventDefault();
       const input = document.getElementById('chatInput');
       const msg = input.value.trim();
       if (!msg) return;
+      
+      // Show user message immediately
       appendMessage('user', msg);
       input.value = '';
-      // Simulated bot reply (static for demo)
-      setTimeout(() => {
-        appendMessage('bot', 'Thank you for your message!');
-      }, 800);
+      
+      // Show typing indicator
+      const typingDiv = showTypingIndicator();
+      
+      try {
+        // Send message to the server
+        console.log(`Sending request to: ${API_BASE_URL}/rag/suggestions`);
+        const response = await fetch(`${API_BASE_URL}/rag/suggestions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id: userId,
+            message: msg,
+            prompt_type: 'auto',
+            include_context: true
+          })
+        });
+        
+        console.log(`Response status: ${response.status}`);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`HTTP error! status: ${response.status}, response: ${errorText}`);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Response data:', data);
+        
+        // Remove typing indicator
+        removeTypingIndicator(typingDiv);
+        
+        // Display the response
+        if (data.status === 'success' && data.suggestions && data.suggestions.length > 0) {
+          // Get the main suggestion as the response
+          const suggestion = data.suggestions[0];
+          const responseText = suggestion.suggestion || suggestion.analysis || 'I received your message.';
+          appendMessage('bot', responseText);
+          
+          // Show additional suggestions if available
+          if (data.suggestions.length > 1) {
+            data.suggestions.slice(1).forEach(extraSuggestion => {
+              const extraText = extraSuggestion.suggestion || extraSuggestion.analysis;
+              if (extraText) {
+                appendMessage('bot', extraText);
+              }
+            });
+          }
+          
+          // Optional: Show processing method for debugging
+          if (data.processing_method && window.location.hostname === 'localhost') {
+            console.log(`Response generated using: ${data.processing_method}`);
+          }
+        } else if (data.status === 'error') {
+          appendMessage('bot', data.message || 'Sorry, I encountered an error processing your request.');
+        } else {
+          appendMessage('bot', 'Thank you for your message. How else can I help you?');
+        }
+        
+      } catch (error) {
+        console.error('Detailed error:', error);
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
+        removeTypingIndicator(typingDiv);
+        
+        let errorMessage = 'Sorry, I\'m having trouble connecting right now. Please try again later.';
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+          errorMessage = 'Cannot connect to server. Please make sure the SaklAI server is running on port 8000.';
+        } else if (error.message.includes('HTTP error')) {
+          errorMessage = `Server error: ${error.message}. Please check the server logs.`;
+        }
+        
+        appendMessage('bot', errorMessage);
+      }
     }
 
     function appendMessage(sender, text) {
@@ -126,7 +231,67 @@
       div.textContent = text;
       messages.appendChild(div);
       messages.scrollTop = messages.scrollHeight;
+      return div;
     }
+    
+    function showTypingIndicator() {
+      const messages = document.getElementById('chatMessages');
+      const div = document.createElement('div');
+      div.className = 'message bot typing-indicator';
+      div.innerHTML = '<span>SaklAI is typing</span><span class="dots">...</span>';
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+      return div;
+    }
+    
+    function removeTypingIndicator(typingDiv) {
+      if (typingDiv && typingDiv.parentNode) {
+        typingDiv.parentNode.removeChild(typingDiv);
+      }
+    }
+    
+    // Load chat history when page loads
+    async function loadChatHistory() {
+      try {
+        console.log(`Loading chat history from: ${API_BASE_URL}/chat/history/${userId}`);
+        const response = await fetch(`${API_BASE_URL}/chat/history/${userId}`);
+        console.log(`Chat history response status: ${response.status}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          
+          // Clear initial message and load history
+          const messagesContainer = document.getElementById('chatMessages');
+          messagesContainer.innerHTML = '';
+          
+          if (data.history && data.history.length > 0) {
+            data.history.forEach(entry => {
+              if (entry.type === 'user') {
+                appendMessage('user', entry.message);
+              } else if (entry.type === 'assistant') {
+                appendMessage('bot', entry.message);
+              }
+            });
+          } else {
+            // Show welcome message if no history
+            appendMessage('bot', 'Hello! How can I help you today?');
+          }
+        } else {
+          console.log(`Chat history not found (status: ${response.status}), showing welcome message`);
+          // If history not found, show welcome message
+          appendMessage('bot', 'Hello! How can I help you today?');
+        }
+      } catch (error) {
+        console.error('Error loading chat history:', error);
+        // Show welcome message on error
+        const messagesContainer = document.getElementById('chatMessages');
+        messagesContainer.innerHTML = '';
+        appendMessage('bot', 'Hello! How can I help you today?');
+      }
+    }
+    
+    // Load chat history when page loads
+    window.addEventListener('load', loadChatHistory);
   </script>
 </body>
 </html>

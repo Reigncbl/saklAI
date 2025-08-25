@@ -13,9 +13,9 @@ export default function DashboardPanel({ cards, onTakeover, onStatusUpdate }) {
       <div id="admin-container">
         <div className="grid" id="chatGrid">
           {cards.map((card, i) => (
-            <ChatCard 
-              key={card.id || card.user || i} 
-              card={card} 
+            <ChatCard
+              key={card.id || card.user || i}
+              card={card}
               onTakeover={onTakeover}
               onStatusUpdate={onStatusUpdate}
             />

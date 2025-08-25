@@ -5,11 +5,11 @@ body {
 }
 
 .header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 100;
-    left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  left: 0;
   background: #991515;
   color: #f5f5f5;
   padding: 32px;
@@ -92,13 +92,13 @@ body {
 
 #panel1,
 #panel2 {
-  position: fixed;     /* ✅ stays in place */
-  top: 120px;           /* sits just below the header */
+  position: fixed;
+  top: 120px;
   left: 0;
   width: 100%;
-  height: calc(100% - 60px); /* fills the remaining space */
-  overflow-y: auto;    /* allows scrolling inside the panel if content overflows */
-  background: #f5f5f5; /* optional, just to see the area */
+  height: calc(100% - 60px);
+  overflow-y: auto;
+  background: #f5f5f5;
 }
 
 /* PANEL 2 */
@@ -122,11 +122,56 @@ body {
   color: #fff;
 }
 
-.active-chats {
+/* ✅ Takeover Layout */
+.takeover-layout {
   display: grid;
   grid-template-columns: 260px 1fr 320px;
   gap: 20px;
   padding: 20px 40px 32px;
+}
+
+/* Left: Assigned Chats */
+.assigned-list {
+  border: 1.5px solid #db8e8e;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.assigned-card {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.assigned-card h4 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+.assigned-card p {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+}
+.assigned-card p strong {
+  color: #495057;
+}
+
+/* Center: Chat Window */
+.chat-window-container {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+}
+
+/* Right: Sidebar */
+.chat-sidebar-container {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
 }
 
 /* Sidebar */
@@ -263,35 +308,4 @@ body {
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
-}
-
-/* */
-
-.assigned-card {
-  background: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.assigned-card h4 {
-  margin: 0 0 0.5rem 0;
-  color: #333;
-}
-
-.assigned-card p {
-  margin: 0.25rem 0;
-  font-size: 0.9rem;
-}
-
-.assigned-card p strong {
-  color: #495057;
-}
-
-.active-chats .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
 }

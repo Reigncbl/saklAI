@@ -1,3 +1,9 @@
+/* Make chat-content scrollable with a fixed max height */
+.chat-card .chat-content {
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
 /* css/admin.css */
 body {
   margin: 0;

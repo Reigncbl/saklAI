@@ -112,8 +112,8 @@ async def get_active_chats():
                 "history": history  # Include full chat history
             })
 
-        # Sort by last_timestamp ascending (oldest first)
-        conversations.sort(key=lambda c: c["last_timestamp"] or "")
+        # Sort by last_timestamp descending (newest first)
+        conversations.sort(key=lambda c: c["last_timestamp"] or "", reverse=True)
         return conversations
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to read chat histories: {str(e)}")
@@ -126,18 +126,41 @@ async def set_chat_status(user_id: str, status: str = Body(..., embed=True)):
     """Set the top-level status field for a user's chat history file"""
     try:
         path = CHAT_HISTORY_DIR / f"chat_history_{user_id}.json"
+        
+        # If file doesn't exist, create it with initial structure
         if not path.exists():
-            raise HTTPException(status_code=404, detail="Chat history file not found")
+            # Create initial chat history with user requesting agent
+            initial_data = {
+                "history": [
+                    {
+                        "timestamp": datetime.now().isoformat(),
+                        "role": "user",
+                        "content": "I want to talk to an agent",
+                        "response": None,
+                        "template_used": None,
+                        "processing_method": "user_request"
+                    }
+                ],
+                "status": status
+            }
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(initial_data, f, ensure_ascii=False, indent=2)
+            return {"status": "success", "user_id": user_id, "new_status": status, "created": True}
+        
+        # File exists, update it
         with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
+            
         if isinstance(data, list):
             # Upgrade to dict format
             data = {"history": data, "status": status}
         else:
             data["status"] = status
+            
         with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-        return {"status": "success", "user_id": user_id, "new_status": status}
+            
+        return {"status": "success", "user_id": user_id, "new_status": status, "created": False}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to set chat status: {str(e)}")
 

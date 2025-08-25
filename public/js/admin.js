@@ -558,6 +558,12 @@ document.addEventListener("click", (e) => {
   if (e.target.closest(".btn.takeover")) {
     const btn = e.target.closest(".btn.takeover");
     const userId = btn.getAttribute("data-user");
+
+    // Show loading state on button
+    const originalText = btn.textContent;
+    btn.textContent = "Taking over...";
+    btn.disabled = true;
+
     // Call backend to set status to 'assigned'
     fetch(`${API_BASE_URL}/chat/status/${userId}`, {
       method: "POST",
@@ -566,13 +572,59 @@ document.addEventListener("click", (e) => {
     })
       .then(res => {
         if (!res.ok) throw new Error("Failed to assign chat");
-        // Refresh panel 1 (dashboard)
+        return res.json();
+      })
+      .then(result => {
+        console.log("Chat assigned successfully:", result);
+
+        // Switch to panel 2 first
+        showPanel(2);
+
+        // Load Panel 2 data and navigate to the specific conversation
+        mountPanel2().then(() => {
+          // Find the conversation in the current active chat sessions
+          const conversationIndex = currentActiveChatSessions.findIndex(chat => chat.user === userId);
+
+          if (conversationIndex >= 0) {
+            // Set this conversation as active
+            currentActiveChatSessions.forEach((c, i) => c.active = i === conversationIndex);
+
+            // Re-render sidebar with the new active selection
+            el("sidebar").innerHTML = renderSidebar(currentActiveChatSessions);
+
+            // Update chat panel with the selected conversation
+            const selectedChat = currentActiveChatSessions[conversationIndex];
+            if (selectedChat && selectedChat.fullData) {
+              const chatData = {
+                name: selectedChat.user,
+                user: selectedChat.user,
+                fullData: selectedChat.fullData,
+                messages: selectedChat.fullData.history ? selectedChat.fullData.history.map(msg => ({
+                  label: msg.role === 'user' ? 'Customer' : (msg.role === 'assistant' || msg.role === 'agent' ? 'Agent' : 'System'),
+                  bubble: msg.content || (msg.response && msg.response.suggestions ? msg.response.suggestions[0]?.suggestion : ''),
+                  agent: msg.role === 'assistant' || msg.role === 'agent'
+                })) : []
+              };
+              el("chatPanel").innerHTML = renderChatPanel(chatData);
+            }
+
+            console.log(`Navigated to conversation with ${userId}`);
+          } else {
+            console.warn(`Conversation ${userId} not found in assigned chats`);
+            // If not found, just show the first available chat
+          }
+        });
+
+        // Refresh panel 1 to remove the taken over chat
         fetchActiveChats();
-        // Optionally, switch to panel 2 after update
-        switchTab("activeTab", "autoTab", "panel2", "panel1", mountPanel2);
       })
       .catch(err => {
+        console.error("Takeover failed:", err);
         alert("Failed to assign chat: " + err.message);
+
+        // Restore button state on error
+        btn.textContent = originalText;
+        btn.disabled = false;
       });
   }
 

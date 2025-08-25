@@ -4,56 +4,56 @@
  * DATA
  ********************/
 const autoChatCards = [
-    { user: "User #1", inquiry: "IDK BRO", percent: 50, time: "2 mins ago", status: "takeover", customerMsg: "Customer", agentMsg: "AI Agent" },
-    { user: "User #2", inquiry: "Loan Info Inquiry", percent: 50, time: "2 mins ago", status: "assigned", customerMsg: "Customer", agentMsg: "AI Agent" },
-    { user: "User #3", inquiry: "Loan Info Inquiry", percent: 0, time: "2 mins ago", status: "complex", customerMsg: "Customer", agentMsg: "" },
-    { user: "User #4", inquiry: "Loan Info Inquiry", percent: 75, time: "3 mins ago", status: "takeover", customerMsg: "Customer", agentMsg: "AI Agent" },
-    { user: "User #5", inquiry: "Loan Info Inquiry", percent: 50, time: "2 mins ago", status: "takeover", customerMsg: "Customer", agentMsg: "AI Agent" },
-    { user: "User #6", inquiry: "Loan Info Inquiry", percent: 50, time: "2 mins ago", status: "takeover", customerMsg: "Customer", agentMsg: "AI Agent" }
+  { user: "User #1", inquiry: "IDK BRO", percent: 50, time: "2 mins ago", status: "takeover", customerMsg: "Customer", agentMsg: "AI Agent" },
+  { user: "User #2", inquiry: "Loan Info Inquiry", percent: 50, time: "2 mins ago", status: "assigned", customerMsg: "Customer", agentMsg: "AI Agent" },
+  { user: "User #3", inquiry: "Loan Info Inquiry", percent: 0, time: "2 mins ago", status: "complex", customerMsg: "Customer", agentMsg: "" },
+  { user: "User #4", inquiry: "Loan Info Inquiry", percent: 75, time: "3 mins ago", status: "takeover", customerMsg: "Customer", agentMsg: "AI Agent" },
+  { user: "User #5", inquiry: "Loan Info Inquiry", percent: 50, time: "2 mins ago", status: "takeover", customerMsg: "Customer", agentMsg: "AI Agent" },
+  { user: "User #6", inquiry: "Loan Info Inquiry", percent: 50, time: "2 mins ago", status: "takeover", customerMsg: "Customer", agentMsg: "AI Agent" }
 ];
 
 const activeChatCards = [
-    { user: "User #20", inquiry: "Loan Application", percent: 100, time: "just now", status: "assigned", customerMsg: "Customer", agentMsg: "AI Agent" },
-    { user: "User #82", inquiry: "Account Closure", percent: 20, time: "1 min ago", status: "takeover", customerMsg: "Customer", agentMsg: "AI Agent" },
-    { user: "User #90", inquiry: "Loan Application", percent: 0, time: "2 mins ago", status: "complex", customerMsg: "Customer", agentMsg: "" },
-    { user: "User #45", inquiry: "Loan Info Inquiry", percent: 75, time: "3 mins ago", status: "takeover", customerMsg: "Customer", agentMsg: "AI Agent" }
+  { user: "User #20", inquiry: "Loan Application", percent: 100, time: "just now", status: "assigned", customerMsg: "Customer", agentMsg: "AI Agent" },
+  { user: "User #82", inquiry: "Account Closure", percent: 20, time: "1 min ago", status: "takeover", customerMsg: "Customer", agentMsg: "AI Agent" },
+  { user: "User #90", inquiry: "Loan Application", percent: 0, time: "2 mins ago", status: "complex", customerMsg: "Customer", agentMsg: "" },
+  { user: "User #45", inquiry: "Loan Info Inquiry", percent: 75, time: "3 mins ago", status: "takeover", customerMsg: "Customer", agentMsg: "AI Agent" }
 ];
 
 const sidebarChats = [
-    { user: "User #78", subtitle: "Loan Application", active: true },
-    { user: "User #82", subtitle: "Account Closure", active: false },
-    { user: "User #90", subtitle: "Loan Application", active: false }
+  { user: "User #78", subtitle: "Loan Application", active: true },
+  { user: "User #82", subtitle: "Account Closure", active: false },
+  { user: "User #90", subtitle: "Loan Application", active: false }
 ];
 
 const chatTemplates = {
-    "User #78": {
-        name: "Tessa Erika de Guzman",
-        messages: [
-            { label: "Customer", bubble: "Hi, I need help with my loan application.", agent: false },
-            { label: "", bubble: "Complex Case Detected. Assigning to human agent...", yellow: true },
-            { label: "Agent John Doe", bubble: "Hello Tessa, I'll help you with this case.", agent: true }
-        ]
-    },
-    "User #82": {
-        name: "Juan Dela Cruz",
-        messages: [
-            { label: "Customer", bubble: "I want to close my account.", agent: false },
-            { label: "Agent John Doe", bubble: "I can assist you with the process.", agent: true }
-        ]
-    },
-    "User #90": {
-        name: "Maria Santos",
-        messages: [
-            { label: "Customer", bubble: "What's the status of my loan?", agent: false },
-            { label: "Agent John Doe", bubble: "Let me check your application details.", agent: true }
-        ]
-    }
+  "User #78": {
+    name: "Tessa Erika de Guzman",
+    messages: [
+      { label: "Customer", bubble: "Hi, I need help with my loan application.", agent: false },
+      { label: "", bubble: "Complex Case Detected. Assigning to human agent...", yellow: true },
+      { label: "Agent John Doe", bubble: "Hello Tessa, I'll help you with this case.", agent: true }
+    ]
+  },
+  "User #82": {
+    name: "Juan Dela Cruz",
+    messages: [
+      { label: "Customer", bubble: "I want to close my account.", agent: false },
+      { label: "Agent John Doe", bubble: "I can assist you with the process.", agent: true }
+    ]
+  },
+  "User #90": {
+    name: "Maria Santos",
+    messages: [
+      { label: "Customer", bubble: "What's the status of my loan?", agent: false },
+      { label: "Agent John Doe", bubble: "Let me check your application details.", agent: true }
+    ]
+  }
 };
 
 const recommendations = [
-    { title: "CLARIFY", text: "To help you get the best loan terms, I'll need to review your financial statements and bank records. Do you have 2023–2024 income records available?" },
-    { title: "PRODUCT RECOMMENDATION", text: "Based on your business type, I'd recommend our SME Business Growth Loan with flexible payment terms." },
-    { title: "NEXT STEPS", text: "Would you like me to schedule a detailed consultation call or prepare a pre-qualification assessment?" }
+  { title: "CLARIFY", text: "To help you get the best loan terms, I'll need to review your financial statements and bank records. Do you have 2023–2024 income records available?" },
+  { title: "PRODUCT RECOMMENDATION", text: "Based on your business type, I'd recommend our SME Business Growth Loan with flexible payment terms." },
+  { title: "NEXT STEPS", text: "Would you like me to schedule a detailed consultation call or prepare a pre-qualification assessment?" }
 ];
 
 /********************
@@ -69,11 +69,11 @@ const el = (id) => document.getElementById(id);
 
 // Auto Chats - Reusable Component
 function renderCard(card) {
-    const isYellow = ["assigned", "complex"].includes(card.status);
-    const percentClass =
-        card.percent === 0 ? "percent zero" :
-            isYellow ? "percent yellow" :
-                card.percent < 100 ? "percent low" : "percent";
+  const isYellow = ["assigned", "complex"].includes(card.status);
+  const percentClass =
+    card.percent === 0 ? "percent zero" :
+      isYellow ? "percent yellow" :
+        card.percent < 100 ? "percent low" : "percent";
 
   // Render all chat bubbles from history if available
   let chatBubbles = "";
@@ -104,7 +104,7 @@ function renderCard(card) {
         : `<div class="chat-bubble agent">${card.agentMsg}</div>`);
   }
 
-    return `
+  return `
     <div class="chat-card${isYellow ? " yellow" : ""}">
       <div>
         <div class="chat-header">
@@ -121,16 +121,16 @@ function renderCard(card) {
         </div>
       </div>
       <div class="chat-footer">
-        ${card.status === "takeover"
-            ? `<button class="btn takeover" data-user="${card.user}">Take Over</button>`
-            : `<button class="btn assigned" disabled>Assigned</button>`}
+        ${(card.status === "active" || card.status === "complex" || card.status === "takeover")
+      ? `<button class="btn takeover" data-user="${card.user}">Take Over</button>`
+      : `<button class="btn assigned" disabled>Assigned</button>`}
       </div>
     </div>`;
 }
 
 // Layout
 function renderGrid(cards) {
-    el("chatGrid").innerHTML = cards.map(renderCard).join("");
+  el("chatGrid").innerHTML = cards.map(renderCard).join("");
 }
 
 // For panel 1 content
@@ -142,12 +142,16 @@ async function fetchActiveChats() {
     const chats = await response.json();
     console.log("Chats API response:", chats);
 
+    // Filter out assigned chats for Panel 1 - only show chats available for takeover
+    const availableChats = chats.filter(c => c.status !== "assigned");
+    console.log("Filtered chats for Panel 1 (excluding assigned):", availableChats);
+
     // Map backend data to card format expected by renderGrid
-    const cards = chats.map(c => ({
+    const cards = availableChats.map(c => ({
       user: c.user_id,
       inquiry: "Customer Inquiry", // Placeholder, backend does not provide
       time: c.last_timestamp ? new Date(c.last_timestamp).toLocaleTimeString() : "",
-      status: "takeover",
+      status: c.status || "active", // Use actual status from backend, fallback to "active" for takeover-able chats
       history: c.history // Pass full chat history
     }));
 
@@ -160,10 +164,38 @@ async function fetchActiveChats() {
 }
 
 
-// PANEL 2
+// PANEL 2 - Active Chat Management
+
+async function fetchActiveChatSessions() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/chat/active`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const chats = await response.json();
+    console.log("Active chat sessions:", chats);
+
+    // Filter only chats with "assigned" status for Panel 2
+    const assignedChats = chats.filter(chat => chat.status === "assigned");
+    console.log("Filtered assigned chats:", assignedChats);
+
+    // Map to sidebar format
+    const sidebarData = assignedChats.map((chat, index) => ({
+      user: chat.user_id,
+      subtitle: chat.last_message ? chat.last_message.substring(0, 30) + '...' : 'Active Chat',
+      active: index === 0, // First one active by default
+      fullData: chat // Store full chat data
+    }));
+
+    return sidebarData;
+  } catch (err) {
+    console.error("Failed to fetch active chat sessions:", err);
+    // Return default data if API fails (filter only assigned status)
+    return sidebarChats.filter(chat => chat.status === "assigned" || !chat.status);
+  }
+}
 
 function renderSidebar(chats) {
-    return `
+  return `
     <div class="sidebar-header">
       <span>Active Human Chats</span><span>${chats.length}</span>
     </div>
@@ -176,57 +208,196 @@ function renderSidebar(chats) {
 }
 
 function renderChatPanel(chat) {
-    return `
-    <div class="chat-header">${chat.name}</div>
+  // Filter messages if we have history data with status information
+  let filteredMessages = chat.messages;
+  if (chat.fullData && chat.fullData.status === "assigned" && chat.fullData.history) {
+    // Only show messages from assigned chats
+    filteredMessages = chat.fullData.history.map(msg => ({
+      label: msg.role === 'user' ? 'Customer' : (msg.role === 'assistant' || msg.role === 'agent' ? 'Agent' : 'System'),
+      bubble: msg.content || (msg.response && msg.response.suggestions ? msg.response.suggestions[0]?.suggestion : ''),
+      agent: msg.role === 'assistant' || msg.role === 'agent'
+    }));
+  }
+
+  return `
+    <div class="chat-header">${chat.name || chat.user || 'Customer Chat'}</div>
     <div class="chat-messages">
-      ${chat.messages.map(m => `
+      ${filteredMessages && filteredMessages.length > 0 ? filteredMessages.map(m => `
         <div class="chat-row${m.agent ? " agent" : ""}">
           ${m.label ? `<div class="chat-label${m.agent ? " agent" : ""}">${m.label}</div>` : ""}
           ${m.bubble ? `<div class="chat-bubble${m.agent ? " agent" : ""}${m.yellow ? " yellow" : ""}">${m.bubble}</div>` : ""}
-        </div>`).join("")}
+        </div>`).join("") : '<div class="chat-row"><div class="chat-bubble">No messages available for assigned chats...</div></div>'}
     </div>
-    <form class="chat-input-area" onsubmit="event.preventDefault();">
+    <form class="chat-input-area" onsubmit="event.preventDefault(); sendMessage(this);">
       <input type="text" class="chat-input" placeholder="Type your message here..." autocomplete="off" />
       <button type="submit" class="chat-send">Send</button>
     </form>`;
 }
 
 function renderRecPanel(list) {
-    return `
+  return `
     <div class="rec-header">AI Message Recommendations</div>
     <div class="rec-list">
       ${list.map(r => `
         <div class="rec-item">
           <div class="rec-title">${r.title}</div>
           <div class="rec-text">${r.text}</div>
-          <button class="rec-use-btn" type="button">Use</button>
+          <button class="rec-use-btn" type="button" onclick="useRecommendation('${r.text}')">Use</button>
         </div>`).join("")}
     </div>`;
 }
 
-function mountPanel2() {
-    el("sidebar").innerHTML = renderSidebar(sidebarChats);
-    const activeUser = sidebarChats.find(c => c.active)?.user || sidebarChats[0].user;
-    el("chatPanel").innerHTML = renderChatPanel(chatTemplates[activeUser]);
-    el("recPanel").innerHTML = renderRecPanel(recommendations);
+// Global variable to store current active chat sessions
+let currentActiveChatSessions = [];
+
+async function mountPanel2() {
+  // Fetch fresh active chat sessions (filtered for assigned status)
+  currentActiveChatSessions = await fetchActiveChatSessions();
+
+  // Render sidebar with assigned sessions only
+  el("sidebar").innerHTML = renderSidebar(currentActiveChatSessions);
+
+  // Render the first assigned chat or show no chats message
+  const activeChat = currentActiveChatSessions.find(c => c.active);
+  if (activeChat && activeChat.fullData && activeChat.fullData.status === "assigned") {
+    // Convert backend data to chat format for assigned chats only
+    const chatData = {
+      name: activeChat.user,
+      user: activeChat.user,
+      fullData: activeChat.fullData, // Pass full data for filtering
+      messages: activeChat.fullData.history ? activeChat.fullData.history.map(msg => ({
+        label: msg.role === 'user' ? 'Customer' : (msg.role === 'assistant' || msg.role === 'agent' ? 'Agent' : 'System'),
+        bubble: msg.content || (msg.response && msg.response.suggestions ? msg.response.suggestions[0]?.suggestion : ''),
+        agent: msg.role === 'assistant' || msg.role === 'agent'
+      })) : []
+    };
+    el("chatPanel").innerHTML = renderChatPanel(chatData);
+  } else if (currentActiveChatSessions.length === 0) {
+    // No assigned chats available
+    el("chatPanel").innerHTML = renderChatPanel({
+      name: 'No Assigned Chats',
+      messages: [{ label: "System", bubble: "No assigned chats available. Only chats with 'assigned' status are shown here.", agent: false }]
+    });
+  } else {
+    // Fallback to first available assigned chat
+    const firstAssigned = currentActiveChatSessions[0];
+    if (firstAssigned && firstAssigned.fullData) {
+      const chatData = {
+        name: firstAssigned.user,
+        user: firstAssigned.user,
+        fullData: firstAssigned.fullData,
+        messages: firstAssigned.fullData.history ? firstAssigned.fullData.history.map(msg => ({
+          label: msg.role === 'user' ? 'Customer' : (msg.role === 'assistant' || msg.role === 'agent' ? 'Agent' : 'System'),
+          bubble: msg.content || (msg.response && msg.response.suggestions ? msg.response.suggestions[0]?.suggestion : ''),
+          agent: msg.role === 'assistant' || msg.role === 'agent'
+        })) : []
+      };
+      el("chatPanel").innerHTML = renderChatPanel(chatData);
+    }
+  }
+
+  // Render recommendations
+  el("recPanel").innerHTML = renderRecPanel(recommendations);
+}
+
+// Message sending functionality
+async function sendMessage(form) {
+  const input = form.querySelector('.chat-input');
+  const message = input.value.trim();
+  if (!message) return;
+
+  // Get current active chat
+  const activeChat = currentActiveChatSessions.find(c => c.active);
+  if (!activeChat) return;
+
+  // Disable input while sending
+  input.disabled = true;
+  const submitBtn = form.querySelector('.chat-send');
+  const originalBtnText = submitBtn.textContent;
+  submitBtn.textContent = 'Sending...';
+  submitBtn.disabled = true;
+
+  try {
+    // Add message to chat display immediately
+    const messagesContainer = form.previousElementSibling;
+    const messageHtml = `
+      <div class="chat-row agent">
+        <div class="chat-label agent">Agent</div>
+        <div class="chat-bubble agent">${message}</div>
+      </div>`;
+    messagesContainer.insertAdjacentHTML('beforeend', messageHtml);
+
+    // Scroll to bottom
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Clear input
+    input.value = '';
+
+    // Send to backend API to save in JSON file
+    const response = await fetch(`${API_BASE_URL}/chat/message/${activeChat.user}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message: message })  // Send as object with message field
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to save message: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(`Message saved to ${activeChat.user} chat history:`, result);
+
+    // Update the local chat data to include the new message
+    if (activeChat.fullData && activeChat.fullData.history) {
+      activeChat.fullData.history.push({
+        timestamp: result.timestamp,
+        role: "agent",
+        content: message,
+        response: null,
+        template_used: null,
+        processing_method: "human_agent"
+      });
+    }
+
+  } catch (error) {
+    console.error('Error sending message:', error);
+    alert('Failed to send message. Please try again.');
+
+    // Remove the message from display if it failed to save
+    const lastMessage = messagesContainer.lastElementChild;
+    if (lastMessage && lastMessage.classList.contains('agent')) {
+      lastMessage.remove();
+    }
+  } finally {
+    // Re-enable input
+    input.disabled = false;
+    submitBtn.textContent = originalBtnText;
+    submitBtn.disabled = false;
+    input.focus();
+  }
+}
+
+// Use recommendation functionality
+function useRecommendation(text) {
+  const chatInput = document.querySelector('.chat-input');
+  if (chatInput) {
+    chatInput.value = text;
+    chatInput.focus();
+  }
 }
 
 /********************
  * NAVIGATION / EVENTS
  ********************/
 function switchTab(on, off, show, hide, fn) {
-    el(on).classList.add("active");
-    el(off).classList.remove("active");
-    el(show).classList.remove("hidden");
-    el(hide).classList.add("hidden");
-    fn?.();
+  el(on).classList.add("active");
+  el(off).classList.remove("active");
+  el(show).classList.remove("hidden");
+  el(hide).classList.add("hidden");
+  fn?.();
 }
-
-// Only use fetchActiveChats for rendering cards on load and on tab switch
-window.addEventListener("load", () => {
-  fetchActiveChats();
-  setInterval(fetchActiveChats, 5000); // Matic reload
-});
 
 function setTabActive(tabId, otherTabId) {
   el(tabId).classList.add("active");
@@ -247,14 +418,66 @@ function showPanel(panelNum) {
   }
 }
 
-el("autoTab").onclick = () => { showPanel(1); fetchActiveChats(); };
-el("activeTab").onclick = () => { showPanel(2); mountPanel2(); };
+el("autoTab").onclick = () => {
+  showPanel(1);
+  fetchActiveChats();
+};
 
-el("autoTab2").onclick = () => { showPanel(1); fetchActiveChats(); };
-el("activeTab2").onclick = () => { showPanel(2); mountPanel2(); };
+el("activeTab").onclick = () => {
+  showPanel(2);
+  mountPanel2();
+};
+
+// Auto-refresh functionality - REMOVED
+// Replaced with manual refresh button
+
+// Manual refresh function
+function refreshCurrentPanel() {
+  const panel1Visible = !el("panel1").classList.contains("hidden");
+  const panel2Visible = !el("panel2").classList.contains("hidden");
+
+  // Show loading state on button
+  const refreshBtn = el("refreshBtn");
+  const originalText = refreshBtn.innerHTML;
+  refreshBtn.innerHTML = "🔄 Refreshing...";
+  refreshBtn.disabled = true;
+
+  if (panel1Visible) {
+    console.log("Refreshing Panel 1 data...");
+    fetchActiveChats().finally(() => {
+      // Restore button state
+      refreshBtn.innerHTML = originalText;
+      refreshBtn.disabled = false;
+    });
+  } else if (panel2Visible) {
+    console.log("Refreshing Panel 2 data...");
+    // Preserve current selection when refreshing Panel 2
+    const currentActiveIndex = currentActiveChatSessions.findIndex(c => c.active);
+    mountPanel2().then(() => {
+      // Restore selection if possible
+      if (currentActiveIndex >= 0 && currentActiveIndex < currentActiveChatSessions.length) {
+        currentActiveChatSessions.forEach((c, i) => c.active = i === currentActiveIndex);
+        el("sidebar").innerHTML = renderSidebar(currentActiveChatSessions);
+      }
+    }).finally(() => {
+      // Restore button state
+      refreshBtn.innerHTML = originalText;
+      refreshBtn.disabled = false;
+    });
+  } else {
+    // No panel visible, restore button immediately
+    refreshBtn.innerHTML = originalText;
+    refreshBtn.disabled = false;
+  }
+}
+
+// Start initial load when page loads
+window.addEventListener("load", () => {
+  fetchActiveChats();
+});
 
 document.addEventListener("click", (e) => {
-
+  // Handle takeover button clicks
   if (e.target.closest(".btn.takeover")) {
     const btn = e.target.closest(".btn.takeover");
     const userId = btn.getAttribute("data-user");
@@ -264,23 +487,50 @@ document.addEventListener("click", (e) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: "assigned" })
     })
-    .then(res => {
-      if (!res.ok) throw new Error("Failed to assign chat");
-      // Refresh panel 1 (dashboard)
-      fetchActiveChats();
-      // Optionally, switch to panel 2 after update
-      switchTab("activeTab", "autoTab", "panel2", "panel1", mountPanel2);
-    })
-    .catch(err => {
-      alert("Failed to assign chat: " + err.message);
-    });
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to assign chat");
+        // Refresh panel 1 (dashboard)
+        fetchActiveChats();
+        // Optionally, switch to panel 2 after update
+        switchTab("activeTab", "autoTab", "panel2", "panel1", mountPanel2);
+      })
+      .catch(err => {
+        alert("Failed to assign chat: " + err.message);
+      });
   }
 
-    const li = e.target.closest("#sidebar .sidebar-list li");
-    if (li) {
-        sidebarChats.forEach((c, i) => c.active = i === +li.dataset.index);
-        el("sidebar").innerHTML = fetchActiveChats();
-        const user = sidebarChats.find(c => c.active).user;
-        el("chatPanel").innerHTML = renderChatPanel(chatTemplates[user]);
+  // Handle sidebar chat selection
+  const li = e.target.closest("#sidebar .sidebar-list li");
+  if (li) {
+    const index = parseInt(li.dataset.index);
+
+    // Update active state
+    currentActiveChatSessions.forEach((c, i) => c.active = i === index);
+
+    // Re-render sidebar
+    el("sidebar").innerHTML = renderSidebar(currentActiveChatSessions);
+
+    // Update chat panel with selected assigned chat
+    const selectedChat = currentActiveChatSessions[index];
+    if (selectedChat && selectedChat.fullData && selectedChat.fullData.status === "assigned") {
+      const chatData = {
+        name: selectedChat.user,
+        user: selectedChat.user,
+        fullData: selectedChat.fullData, // Pass full data for filtering
+        messages: selectedChat.fullData.history ? selectedChat.fullData.history.map(msg => ({
+          label: msg.role === 'user' ? 'Customer' : (msg.role === 'assistant' || msg.role === 'agent' ? 'Agent' : 'System'),
+          bubble: msg.content || (msg.response && msg.response.suggestions ? msg.response.suggestions[0]?.suggestion : ''),
+          agent: msg.role === 'assistant' || msg.role === 'agent'
+        })) : []
+      };
+      el("chatPanel").innerHTML = renderChatPanel(chatData);
+    } else {
+      // Show message for non-assigned chats
+      const chatData = {
+        name: selectedChat ? selectedChat.user : 'Unknown User',
+        messages: [{ label: "System", bubble: "This chat is not assigned to human agents. Only assigned chats are shown in this panel.", agent: false }]
+      };
+      el("chatPanel").innerHTML = renderChatPanel(chatData);
     }
+  }
 });

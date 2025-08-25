@@ -28,7 +28,7 @@ app = FastAPI(title="SaklAI Chat API", version="1.0.0", lifespan=lifespan)
 # Register route modules
 app.include_router(messages_router)
 app.include_router(conversations_router)
-app.include_router(chat_router)
+app.include_router(chat_router, prefix="/chat")
 app.include_router(rag_router)
 
 # Mount static files from the public directory

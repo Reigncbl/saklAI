@@ -68,12 +68,12 @@ async function fetchAIRecommendations(userId) {
         'Content-Type': 'application/json'
       }
     });
-    
+
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    
+
     const data = await response.json();
     console.log("AI Recommendations received:", data);
-    
+
     if (data.status === 'success' && data.recommendations) {
       // Format recommendations for the UI
       currentAIRecommendations = data.recommendations.map(rec => ({
@@ -81,7 +81,7 @@ async function fetchAIRecommendations(userId) {
         text: rec.message,
         reasoning: rec.reasoning || ''
       }));
-      
+
       // Update the recommendations panel
       updateRecommendationsPanel();
       return currentAIRecommendations;
@@ -142,18 +142,20 @@ function renderCard(card) {
       let bubbleClass = "chat-bubble";
       if (m.role === "assistant") bubbleClass += " agent";
       if (m.role === "system") bubbleClass += " system";
-      // Main message content
-      if (m.content) {
-        bubbles.push(`<div class="${bubbleClass}">${m.content}</div>`);
-      }
-      // If assistant and has suggestions, render each as a bubble
+
+      // Handle assistant messages with suggestions differently
       if (m.role === "assistant" && m.response && Array.isArray(m.response.suggestions)) {
+        // Only render suggestions, skip the main content to avoid duplicates
         m.response.suggestions.forEach(sug => {
           if (sug.suggestion) {
             bubbles.push(`<div class="chat-bubble agent suggestion">${sug.suggestion}</div>`);
           }
         });
+      } else if (m.content) {
+        // For non-assistant messages or assistant messages without suggestions
+        bubbles.push(`<div class="${bubbleClass}">${m.content}</div>`);
       }
+
       return bubbles.join("");
     }).join("");
   } else {
@@ -337,7 +339,7 @@ async function mountPanel2() {
       })) : []
     };
     el("chatPanel").innerHTML = renderChatPanel(chatData);
-    
+
     // Fetch AI recommendations for the active chat
     const userId = activeChat.user.replace('User #', 'customer_');
     fetchAIRecommendations(userId);
@@ -365,7 +367,7 @@ async function mountPanel2() {
         })) : []
       };
       el("chatPanel").innerHTML = renderChatPanel(chatData);
-      
+
       // Fetch AI recommendations for the first chat
       const userId = firstAssigned.user.replace('User #', 'customer_');
       fetchAIRecommendations(userId);
@@ -653,7 +655,7 @@ document.addEventListener("click", (e) => {
         })) : []
       };
       el("chatPanel").innerHTML = renderChatPanel(chatData);
-      
+
       // Fetch AI recommendations for this user
       const userId = selectedChat.user.replace('User #', 'customer_');
       fetchAIRecommendations(userId);
@@ -664,7 +666,7 @@ document.addEventListener("click", (e) => {
         messages: [{ label: "System", bubble: "This chat is not assigned to human agents. Only assigned chats are shown in this panel.", agent: false }]
       };
       el("chatPanel").innerHTML = renderChatPanel(chatData);
-      
+
       // Reset to default recommendations
       currentAIRecommendations = [];
       updateRecommendationsPanel();

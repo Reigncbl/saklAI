@@ -1,0 +1,65 @@
+{
+  "history": [
+    {
+      "timestamp": "2025-08-26T00:09:36.820918",
+      "role": "user",
+      "content": "hi",
+      "response": null,
+      "template_used": null,
+      "processing_method": null
+    },
+    {
+      "timestamp": "2025-08-26T00:09:36.820918",
+      "role": "assistant",
+      "content": "Hello! Welcome to BPI. How can I assist you with your banking needs today?",
+      "response": {
+        "status": "success",
+        "user_id": "customer_y94d6g3bu",
+        "message": "hi",
+        "translated_message": null,
+        "template_used": "config.yaml",
+        "suggestions": [
+          {
+            "analysis": "greeting",
+            "category": "Acknowledgment",
+            "suggestion": "Hello! Welcome to BPI. How can I assist you with your banking needs today?"
+          }
+        ],
+        "processing_method": "async_groq"
+      },
+      "template_used": "config.yaml",
+      "processing_method": "async_groq"
+    },
+    {
+      "timestamp": "2025-08-26T00:12:08.678778",
+      "role": "user",
+      "content": "i need help finding the right loan",
+      "response": null,
+      "template_used": null,
+      "processing_method": null
+    },
+    {
+      "timestamp": "2025-08-26T00:12:08.679849",
+      "role": "assistant",
+      "content": "I'd be happy to help you find the right loan for your needs. Can you please tell me a little bit about what you're looking for? Are you looking to consolidate debt, finance a big purchase, or something else? Once I know more about your requirements, I can guide you through our loan options and recommend the best fit for you.",
+      "response": {
+        "status": "success",
+        "user_id": "customer_y94d6g3bu",
+        "message": "i need help finding the right loan",
+        "translated_message": null,
+        "template_used": "config.yaml",
+        "suggestions": [
+          {
+            "analysis": "inquiry",
+            "category": "Information",
+            "suggestion": "I'd be happy to help you find the right loan for your needs. Can you please tell me a little bit about what you're looking for? Are you looking to consolidate debt, finance a big purchase, or something else? Once I know more about your requirements, I can guide you through our loan options and recommend the best fit for you."
+          }
+        ],
+        "processing_method": "async_groq"
+      },
+      "template_used": "config.yaml",
+      "processing_method": "async_groq"
+    }
+  ],
+  "status": "active"
+}

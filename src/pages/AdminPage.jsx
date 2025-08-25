@@ -9,21 +9,26 @@ export default function Admin() {
 
   // Load cards from localStorage on component mount, or use default data
   useEffect(() => {
-    const savedCards = localStorage.getItem('chatCards');
+    const savedCards = localStorage.getItem("chatCards");
     if (savedCards) {
       try {
         const parsedCards = JSON.parse(savedCards);
         setCards(parsedCards);
       } catch (error) {
-        console.error('Error parsing saved cards:', error);
+        console.error("Error parsing saved cards:", error);
         // Fall back to default data if parsing fails
-        setCards(autoChatCards.map((card, index) => ({ ...card, id: card.id || index })));
+        setCards(
+          autoChatCards.map((card, index) => ({
+            ...card,
+            id: card.id || index,
+          }))
+        );
       }
     } else {
       // Initialize with default data, ensuring each card has a unique ID
-      const cardsWithIds = autoChatCards.map((card, index) => ({ 
-        ...card, 
-        id: card.id || index 
+      const cardsWithIds = autoChatCards.map((card, index) => ({
+        ...card,
+        id: card.id || index,
       }));
       setCards(cardsWithIds);
     }
@@ -32,14 +37,14 @@ export default function Admin() {
   // Save cards to localStorage whenever cards state changes
   useEffect(() => {
     if (cards.length > 0) {
-      localStorage.setItem('chatCards', JSON.stringify(cards));
+      localStorage.setItem("chatCards", JSON.stringify(cards));
     }
   }, [cards]);
 
   const handleStatusUpdate = (cardId, newStatus) => {
-    setCards(prevCards => 
-      prevCards.map(card => 
-        (card.id === cardId || card.user === cardId)
+    setCards((prevCards) =>
+      prevCards.map((card) =>
+        card.id === cardId || card.user === cardId
           ? { ...card, status: newStatus }
           : card
       )
@@ -48,13 +53,13 @@ export default function Admin() {
 
   const handleTakeover = (card) => {
     // Any additional logic when takeover happens
-    console.log(`Taking over chat for ${card?.user || 'unknown user'}`);
+    console.log(`Taking over chat for ${card?.user || "unknown user"}`);
     // Switch to active chats panel
     setActivePanel("panel2");
   };
 
   const getAssignedCards = () => {
-    return cards.filter(card => card.status === 'assigned');
+    return cards.filter((card) => card.status === "assigned");
   };
 
   return (
@@ -63,8 +68,8 @@ export default function Admin() {
       <div className="header">
         <span>AI Monitor</span>
         <div style={{ textAlign: "center" }}>
-            <span style={{ color: "#fff" }}>Sakl</span>
-            <span style={{ color: "#FDB415" }}>AI</span>
+          <span style={{ color: "#fff" }}>Sakl</span>
+          <span style={{ color: "#FDB415" }}>AI</span>
         </div>
         <span className="agent">Agent: John Doe</span>
       </div>
@@ -93,16 +98,25 @@ export default function Admin() {
                 {getAssignedCards().map((card) => (
                   <div key={card.id || card.user} className="assigned-card">
                     <h4>{card.user}</h4>
-                    <p><strong>Type:</strong> {card.inquiry}</p>
-                    <p><strong>Time:</strong> {card.time}</p>
-                    <p><strong>Message:</strong> {card.customerMsg}</p>
-                    <p><strong>Status:</strong> Assigned to you</p>
+                    <p>
+                      <strong>Type:</strong> {card.inquiry}
+                    </p>
+                    <p>
+                      <strong>Time:</strong> {card.time}
+                    </p>
+                    <p>
+                      <strong>Message:</strong> {card.customerMsg}
+                    </p>
+                    <p>
+                      <strong>Status:</strong> Assigned to you
+                    </p>
                   </div>
                 ))}
               </div>
             ) : (
               <p style={{ padding: "1rem" }}>
-                No active chats assigned to you yet. Take over some chats from the Auto Chats panel.
+                No active chats assigned to you yet. Take over some chats from
+                the Auto Chats panel.
               </p>
             )}
           </div>

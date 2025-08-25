@@ -71,7 +71,7 @@ async def get_conversation_context(user_id: str, length: int = 5):
 
 CHAT_HISTORY_DIR = Path(__file__).parent.parent.parent / "chat_history"
 
-@router.get("/chat/active")
+@router.get("/active")
 async def get_active_chats():
     """Summarize all active chats from JSON history files"""
     try:
@@ -93,8 +93,11 @@ async def get_active_chats():
                 history = data.get("history", [])
                 status = data.get("status", "active")
 
-            if not history or status != "active":
+            if not history:
                 continue
+
+            # Skip only empty histories, allow all statuses
+            # This way both Panel 1 and Panel 2 can filter as needed
 
 
             # use last entry timestamp
@@ -102,9 +105,10 @@ async def get_active_chats():
             timestamp = last_entry.get("timestamp")
 
             conversations.append({
-                "user_id": filename.replace(".json", ""),
+                "user_id": filename.replace("chat_history_", "").replace(".json", ""),
                 "last_timestamp": timestamp,
                 "message_count": len(history),
+                "status": status,  # Include the actual status from the file
                 "history": history  # Include full chat history
             })
 
@@ -117,11 +121,11 @@ async def get_active_chats():
 # Endpoint to set chat status (top-level field) for a user
 from fastapi import Body
 
-@router.post("/chat/status/{user_id}")
+@router.post("/status/{user_id}")
 async def set_chat_status(user_id: str, status: str = Body(..., embed=True)):
     """Set the top-level status field for a user's chat history file"""
     try:
-        path = CHAT_HISTORY_DIR / f"{user_id}.json"
+        path = CHAT_HISTORY_DIR / f"chat_history_{user_id}.json"
         if not path.exists():
             raise HTTPException(status_code=404, detail="Chat history file not found")
         with open(path, "r", encoding="utf-8") as f:
@@ -136,3 +140,51 @@ async def set_chat_status(user_id: str, status: str = Body(..., embed=True)):
         return {"status": "success", "user_id": user_id, "new_status": status}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to set chat status: {str(e)}")
+
+@router.post("/message/{user_id}")
+async def add_agent_message(user_id: str, message: str = Body(..., embed=True)):
+    """Add an agent message to the user's chat history"""
+    try:
+        path = CHAT_HISTORY_DIR / f"chat_history_{user_id}.json"
+        if not path.exists():
+            raise HTTPException(status_code=404, detail="Chat history file not found")
+        
+        # Read current data
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        
+        # Ensure new format
+        if isinstance(data, list):
+            data = {"history": data, "status": "assigned"}
+        
+        # Create agent message entry
+        message_entry = {
+            "timestamp": datetime.now().isoformat(),
+            "role": "agent",  # Use "agent" to distinguish from AI assistant
+            "content": message,
+            "response": None,
+            "template_used": None,
+            "processing_method": "human_agent"
+        }
+        
+        # Add to history
+        if "history" not in data:
+            data["history"] = []
+        data["history"].append(message_entry)
+        
+        # Keep only last 50 messages
+        if len(data["history"]) > 50:
+            data["history"] = data["history"][-50:]
+        
+        # Save updated data
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        
+        return {
+            "status": "success", 
+            "user_id": user_id, 
+            "message": message,
+            "timestamp": message_entry["timestamp"]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to add agent message: {str(e)}")

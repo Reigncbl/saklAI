@@ -184,6 +184,7 @@ function renderCard(card) {
           </div>
           <div class="chat-meta">
             <span class="time">${card.time}</span>
+            <span class="status-badge status-${card.status}">${card.status?.toUpperCase() || 'ACTIVE'}</span>
           </div>
         </div>
         <div class="chat-content">
@@ -191,9 +192,10 @@ function renderCard(card) {
         </div>
       </div>
       <div class="chat-footer">
-        ${(card.status === "active" || card.status === "complex" || card.status === "takeover")
-      ? `<button class="btn takeover" data-user="${card.user}">Take Over</button>`
-      : `<button class="btn assigned" disabled>Assigned</button>`}
+        <div class="footer-info">
+          <span class="message-count">${card.message_count || 0} messages</span>
+        </div>
+        <button class="btn takeover" data-user="${card.user}">Take Over</button>
       </div>
     </div>`;
 }
@@ -212,18 +214,25 @@ async function fetchActiveChats() {
     const chats = await response.json();
     console.log("Chats API response:", chats);
 
-    // Filter out assigned chats for Panel 1 - only show chats available for takeover
-    const availableChats = chats.filter(c => c.status !== "assigned");
-    console.log("Filtered chats for Panel 1 (excluding assigned):", availableChats);
+    // Show all chats in Auto Chats panel for monitoring purposes
+    const availableChats = chats; // Show all chats instead of filtering
+    console.log("All chats for Auto Chats panel:", availableChats);
 
     // Map backend data to card format expected by renderGrid
-    const cards = availableChats.map(c => ({
-      user: c.user_id,
-      inquiry: "Customer Inquiry", // Placeholder, backend does not provide
-      time: c.last_timestamp ? new Date(c.last_timestamp).toLocaleTimeString() : "",
-      status: c.status || "active", // Use actual status from backend, fallback to "active" for takeover-able chats
-      history: c.history // Pass full chat history
-    }));
+    const cards = availableChats.map(c => {
+      // Get the last customer message for inquiry summary
+      const lastCustomerMessage = c.history?.filter(m => m.role === 'user').pop();
+      const inquiryText = lastCustomerMessage?.content?.substring(0, 50) + (lastCustomerMessage?.content?.length > 50 ? '...' : '') || "Customer Inquiry";
+      
+      return {
+        user: c.user_id,
+        inquiry: inquiryText,
+        time: c.last_timestamp ? new Date(c.last_timestamp).toLocaleTimeString() : "Unknown",
+        status: c.status || "active",
+        history: c.history || [],
+        message_count: c.message_count || 0
+      };
+    });
 
     renderGrid(cards);
   } catch (err) {

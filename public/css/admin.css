@@ -540,3 +540,63 @@ body {
 .rec-use-btn:hover {
   background: #7a1111;
 }
+
+/* Uniform status badges */
+.status-badge {
+  font-size: 0.7em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: bold;
+  margin-left: 8px;
+  text-transform: uppercase;
+}
+
+.status-assigned {
+  background: #dc3545;
+  color: white;
+}
+
+.status-active {
+  background: #28a745;
+  color: white;
+}
+
+.status-complex {
+  background: #ffc107;
+  color: #212529;
+}
+
+.status-takeover {
+  background: #17a2b8;
+  color: white;
+}
+
+/* Uniform footer styling */
+.chat-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0 0 0;
+  border-top: 1px solid #eee;
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.footer-info {
+  display: flex;
+  align-items: center;
+  font-size: 0.8em;
+  color: #666;
+}
+
+.message-count {
+  font-weight: 500;
+}
+
+/* Ensure consistent chat header spacing */
+.chat-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}

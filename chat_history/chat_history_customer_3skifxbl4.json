@@ -1,0 +1,35 @@
+{
+  "history": [
+    {
+      "timestamp": "2025-08-25T21:50:05.210491",
+      "role": "user",
+      "content": "HI can you give me a tutorial about loans in BPI",
+      "response": null,
+      "template_used": null,
+      "processing_method": null
+    },
+    {
+      "timestamp": "2025-08-25T21:50:05.212493",
+      "role": "assistant",
+      "content": "I'd be happy to help you with that! BPI offers various loan options, including personal loans, home loans, and car loans. You can visit our website or mobile app to learn more about our loan products and their corresponding interest rates. If you have specific questions or need assistance in applying for a loan, feel free to ask!",
+      "response": {
+        "status": "success",
+        "user_id": "customer_3skifxbl4",
+        "message": "HI can you give me a tutorial about loans in BPI",
+        "translated_message": null,
+        "template_used": "config.yaml",
+        "suggestions": [
+          {
+            "analysis": "inquiry",
+            "category": "Information",
+            "suggestion": "I'd be happy to help you with that! BPI offers various loan options, including personal loans, home loans, and car loans. You can visit our website or mobile app to learn more about our loan products and their corresponding interest rates. If you have specific questions or need assistance in applying for a loan, feel free to ask!"
+          }
+        ],
+        "processing_method": "async_groq"
+      },
+      "template_used": "config.yaml",
+      "processing_method": "async_groq"
+    }
+  ],
+  "status": "active"
+}

@@ -1,0 +1,41 @@
+{
+  "history": [
+    {
+      "timestamp": "2025-08-25T21:50:07.103400",
+      "role": "user",
+      "content": "Hi paano ba ako gagawa ng bank account sa bpi?",
+      "response": null,
+      "template_used": null,
+      "processing_method": null
+    },
+    {
+      "timestamp": "2025-08-25T21:50:07.103400",
+      "role": "assistant",
+      "content": "Maliit lang ang mga steps para makapag-open ng bank account sa BPI. You can visit our website at bpi.com.ph and click on 'Open an Account' to start the application process. You may also visit any BPI branch near you and our friendly bank officers will guide you through the process.",
+      "response": {
+        "status": "success",
+        "user_id": "customer_c8dx7yvig",
+        "message": "Hi paano ba ako gagawa ng bank account sa bpi?",
+        "translated_message": null,
+        "template_used": "config.yaml",
+        "suggestions": [
+          {
+            "analysis": "inquiry",
+            "category": "Information",
+            "suggestion": "Maliit lang ang mga steps para makapag-open ng bank account sa BPI. You can visit our website at bpi.com.ph and click on 'Open an Account' to start the application process. You may also visit any BPI branch near you and our friendly bank officers will guide you through the process."
+          }
+        ],
+        "processing_method": "async_groq"
+      },
+      "template_used": "config.yaml",
+      "processing_method": "async_groq"
+    },
+    {
+      "role": "assistant",
+      "content": "notsure pa",
+      "timestamp": "2025-08-25T21:50:28.424128",
+      "type": "agent_message"
+    }
+  ],
+  "status": "assigned"
+}

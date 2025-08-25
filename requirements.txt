@@ -1,0 +1,54 @@
+# Core FastAPI and web server dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# Database dependencies
+sqlalchemy==2.0.23
+sqlmodel==0.0.14
+
+# Async file operations
+aiofiles==23.2.0
+
+# Environment and configuration
+python-dotenv==1.0.0
+pyyaml==6.0.1
+
+# AI and ML dependencies
+groq==0.4.1
+
+# LangChain dependencies for classification
+langchain==0.1.0
+langchain-groq==0.0.1
+
+# LlamaIndex dependencies for RAG
+llama-index==0.9.30
+llama-index-embeddings-huggingface==0.1.4
+llama-index-llms-groq==0.1.3
+llama-index-readers-file==0.1.4
+
+# Embedding and vector dependencies
+sentence-transformers==2.2.2
+torch==2.1.0
+
+# HTTP requests (if needed for external APIs)
+httpx==0.25.2
+requests==2.31.0
+
+# Data processing
+pandas==2.1.4
+numpy==1.24.4
+
+# Additional utilities
+pathlib-2==2.3.7
+typing-extensions==4.8.0
+
+# Development and testing (optional)
+pytest==7.4.3
+pytest-asyncio==0.21.1
+
+# CORS middleware (included with FastAPI but explicit version)
+starlette==0.27.0
+
+# JSON handling improvements
+orjson==3.9.10

@@ -28,4 +28,3 @@ emotion_model/
 models/
 __pycache__/
 server/venv/
-requirements.txt

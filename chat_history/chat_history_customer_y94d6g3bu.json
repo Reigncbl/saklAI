@@ -59,7 +59,43 @@
       },
       "template_used": "config.yaml",
       "processing_method": "async_groq"
+    },
+    {
+      "timestamp": "2025-08-26T00:18:15.277183",
+      "role": "user",
+      "content": "big purchase",
+      "response": null,
+      "template_used": null,
+      "processing_method": null
+    },
+    {
+      "timestamp": "2025-08-26T00:18:15.279182",
+      "role": "assistant",
+      "content": "Exciting purchase ahead! We offer a variety of loan options to help you finance your big purchase. Would you like me to guide you through our loan products, such as Personal Loans, Auto Loans, or Home Loans, to see which one best fits your needs?",
+      "response": {
+        "status": "success",
+        "user_id": "customer_y94d6g3bu",
+        "message": "big purchase",
+        "translated_message": null,
+        "template_used": "config.yaml",
+        "suggestions": [
+          {
+            "analysis": "inquiry",
+            "category": "Information",
+            "suggestion": "Exciting purchase ahead! We offer a variety of loan options to help you finance your big purchase. Would you like me to guide you through our loan products, such as Personal Loans, Auto Loans, or Home Loans, to see which one best fits your needs?"
+          }
+        ],
+        "processing_method": "async_groq"
+      },
+      "template_used": "config.yaml",
+      "processing_method": "async_groq"
+    },
+    {
+      "role": "assistant",
+      "content": "What type of big purchase are you planning to make?",
+      "timestamp": "2025-08-26T00:18:27.434863",
+      "type": "agent_message"
     }
   ],
-  "status": "active"
+  "status": "assigned"
 }

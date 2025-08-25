@@ -4,7 +4,7 @@
  * DATA
  ********************/
 const autoChatCards = [
-    { user: "User #1", inquiry: "Loan Info Inquiry", percent: 50, time: "2 mins ago", status: "takeover", customerMsg: "Customer", agentMsg: "AI Agent" },
+    { user: "User #1", inquiry: "IDK BRO", percent: 50, time: "2 mins ago", status: "takeover", customerMsg: "Customer", agentMsg: "AI Agent" },
     { user: "User #2", inquiry: "Loan Info Inquiry", percent: 50, time: "2 mins ago", status: "assigned", customerMsg: "Customer", agentMsg: "AI Agent" },
     { user: "User #3", inquiry: "Loan Info Inquiry", percent: 0, time: "2 mins ago", status: "complex", customerMsg: "Customer", agentMsg: "" },
     { user: "User #4", inquiry: "Loan Info Inquiry", percent: 75, time: "3 mins ago", status: "takeover", customerMsg: "Customer", agentMsg: "AI Agent" },
@@ -59,14 +59,50 @@ const recommendations = [
 /********************
  * RENDER HELPERS
  ********************/
+const API_BASE_URL = (() => {
+  if (window.location.protocol === 'file:') return 'http://localhost:8000';
+  if (window.location.hostname === 'localhost' && window.location.port !== '8000') return 'http://localhost:8000';
+  return '';
+})();
+
 const el = (id) => document.getElementById(id);
 
+// Auto Chats - Reusable Component
 function renderCard(card) {
     const isYellow = ["assigned", "complex"].includes(card.status);
     const percentClass =
         card.percent === 0 ? "percent zero" :
             isYellow ? "percent yellow" :
                 card.percent < 100 ? "percent low" : "percent";
+
+  // Render all chat bubbles from history if available
+  let chatBubbles = "";
+  if (Array.isArray(card.history)) {
+    chatBubbles = card.history.map(m => {
+      let bubbles = [];
+      let bubbleClass = "chat-bubble";
+      if (m.role === "assistant") bubbleClass += " agent";
+      if (m.role === "system") bubbleClass += " system";
+      // Main message content
+      if (m.content) {
+        bubbles.push(`<div class="${bubbleClass}">${m.content}</div>`);
+      }
+      // If assistant and has suggestions, render each as a bubble
+      if (m.role === "assistant" && m.response && Array.isArray(m.response.suggestions)) {
+        m.response.suggestions.forEach(sug => {
+          if (sug.suggestion) {
+            bubbles.push(`<div class="chat-bubble agent suggestion">${sug.suggestion}</div>`);
+          }
+        });
+      }
+      return bubbles.join("");
+    }).join("");
+  } else {
+    chatBubbles = `<div class="chat-bubble">${card.customerMsg}</div>` +
+      (card.status === "complex"
+        ? `<div class="chat-bubble yellow">Complex Case Detected. Assigning to human agent...</div>`
+        : `<div class="chat-bubble agent">${card.agentMsg}</div>`);
+  }
 
     return `
     <div class="chat-card${isYellow ? " yellow" : ""}">
@@ -77,15 +113,11 @@ function renderCard(card) {
             <div class="chat-type">${card.inquiry}</div>
           </div>
           <div class="chat-meta">
-            <span class="${percentClass}">${card.percent}%</span>
             <span class="time">${card.time}</span>
           </div>
         </div>
         <div class="chat-content">
-          <div class="chat-bubble">${card.customerMsg}</div>
-          ${card.status === "complex"
-            ? `<div class="chat-bubble yellow">Complex Case Detected. Assigning to human agent...</div>`
-            : `<div class="chat-bubble agent">${card.agentMsg}</div>`}
+          ${chatBubbles}
         </div>
       </div>
       <div class="chat-footer">
@@ -96,9 +128,39 @@ function renderCard(card) {
     </div>`;
 }
 
+// Layout
 function renderGrid(cards) {
     el("chatGrid").innerHTML = cards.map(renderCard).join("");
 }
+
+// For panel 1 content
+async function fetchActiveChats() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/chat/active`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const chats = await response.json();
+    console.log("Chats API response:", chats);
+
+    // Map backend data to card format expected by renderGrid
+    const cards = chats.map(c => ({
+      user: c.user_id,
+      inquiry: "Customer Inquiry", // Placeholder, backend does not provide
+      time: c.last_timestamp ? new Date(c.last_timestamp).toLocaleTimeString() : "",
+      status: "takeover",
+      history: c.history // Pass full chat history
+    }));
+
+    renderGrid(cards);
+  } catch (err) {
+    console.error("Failed to fetch active chats:", err);
+    // Optionally show a message in the grid
+    el("chatGrid").innerHTML = `<div class='error'>Failed to load active chats.</div>`;
+  }
+}
+
+
+// PANEL 2
 
 function renderSidebar(chats) {
     return `
@@ -160,21 +222,64 @@ function switchTab(on, off, show, hide, fn) {
     fn?.();
 }
 
-renderGrid(autoChatCards);
+// Only use fetchActiveChats for rendering cards on load and on tab switch
+window.addEventListener("load", () => {
+  fetchActiveChats();
+  setInterval(fetchActiveChats, 5000); // Matic reload
+});
 
-el("autoTab").onclick = () => switchTab("autoTab", "activeTab", "panel1", "panel2", () => renderGrid(autoChatCards));
-el("activeTab").onclick = () => switchTab("activeTab", "autoTab", "panel2", "panel1", mountPanel2);
+function setTabActive(tabId, otherTabId) {
+  el(tabId).classList.add("active");
+  el(otherTabId).classList.remove("active");
+}
 
-el("autoTab2").onclick = () => switchTab("autoTab2", "activeTab2", "panel1", "panel2", () => renderGrid(autoChatCards));
-el("activeTab2").onclick = () => switchTab("activeTab2", "autoTab2", "panel2", "panel1", mountPanel2);
+function showPanel(panelNum) {
+  const panel1 = el("panel1");
+  const panel2 = el("panel2");
+  if (panelNum === 1) {
+    panel1.classList.remove("hidden");
+    panel2.classList.add("hidden");
+    setTabActive("autoTab", "activeTab");
+  } else {
+    panel1.classList.add("hidden");
+    panel2.classList.remove("hidden");
+    setTabActive("activeTab", "autoTab");
+  }
+}
+
+el("autoTab").onclick = () => { showPanel(1); fetchActiveChats(); };
+el("activeTab").onclick = () => { showPanel(2); mountPanel2(); };
+
+el("autoTab2").onclick = () => { showPanel(1); fetchActiveChats(); };
+el("activeTab2").onclick = () => { showPanel(2); mountPanel2(); };
 
 document.addEventListener("click", (e) => {
-    if (e.target.closest(".btn.takeover")) switchTab("activeTab", "autoTab", "panel2", "panel1", mountPanel2);
+
+  if (e.target.closest(".btn.takeover")) {
+    const btn = e.target.closest(".btn.takeover");
+    const userId = btn.getAttribute("data-user");
+    // Call backend to set status to 'assigned'
+    fetch(`${API_BASE_URL}/chat/status/${userId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "assigned" })
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to assign chat");
+      // Refresh panel 1 (dashboard)
+      fetchActiveChats();
+      // Optionally, switch to panel 2 after update
+      switchTab("activeTab", "autoTab", "panel2", "panel1", mountPanel2);
+    })
+    .catch(err => {
+      alert("Failed to assign chat: " + err.message);
+    });
+  }
 
     const li = e.target.closest("#sidebar .sidebar-list li");
     if (li) {
         sidebarChats.forEach((c, i) => c.active = i === +li.dataset.index);
-        el("sidebar").innerHTML = renderSidebar(sidebarChats);
+        el("sidebar").innerHTML = fetchActiveChats();
         const user = sidebarChats.find(c => c.active).user;
         el("chatPanel").innerHTML = renderChatPanel(chatTemplates[user]);
     }

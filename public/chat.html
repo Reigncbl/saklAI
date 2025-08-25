@@ -6,99 +6,227 @@
   <style>
     body {
       margin: 0;
-      background: #fff;
-      height: 100vh;
+      background: #f5f5f5;
+      min-height: 100vh;
       font-family: 'Segoe UI', 'Arial', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .chat-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      height: 500px;
-      width: 400px;
-      padding: 24px;
-      box-sizing: border-box;
-      border-radius: 14px;
-      background: #faf9f9;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.12);
     }
-    .chat-title {
-      font-size: 2em;
-      color: #991515;
-      margin-bottom: 16px;
+    
+    .header {
+      width: 100%;
+      background: #971C1F;
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-size: 72px;
       font-weight: bold;
+      margin: 0;
+      letter-spacing: -2px;
     }
+    
+    .header h1 .ai-text {
+      color: #ffd700;
+    }
+    
+    .header .subtitle {
+      font-size: 18px;
+      margin-top: 16px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+    
+    .main-content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 60px 20px;
+      width: 100%;
+      max-width: 1200px;
+    }
+    
+    .chat-widget {
+      width: 600px;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #971C1F;
+    }
+    
+    .ai-assistant-header {
+      background: #971C1F;
+      color: white;
+      padding: 16px 24px;
+      font-weight: 600;
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .call-agent-btn {
+      background: transparent;
+      border: 1px solid white;
+      color: #FDB415;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    
+    .call-agent-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .chat-area {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      height: 500px;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+    }
+    
     .chat-messages {
       flex: 1;
-      width: 100%;
-      background: #fff;
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 16px;
       overflow-y: auto;
-      border: 1px solid #eee;
-      font-size: 16px;
-      text-align: left;
-      min-height: 250px;
-      max-height: 300px;
-    }
-    .chat-input-area {
-      display: flex;
-      width: 100%;
-      gap: 8px;
-    }
-    .chat-input {
-      flex: 1;
-      padding: 10px;
-      font-size: 16px;
+      margin-bottom: 20px;
+      min-height: 300px;
+      border: 1px solid #ddd;
       border-radius: 8px;
-      border: 1px solid #ccc;
+      padding: 16px;
     }
-    .chat-send {
-      padding: 0 26px;
-      background: #991515;
-      color: #fff;
-      font-size: 18px;
-      font-weight: 500;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    .chat-send:hover {
-      background: #b91c1c;
-    }
-    .message.user {
-      text-align: right;
-      color: #fff;
-      background: #991515;
-      border-radius: 8px 8px 0 8px;
-      display: inline-block;
-      padding: 8px 14px;
-      margin: 8px 0;
+    
+    .message {
+      margin-bottom: 16px;
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.4;
       clear: both;
     }
+    
     .message.bot {
-      text-align: left;
-      color: #991515;
-      background: #ffe6c8;
-      border-radius: 8px 8px 8px 0;
-      display: inline-block;
-      padding: 8px 14px;
-      margin: 8px 0;
+      background: #F1F5F9;
+      color: #222222;
+      border-bottom-left-radius: 4px;
+      float: left;
+    }
+    
+    .message.user {
+      background: #FFF0EF;
+      color: black;
+      border-bottom-right-radius: 4px;
+      float: right;
+    }
+    
+    .quick-buttons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .quick-btn {
+      flex: 1;
+      background: transparent;
+      border: 1px solid #971C1F;
+      color: #971C1F;
+      padding: 12px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    
+    .quick-btn:hover {
+      background: #b62629;
+      color: white;
+    }
+    
+    .input-area {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    .message-input {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 25px;
+      padding: 14px 20px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+    }
+    
+    .message-input:focus {
+      border-color: #971C1F;
+    }
+    
+    .send-btn {
+      background: #971C1F;
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 25px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      transition: background 0.2s;
+      
+      /* CSS Background Image Solution */
+      background-image: url('./asset/send-button.png');
+      background-size: 20px 20px;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    /* Hover effect */
+    .send-btn:hover {
+      background-color: #a01729;
+    }
+
+    /* Fallback icon using CSS pseudo-element if image doesn't load */
+    .send-btn::before {
+      content: "➤";
+      font-size: 16px;
+      color: white;
+      display: block;
+      opacity: 0;
+    }
+
+    /* Show fallback icon if background image fails */
+    .send-btn:not([style*="background-image"])::before,
+    .send-btn[style*="background-image: none"]::before {
+      opacity: 1;
+    }
+    
+    .clearfix::after {
+      content: "";
+      display: table;
       clear: both;
     }
+    
     .typing-indicator {
       font-style: italic;
       opacity: 0.7;
     }
+    
     .dots {
       animation: blink 1.4s infinite;
     }
+    
     @keyframes blink {
       0%, 50% { opacity: 1; }
       51%, 100% { opacity: 0; }
@@ -106,16 +234,40 @@
   </style>
 </head>
 <body>
-  <div class="chat-container">
-    <div class="chat-title">SaklAI Chat</div>
-    <div class="chat-messages" id="chatMessages">
-      <!-- Messages will be loaded dynamically -->
+  <div class="header">
+    <h1>Sakl<span class="ai-text">AI</span></h1>
+    <div class="subtitle">
+      Chat with our AI Assistant<br>
+      Get instant answers to your banking questions
     </div>
-    <form class="chat-input-area" onsubmit="sendMessage(event)">
-      <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." autocomplete="off" required />
-      <button type="submit" class="chat-send">Send</button>
-    </form>
   </div>
+  
+  <div class="main-content">
+    <div class="chat-widget">
+      <div class="ai-assistant-header">
+        <span>AI Assistant</span>
+        <button class="call-agent-btn" onclick="callAgent()">Call an agent</button>
+      </div>
+      
+      <div class="chat-area">
+        <div class="chat-messages" id="chatMessages">
+          
+        </div>
+        
+        <div class="quick-buttons">
+          <button class="quick-btn" onclick="sendQuickMessage('Loan Application')">Loan Application</button>
+          <button class="quick-btn" onclick="sendQuickMessage('Loan Info')">Loan Info</button>
+          <button class="quick-btn" onclick="sendQuickMessage('Advice')">Advice</button>
+        </div>
+        
+        <div class="input-area">
+          <input type="text" class="message-input" id="messageInput" placeholder="Type your message here..." onkeypress="handleEnter(event)" />
+          <button class="send-btn" onclick="sendMessage(event)"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <script>
     // Generate a unique user ID for this session
     const userId = 'customer_' + Math.random().toString(36).substr(2, 9);
@@ -137,9 +289,53 @@
     console.log('Current location:', window.location.href);
     console.log('API_BASE_URL determined as:', API_BASE_URL);
     
+    function handleEnter(event) {
+      if (event.key === 'Enter') {
+        sendMessage(event);
+      }
+    }
+    
+    function sendQuickMessage(message) {
+      const input = document.getElementById('messageInput');
+      input.value = message;
+      sendMessage();
+    }
+
+    function callAgent() {
+      // Automatically send user message
+      appendMessage('user', 'I want to talk to an agent');
+      
+      // Show typing indicator
+      const typingDiv = showTypingIndicator();
+      
+      // Bot responds after a short delay
+      setTimeout(() => {
+        removeTypingIndicator(typingDiv);
+        appendMessage('bot', 'I\'m connecting you to a human agent. Please wait while I transfer your conversation...');
+        // Second message after another delay
+        setTimeout(() => {
+          appendMessage('bot', 'An agent will be with you shortly. Thank you for your patience!');
+        }, 5000);
+      }, 2000);
+      
+      // Here you would make your actual API call to transfer to agent
+      /*
+      fetch(`${API_BASE_URL}/transfer-to-agent`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          message: 'I want to talk to an agent'
+        })
+      });
+      */
+    }
+    
     async function sendMessage(e) {
-      e.preventDefault();
-      const input = document.getElementById('chatInput');
+      if (e) e.preventDefault();
+      const input = document.getElementById('messageInput');
       const msg = input.value.trim();
       if (!msg) return;
       
@@ -230,6 +426,12 @@
       div.className = 'message ' + sender;
       div.textContent = text;
       messages.appendChild(div);
+      
+      // Add clearfix after each message to handle floating
+      const clearfix = document.createElement('div');
+      clearfix.className = 'clearfix';
+      messages.appendChild(clearfix);
+      
       messages.scrollTop = messages.scrollHeight;
       return div;
     }
@@ -274,24 +476,26 @@
             });
           } else {
             // Show welcome message if no history
-            appendMessage('bot', 'Hello! How can I help you today?');
+            appendMessage('bot', 'Hi! I\'m Saklay, your AI Assistant. How can I help you today?');
           }
         } else {
           console.log(`Chat history not found (status: ${response.status}), showing welcome message`);
           // If history not found, show welcome message
-          appendMessage('bot', 'Hello! How can I help you today?');
+          appendMessage('bot', 'Hi! I\'m Saklay, your AI Assistant. How can I help you today?');
         }
       } catch (error) {
         console.error('Error loading chat history:', error);
-        // Show welcome message on error
-        const messagesContainer = document.getElementById('chatMessages');
-        messagesContainer.innerHTML = '';
-        appendMessage('bot', 'Hello! How can I help you today?');
+        // Show welcome message on error - this is already in the HTML
       }
     }
     
-    // Load chat history when page loads
-    window.addEventListener('load', loadChatHistory);
+    // Load chat history when page loads (but keep the default message if no history)
+    window.addEventListener('load', () => {
+      // Only load history if we can connect to the server
+      if (window.location.protocol !== 'file:' || API_BASE_URL) {
+        loadChatHistory();
+      }
+    });
   </script>
 </body>
 </html>

@@ -1,0 +1,513 @@
+{
+  "timestamp": "2025-08-25T10:26:30.646634",
+  "config": {
+    "vector_store_path": "./rag_store_eval",
+    "test_user_id": "eval_user_001",
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "similarity_threshold": 0.7,
+    "timeout_seconds": 30
+  },
+  "summary": {
+    "total_tests": 14,
+    "successful_tests": 1,
+    "failed_tests": 13,
+    "success_rate": 0.07142857142857142,
+    "average_response_time": 0.4905151128768921,
+    "test_type_breakdown": {
+      "end_to_end": {
+        "total": 2,
+        "successful": 0,
+        "success_rate": 0.0,
+        "average_response_time": 0.6962124109268188
+      },
+      "translation": {
+        "total": 4,
+        "successful": 0,
+        "success_rate": 0.0,
+        "average_response_time": 0.28713762760162354
+      },
+      "classification": {
+        "total": 3,
+        "successful": 1,
+        "success_rate": 0.3333333333333333,
+        "average_response_time": 0.2383439540863037
+      },
+      "rag": {
+        "total": 5,
+        "successful": 0,
+        "success_rate": 0.0,
+        "average_response_time": 0.7222408771514892
+      }
+    },
+    "classification_accuracy": 0.2,
+    "translation_accuracy": 0.0,
+    "quantitative_metrics": {
+      "bleu_score": 1.0,
+      "rouge_1_score": 1.0,
+      "rouge_2_score": 1.0,
+      "rouge_l_score": 1.0,
+      "semantic_similarity_score": 1.0000001192092896,
+      "lexical_diversity": 1.0,
+      "avg_response_time": 0.4905151128768921,
+      "median_response_time": 0.39542722702026367,
+      "p95_response_time": 1.1416881084442139,
+      "p99_response_time": 1.1416881084442139,
+      "throughput_qps": 0.0,
+      "exact_match_accuracy": 0.07142857142857142,
+      "fuzzy_match_accuracy": 0.0,
+      "classification_precision": 0.1111111111111111,
+      "classification_recall": 0.3333333333333333,
+      "classification_f1": 0.16666666666666666,
+      "retrieval_precision_at_k": 0.0,
+      "retrieval_recall_at_k": 0.0,
+      "retrieval_mrr": 0.0,
+      "context_relevance_score": 0.0,
+      "answer_faithfulness": 0.0,
+      "translation_adequacy": 0.0,
+      "translation_fluency": 0.0,
+      "character_error_rate": 0.0,
+      "word_error_rate": 0.0,
+      "confidence_interval_lower": -0.07142857142857145,
+      "confidence_interval_upper": 0.2142857142857143,
+      "standard_deviation": 0.2753729460032618,
+      "variance": 0.07583025939051534,
+      "task_completion_rate": 0.07142857142857142,
+      "user_satisfaction_proxy": 0.0,
+      "error_rate": 0.9285714285714286,
+      "system_reliability": 0.07142857142857142
+    }
+  },
+  "detailed_results": [
+    {
+      "test_id": "rag_001",
+      "test_type": "rag",
+      "input_text": "What are the requirements for opening a savings account?",
+      "expected_output": "savings_accounts.yaml",
+      "actual_output": "config.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "What are the requirements for opening a savings account?",
+        "translated_message": null,
+        "template_used": "config.yaml",
+        "suggestions": [
+          {
+            "analysis": "error",
+            "category": "System Error",
+            "suggestion": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs."
+          }
+        ],
+        "processing_method": "direct_groq",
+        "classification": {
+          "detected_category": "general",
+          "confidence": 0.3,
+          "method": "error_fallback"
+        }
+      },
+      "response_time": 1.1416881084442139,
+      "success": false,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "rag_002",
+      "test_type": "rag",
+      "input_text": "How can I apply for a credit card?",
+      "expected_output": "credit_cards.yaml",
+      "actual_output": "config.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "How can I apply for a credit card?",
+        "translated_message": null,
+        "template_used": "config.yaml",
+        "suggestions": [
+          {
+            "analysis": "error",
+            "category": "System Error",
+            "suggestion": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs."
+          }
+        ],
+        "processing_method": "direct_groq",
+        "classification": {
+          "detected_category": "general",
+          "confidence": 0.3,
+          "method": "error_fallback"
+        }
+      },
+      "response_time": 0.5490899085998535,
+      "success": false,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "rag_003",
+      "test_type": "rag",
+      "input_text": "What loans do you offer for small businesses?",
+      "expected_output": "loans.yaml",
+      "actual_output": "config.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "What loans do you offer for small businesses?",
+        "translated_message": null,
+        "template_used": "config.yaml",
+        "suggestions": [
+          {
+            "analysis": "error",
+            "category": "System Error",
+            "suggestion": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs."
+          }
+        ],
+        "processing_method": "direct_groq",
+        "classification": {
+          "detected_category": "general",
+          "confidence": 0.3,
+          "method": "error_fallback"
+        }
+      },
+      "response_time": 0.4776425361633301,
+      "success": false,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "rag_004",
+      "test_type": "rag",
+      "input_text": "How do I send money to Philippines through remittance?",
+      "expected_output": "remittances_ofw.yaml",
+      "actual_output": "config.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "How do I send money to Philippines through remittance?",
+        "translated_message": null,
+        "template_used": "config.yaml",
+        "suggestions": [
+          {
+            "analysis": "error",
+            "category": "System Error",
+            "suggestion": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs."
+          }
+        ],
+        "processing_method": "direct_groq",
+        "classification": {
+          "detected_category": "general",
+          "confidence": 0.3,
+          "method": "error_fallback"
+        }
+      },
+      "response_time": 0.7574450969696045,
+      "success": false,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "rag_005",
+      "test_type": "rag",
+      "input_text": "Can you help me with online banking setup?",
+      "expected_output": "digital_banking.yaml",
+      "actual_output": "config.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "Can you help me with online banking setup?",
+        "translated_message": null,
+        "template_used": "config.yaml",
+        "suggestions": [
+          {
+            "analysis": "error",
+            "category": "System Error",
+            "suggestion": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs."
+          }
+        ],
+        "processing_method": "direct_groq",
+        "classification": {
+          "detected_category": "general",
+          "confidence": 0.3,
+          "method": "error_fallback"
+        }
+      },
+      "response_time": 0.6853387355804443,
+      "success": false,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "trans_001",
+      "test_type": "translation",
+      "input_text": "Paano mag-open ng savings account?",
+      "expected_output": "How to open a savings account?",
+      "actual_output": "Paano mag-open ng savings account?",
+      "classification_result": null,
+      "translation_result": "Paano mag-open ng savings account?",
+      "rag_result": null,
+      "response_time": 0.26941394805908203,
+      "success": false,
+      "error_message": null,
+      "similarity_score": 0.4,
+      "bleu_score": 0.0,
+      "rouge_scores": {
+        "rouge_1": 0.5,
+        "rouge_2": 0.2,
+        "rouge_l": 0.5
+      },
+      "semantic_similarity": 0.6080911159515381,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "trans_002",
+      "test_type": "translation",
+      "input_text": "Pwede ba mag-apply ng credit card online?",
+      "expected_output": "Can I apply for a credit card online?",
+      "actual_output": "Pwede ba mag-apply ng credit card online?",
+      "classification_result": null,
+      "translation_result": "Pwede ba mag-apply ng credit card online?",
+      "rag_result": null,
+      "response_time": 0.2596561908721924,
+      "success": false,
+      "error_message": null,
+      "similarity_score": 0.42857142857142855,
+      "bleu_score": 0.0,
+      "rouge_scores": {
+        "rouge_1": 0.5,
+        "rouge_2": 0.2857142857142857,
+        "rouge_l": 0.5
+      },
+      "semantic_similarity": 0.6406152248382568,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "trans_003",
+      "test_type": "translation",
+      "input_text": "Ano ang requirements para sa personal loan?",
+      "expected_output": "What are the requirements for a personal loan?",
+      "actual_output": "Ano ang requirements para sa personal loan?",
+      "classification_result": null,
+      "translation_result": "Ano ang requirements para sa personal loan?",
+      "rag_result": null,
+      "response_time": 0.30626845359802246,
+      "success": false,
+      "error_message": null,
+      "similarity_score": 0.42857142857142855,
+      "bleu_score": 0.0,
+      "rouge_scores": {
+        "rouge_1": 0.375,
+        "rouge_2": 0.14285714285714285,
+        "rouge_l": 0.375
+      },
+      "semantic_similarity": 0.7123284339904785,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "trans_004",
+      "test_type": "translation",
+      "input_text": "May online banking ba kayo?",
+      "expected_output": "Do you have online banking?",
+      "actual_output": "May online banking ba kayo?",
+      "classification_result": null,
+      "translation_result": "May online banking ba kayo?",
+      "rag_result": null,
+      "response_time": 0.31321191787719727,
+      "success": false,
+      "error_message": null,
+      "similarity_score": 0.4,
+      "bleu_score": 0.0,
+      "rouge_scores": {
+        "rouge_1": 0.4,
+        "rouge_2": 0.25,
+        "rouge_l": 0.4
+      },
+      "semantic_similarity": 0.7012946605682373,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "class_001",
+      "test_type": "classification",
+      "input_text": "Hello, how are you today?",
+      "expected_output": "Template: config.yaml, Category: general",
+      "actual_output": "Template: config.yaml, Category: general",
+      "classification_result": {
+        "template": "config.yaml",
+        "category": "general",
+        "confidence": 0.3,
+        "method": "error_fallback"
+      },
+      "translation_result": null,
+      "rag_result": null,
+      "response_time": 0.218123197555542,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": "general",
+      "predicted_category": "general"
+    },
+    {
+      "test_id": "class_002",
+      "test_type": "classification",
+      "input_text": "I want to know about your branch locations",
+      "expected_output": "Template: general_banking.yaml, Category: banking",
+      "actual_output": "Template: config.yaml, Category: general",
+      "classification_result": {
+        "template": "config.yaml",
+        "category": "general",
+        "confidence": 0.3,
+        "method": "error_fallback"
+      },
+      "translation_result": null,
+      "rag_result": null,
+      "response_time": 0.21035027503967285,
+      "success": false,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": "banking",
+      "predicted_category": "general"
+    },
+    {
+      "test_id": "class_003",
+      "test_type": "classification",
+      "input_text": "What's the interest rate for time deposits?",
+      "expected_output": "Template: savings_accounts.yaml, Category: savings",
+      "actual_output": "Template: config.yaml, Category: general",
+      "classification_result": {
+        "template": "config.yaml",
+        "category": "general",
+        "confidence": 0.3,
+        "method": "error_fallback"
+      },
+      "translation_result": null,
+      "rag_result": null,
+      "response_time": 0.2865583896636963,
+      "success": false,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": "savings",
+      "predicted_category": "general"
+    },
+    {
+      "test_id": "e2e_001",
+      "test_type": "end_to_end",
+      "input_text": "Magkano ang minimum balance sa savings account?",
+      "expected_output": "savings_accounts.yaml",
+      "actual_output": "config.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "Magkano ang minimum balance sa savings account?",
+        "translated_message": null,
+        "template_used": "config.yaml",
+        "suggestions": [
+          {
+            "analysis": "error",
+            "category": "System Error",
+            "suggestion": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs."
+          }
+        ],
+        "processing_method": "direct_groq",
+        "classification": {
+          "detected_category": "general",
+          "confidence": 0.3,
+          "method": "error_fallback"
+        }
+      },
+      "response_time": 0.7314751148223877,
+      "success": false,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "e2e_002",
+      "test_type": "end_to_end",
+      "input_text": "Paano mag-transfer ng pera sa ibang bansa?",
+      "expected_output": "remittances_ofw.yaml",
+      "actual_output": "config.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "Paano mag-transfer ng pera sa ibang bansa?",
+        "translated_message": null,
+        "template_used": "config.yaml",
+        "suggestions": [
+          {
+            "analysis": "error",
+            "category": "System Error",
+            "suggestion": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs."
+          }
+        ],
+        "processing_method": "direct_groq",
+        "classification": {
+          "detected_category": "general",
+          "confidence": 0.3,
+          "method": "error_fallback"
+        }
+      },
+      "response_time": 0.66094970703125,
+      "success": false,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    }
+  ]
+}

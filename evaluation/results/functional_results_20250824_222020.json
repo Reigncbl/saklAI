@@ -1,0 +1,673 @@
+{
+  "timestamp": "2025-08-24T22:24:28.802056",
+  "config": {
+    "vector_store_path": "./rag_store_eval",
+    "test_user_id": "eval_user_001",
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "similarity_threshold": 0.6,
+    "timeout_seconds": 30,
+    "evaluation_settings": {
+      "run_translation_tests": true,
+      "run_classification_tests": true,
+      "run_rag_tests": true,
+      "run_end_to_end_tests": true,
+      "verbose_output": true,
+      "save_intermediate_results": true
+    },
+    "thresholds": {
+      "minimum_success_rate": 0.8,
+      "maximum_response_time": 10.0,
+      "minimum_similarity_score": 0.7,
+      "classification_confidence_threshold": 0.6
+    },
+    "output_settings": {
+      "save_json": true,
+      "save_csv": true,
+      "include_detailed_logs": true,
+      "timestamp_format": "%Y-%m-%d_%H-%M-%S"
+    }
+  },
+  "summary": {
+    "total_tests": 14,
+    "successful_tests": 13,
+    "failed_tests": 1,
+    "success_rate": 0.9285714285714286,
+    "average_response_time": 17.41420524460929,
+    "test_type_breakdown": {
+      "classification": {
+        "total": 3,
+        "successful": 2,
+        "success_rate": 0.6666666666666666,
+        "average_response_time": 0.926128625869751
+      },
+      "rag": {
+        "total": 5,
+        "successful": 5,
+        "success_rate": 1.0,
+        "average_response_time": 31.324096584320067
+      },
+      "end_to_end": {
+        "total": 2,
+        "successful": 2,
+        "success_rate": 1.0,
+        "average_response_time": 41.299153566360474
+      },
+      "translation": {
+        "total": 4,
+        "successful": 4,
+        "success_rate": 1.0,
+        "average_response_time": 0.4504243731498718
+      }
+    },
+    "classification_accuracy": 0.8,
+    "translation_accuracy": 1.0,
+    "quantitative_metrics": {
+      "bleu_score": 0.37299495648600667,
+      "rouge_1_score": 0.9564102564102565,
+      "rouge_2_score": 0.9307692307692308,
+      "rouge_l_score": 0.9564102564102565,
+      "semantic_similarity_score": 0.9932288023141714,
+      "lexical_diversity": 0.9692307692307692,
+      "avg_response_time": 17.41420524460929,
+      "median_response_time": 7.887716054916382,
+      "p95_response_time": 45.6168475151062,
+      "p99_response_time": 45.6168475151062,
+      "throughput_qps": 0.0,
+      "exact_match_accuracy": 0.9285714285714286,
+      "fuzzy_match_accuracy": 0.0,
+      "classification_precision": 0.0,
+      "classification_recall": 0.0,
+      "classification_f1": 0.0,
+      "retrieval_precision_at_k": 0.0,
+      "retrieval_recall_at_k": 0.0,
+      "retrieval_mrr": 0.0,
+      "context_relevance_score": 0.0,
+      "answer_faithfulness": 0.0,
+      "translation_adequacy": 0.0,
+      "translation_fluency": 0.0,
+      "character_error_rate": 0.0,
+      "word_error_rate": 0.0,
+      "confidence_interval_lower": 0.7857142857142857,
+      "confidence_interval_upper": 1.0714285714285714,
+      "standard_deviation": 19.584940881675376,
+      "variance": 383.56990933871947,
+      "task_completion_rate": 0.9285714285714286,
+      "user_satisfaction_proxy": 0.0,
+      "error_rate": 0.0714285714285714,
+      "system_reliability": 0.9285714285714286
+    }
+  },
+  "detailed_results": [
+    {
+      "test_id": "rag_001",
+      "test_type": "rag",
+      "input_text": "What are the requirements for opening a savings account?",
+      "expected_output": "savings_accounts.yaml",
+      "actual_output": "savings_accounts.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "What are the requirements for opening a savings account?",
+        "translated_message": "Here is the translation:\n\n\"What are the requirements for opening a savings account?\"\n\n(Note: The text is already in clear English, so no translation is needed. It's a straightforward question about the requirements for opening a savings account.)",
+        "template_used": "savings_accounts.yaml",
+        "suggestions": [
+          {
+            "analysis": "customer_intent: new_account",
+            "category": "Requirements Clarification",
+            "suggestion": "For a first-time digital customer, the #SaveUp account is the only product available through the online channel. It has zero maintaining balance and is designed for minimal financial commitment. If you prefer a traditional route, the Regular Savings account requires an initial deposit of ₱500 and a ₱3,000 minimum monthly Average Daily Balance (ADB) to avoid the ₱300 service charge."
+          },
+          {
+            "analysis": "customer_intent: account_comparison",
+            "category": "Account Comparison",
+            "suggestion": "Compare #SaveUp (digital-first, zero maintaining balance) with Regular Savings (₱500 initial deposit, ₱3,000 ADB) and Jumpstart Savings (for students/young savers). If you’re a high-net-worth individual, Maxi-Saver and Signature Card offer premium features and higher earning potential, but these are branch-sold."
+          },
+          {
+            "analysis": "customer_intent: balance_inquiry",
+            "category": "Requirements Clarification",
+            "suggestion": "All savings accounts except #SaveUp and #MySaveUp require a minimum ADB: Regular Savings ₱3,000, Pamana Savings ₱25,000, and US Dollar Savings US$500. Waiver of the ADB is possible if you set up a regular monthly remittance or maintain a linked BPI checking account."
+          },
+          {
+            "analysis": "customer_intent: interest_rates",
+            "category": "Interest Calculation",
+            "suggestion": "Current rates (as per BPI deposit-rate page): Regular Savings 0.0625 % p.a., Maxi-Saver up to 0.250 % p.a. on balances ≥₱5 M, Pamana Savings 0.125 % p.a. plus free life insurance coverage equal to 5× your ADB."
+          },
+          {
+            "analysis": "customer_intent: requirements",
+            "category": "Digital Features",
+            "suggestion": "Opening #SaveUp is fully digital—no branch visit needed. Updating a mobile number or switching account types for existing credit-card holders still requires a physical branch visit, reflecting BPI’s hybrid digital-physical model."
+          }
+        ],
+        "processing_method": "rag",
+        "classification": {
+          "detected_category": "savings account inquiries",
+          "confidence": 0.95,
+          "method": "langchain_agent"
+        }
+      },
+      "response_time": 15.936443090438843,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "rag_002",
+      "test_type": "rag",
+      "input_text": "How can I apply for a credit card?",
+      "expected_output": "credit_cards.yaml",
+      "actual_output": "credit_cards.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "How can I apply for a credit card?",
+        "translated_message": null,
+        "template_used": "credit_cards.yaml",
+        "suggestions": [
+          {
+            "analysis": "new_application",
+            "category": "Application Requirements",
+            "suggestion": "To apply for a BPI credit card, you must meet the minimum monthly income requirement for your chosen card tier. Based on the latest BPI data: BPI Rewards Card requires Php 15,000 monthly income, BPI Signature Card requires Php 180,000 annual income (Php 15,000 monthly), and BPI Platinum Rewards has correspondingly higher requirements. You can apply online through the BPI website or visit any BPI branch with complete requirements including valid ID, proof of income, and accomplished application form."
+          },
+          {
+            "analysis": "card_comparison",
+            "category": "Card Recommendation",
+            "suggestion": "Given your interest in digital banking and savings accounts, I recommend starting with the BPI Rewards Card (minimum income: Php 15,000/month). It has an annual fee of Php 1,550/year, earns 1 point per Php 35 spend, includes free travel insurance, and offers flexible installment terms. This card perfectly complements your digital lifestyle while providing valuable rewards for everyday spending with the lowest annual fee among BPI's rewards cards."
+          },
+          {
+            "analysis": "fees_charges",
+            "category": "Fee Structure",
+            "suggestion": "BPI's current credit card fees are comprehensive, covering annual membership to late payment penalties. The BPI Rewards Card has an annual fee of Php 1,550/year, while the BPI Signature Card commands Php 5,500/year. Cash advance fee is Php 200 per transaction with a 3% monthly finance charge. Foreign transactions incur 1.85% fee. Check the latest fee schedule on the BPI website as fees are subject to periodic updates."
+          },
+          {
+            "analysis": "rewardsinquiry",
+            "category": "Rewards Comparison",
+            "suggestion": "The BPI Rewards program offers superior value for digital-savvy users. With the BPI Rewards Card, you earn 1 point per Php 35 spend, which can be redeemed for shopping credits, travel miles, or merchandise through the BPI rewards portal. The BPI eCredit Card offers free annual membership with basic rewards earning, ideal if you want to avoid annual fees while still earning points on digital transactions."
+          },
+          {
+            "analysis": "credit_features",
+            "category": "Lifestyle Benefits",
+            "suggestion": "BPI credit cards integrate seamlessly with BPI's digital banking platform. You can manage your card, view transactions, and pay bills through the BPI Mobile app. Additionally, cards come with contactless payment features and are compatible with digital wallets like GCash and PayMaya, aligning perfectly with your demonstrated preference for digital banking solutions. The BPI eCredit Card provides a virtual card option for secure online transactions."
+          }
+        ],
+        "processing_method": "rag",
+        "classification": {
+          "detected_category": "credit_cards",
+          "confidence": 0.95,
+          "method": "langchain_agent"
+        }
+      },
+      "response_time": 14.480945110321045,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "rag_003",
+      "test_type": "rag",
+      "input_text": "What loans do you offer for small businesses?",
+      "expected_output": "loans.yaml",
+      "actual_output": "loans.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "What loans do you offer for small businesses?",
+        "translated_message": null,
+        "template_used": "loans.yaml",
+        "suggestions": [
+          {
+            "analysis": "customer_intent: loan_application",
+            "category": "Loan recommendation",
+            "suggestion": "For a small-business owner, BPI currently offers the BPI SME Business Loan. Minimum loanable amount is ₱100,000 up to ₱5 million, payable 1–5 years. Interest is computed on a reducing-balance basis; latest posted add-on rates range from 1.2 % to 1.5 % per month depending on loan size and term. Collateral is required—standard options are real-estate mortgage or deposit hold-out. Processing fee is ₱2,000 flat, deducted from loan proceeds. Target release is 5–7 banking days after complete submission."
+          },
+          {
+            "analysis": "customer_intent: eligibility_check",
+            "category": "Eligibility Assessment",
+            "suggestion": "Eligibility checklist from the retrieved BPI documents: Business must be in profitable operation for at least 3 years; gross annual sales ≤ ₱100 million; business registration (DTI/SEC), latest ITR with BIR stamp, and audited financial statements for the last 2 years; valid government-issued IDs of the proprietor or corporate officers. If annual sales are below ₱15 million, only latest ITR and business permit are required."
+          },
+          {
+            "analysis": "loan_comparison",
+            "category": "Rate Comparison",
+            "suggestion": "Comparative snapshot from BPI data: BPI Personal Loan for Business Owners is an unsecured alternative—loanable amount ₱20,000–₱2 million, 1–3 year term, effective add-on rate 1.5 %–1.75 % per month, no collateral, processing fee ₱1,500. Choose the SME Business Loan if you need above ₱2 million or prefer lower rates with collateral; choose Personal Loan for Business Owners if you need smaller, faster, unsecured funding."
+          },
+          {
+            "analysis": "payment_terms",
+            "category": "Payment Structure",
+            "suggestion": "Payment modes per BPI documents: PDC (post-dated checks) or ADA (auto-debit arrangement) from any BPI CASA account. Monthly amortization starts 30 days after loan booking. No pre-termination fee if paid after 12 months; otherwise 3 % of outstanding principal."
+          },
+          {
+            "analysis": "requirements",
+            "category": "Documentation Requirements",
+            "suggestion": "Document bundle to prepare: (1) DTI/SEC business registration, (2) Mayor’s & BIR permits, (3) latest 2 years ITR with BIR/bank stamp, (4) latest 2 years audited financial statements, (5) bank statements for the last 6 months, (6) two valid IDs, (7) loan purpose declaration, (8) collateral documents (TCT/CCT for real-estate or hold-out agreement for deposit). Submit online via BPI business online or at any BPI branch loan center."
+          },
+          {
+            "analysis": "processing_timeline",
+            "category": "Processing Timeline",
+            "suggestion": "Current processing cycle per BPI SLA: 5–7 banking days for SME Business Loan once complete documents are in; 3–5 banking days for Personal Loan for Business Owners. Tip from BPI Preferred Priority Handling: if you are a BPI Preferred client, book an appointment through BEA Online to cut queue time by 50 %."
+          }
+        ],
+        "processing_method": "rag",
+        "classification": {
+          "detected_category": "business loans",
+          "confidence": 0.95,
+          "method": "langchain_agent"
+        }
+      },
+      "response_time": 45.6168475151062,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "rag_004",
+      "test_type": "rag",
+      "input_text": "How do I send money to Philippines through remittance?",
+      "expected_output": "remittances_ofw.yaml",
+      "actual_output": "remittances_ofw.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "How do I send money to Philippines through remittance?",
+        "translated_message": "Here's the translation:\n\n\"How do I send money to the Philippines through a remittance service?\"\n\n(Note: I kept the banking/financial context intact by using the term \"remittance service\" to maintain the original meaning of the text.)",
+        "template_used": "remittances_ofw.yaml",
+        "suggestions": [
+          {
+            "analysis": "send_money",
+            "category": "Remittance Options",
+            "suggestion": "Use BPI’s fully digital Padala remittance—initiate the transfer from the BPI App or BPI Online in under five minutes with just one government ID. Choose credit-to-account (₱0 fee when crediting a BPI PHP account) or cash-pickup at any of 8,000+ GCash Padala outlets nationwide. Real-time FX and total peso proceeds are shown before you tap 'Send'."
+          },
+          {
+            "analysis": "send_money",
+            "category": "Service Fees",
+            "suggestion": "Online Padala fee ranges from ₱150–₱500 depending on amount and destination; over-the-counter is ₱200–₱600. Transfers above ₱50,000 enjoy a flat ₱500 fee regardless of channel. All fees are displayed upfront before you confirm the transaction."
+          },
+          {
+            "analysis": "send_money",
+            "category": "Processing Time",
+            "suggestion": "Credit-to-account transfers sent before 3:30 p.m. PH time are posted in real time; cash-pickup is ready within 30 minutes after the 1:00 p.m. cut-off. Requests after cut-off are processed the next banking day."
+          },
+          {
+            "analysis": "receive_money",
+            "category": "Beneficiary Setup",
+            "suggestion": "Save your Philippine beneficiary once in the BPI App: enter the exact name as it appears on the ID, mobile number, and preferred payout channel (BPI account number or GCash Padala reference). You can store up to 10 beneficiaries for one-tap repeat transfers."
+          },
+          {
+            "analysis": "foreign_currency",
+            "category": "Exchange Rate Info",
+            "suggestion": "BPI shows the live USD/PHP (or EUR/PHP, GBP/PHP) rate before you send. The spread is ~0.30–0.50 above mid-market; lock the rate by completing the transaction within 15 minutes."
+          },
+          {
+            "analysis": "ofw_account",
+            "category": "OFW Account Benefits",
+            "suggestion": "If you remit at least four times a year, open a Pamana Padala account—zero maintaining balance and free life-insurance coverage while funds are parked. You can open it online in five minutes using your passport or OFW contract as ID."
+          }
+        ],
+        "processing_method": "rag",
+        "classification": {
+          "detected_category": "remittances",
+          "confidence": 0.95,
+          "method": "langchain_agent"
+        }
+      },
+      "response_time": 37.40932250022888,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "rag_005",
+      "test_type": "rag",
+      "input_text": "Can you help me with online banking setup?",
+      "expected_output": "digital_banking.yaml",
+      "actual_output": "digital_banking.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "Can you help me with online banking setup?",
+        "translated_message": "Here is the translation:\n\n\"Can you assist me with setting up online banking?\"\n\nI kept the original meaning and context intact, while making the language more clear and concise.",
+        "template_used": "digital_banking.yaml",
+        "suggestions": [
+          {
+            "analysis": "customer_intent: online_banking",
+            "category": "App Setup",
+            "suggestion": "Download the latest BPI Mobile App from Google Play or the App Store. Tap ‘Open an Account’ and select #SaveUp Digital Savings—the only product available for fully-online onboarding. Have one valid, unexpired government photo-ID (PhilID, Passport, Driver’s License, SSS, PRC or UMID) ready and a phone with a working camera for the selfie verification step."
+          },
+          {
+            "analysis": "customer_intent: security_concerns",
+            "category": "Security Tips",
+            "suggestion": "During enrolment you will create a 6-digit MPIN and nominate an email address for One-Time Passwords (OTP). Keep these confidential; BPI Online will never ask for them via call, text or chat. Enable biometric login (fingerprint or Face ID) once the account is active for faster yet secure access."
+          },
+          {
+            "analysis": "customer_intent: digital_payments",
+            "category": "Payment Options",
+            "suggestion": "After activation, link your BPI debit card to GCash, Maya or GrabPay directly inside the app: go to Menu > Manage Cards > Add to Digital Wallet. Transfers to other BPI PHP accounts are free; sending to GCash Padala or other banks is ₱0–₱50 depending on channel and amount."
+          },
+          {
+            "analysis": "customer_intent: mobile_features",
+            "category": "Feature Explanation",
+            "suggestion": "Your #SaveUp account has zero maintaining balance and earns 0.0625 % p.a. interest credited monthly. Use the app to view real-time balance, lock/unlock the card, generate a virtual card for online purchases, and set up ‘Save-Up Automate’ to schedule transfers from any linked BPI account."
+          },
+          {
+            "analysis": "customer_intent: technical_support",
+            "category": "Troubleshooting",
+            "suggestion": "If the camera capture fails, ensure good lighting and steady hands; the app allows up to three attempts before reverting to branch verification. Should the app crash during enrolment, clear cache, update to the latest version, and restart. For persistent issues, tap ‘Chat with BOG’ in the app or call 889-10000 and quote your application reference number."
+          }
+        ],
+        "processing_method": "rag",
+        "classification": {
+          "detected_category": "digital banking",
+          "confidence": 0.95,
+          "method": "langchain_agent"
+        }
+      },
+      "response_time": 43.17692470550537,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "trans_001",
+      "test_type": "translation",
+      "input_text": "Paano mag-open ng savings account?",
+      "expected_output": "How to open a savings account?",
+      "actual_output": "How do I open a savings account?",
+      "classification_result": null,
+      "translation_result": "How do I open a savings account?",
+      "rag_result": null,
+      "response_time": 0.4080650806427002,
+      "success": true,
+      "error_message": null,
+      "similarity_score": 0.6666666666666666,
+      "bleu_score": 0.4347208719449915,
+      "rouge_scores": {
+        "rouge_1": 0.8333333333333334,
+        "rouge_2": 0.6,
+        "rouge_l": 0.8333333333333334
+      },
+      "semantic_similarity": 0.9880104660987854,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "trans_002",
+      "test_type": "translation",
+      "input_text": "Pwede ba mag-apply ng credit card online?",
+      "expected_output": "Can I apply for a credit card online?",
+      "actual_output": "Can I apply for a credit card online?",
+      "classification_result": null,
+      "translation_result": "Can I apply for a credit card online?",
+      "rag_result": null,
+      "response_time": 0.7354393005371094,
+      "success": true,
+      "error_message": null,
+      "similarity_score": 1.0,
+      "bleu_score": 1.0,
+      "rouge_scores": {
+        "rouge_1": 1.0,
+        "rouge_2": 1.0,
+        "rouge_l": 1.0
+      },
+      "semantic_similarity": 1.0,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "trans_003",
+      "test_type": "translation",
+      "input_text": "Ano ang requirements para sa personal loan?",
+      "expected_output": "What are the requirements for a personal loan?",
+      "actual_output": "What are the requirements for a personal loan?",
+      "classification_result": null,
+      "translation_result": "What are the requirements for a personal loan?",
+      "rag_result": null,
+      "response_time": 0.2704482078552246,
+      "success": true,
+      "error_message": null,
+      "similarity_score": 1.0,
+      "bleu_score": 1.0,
+      "rouge_scores": {
+        "rouge_1": 1.0,
+        "rouge_2": 1.0,
+        "rouge_l": 1.0
+      },
+      "semantic_similarity": 1.0000001192092896,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "trans_004",
+      "test_type": "translation",
+      "input_text": "May online banking ba kayo?",
+      "expected_output": "Do you have online banking?",
+      "actual_output": "Do you have online banking?",
+      "classification_result": null,
+      "translation_result": "Do you have online banking?",
+      "rag_result": null,
+      "response_time": 0.3877449035644531,
+      "success": true,
+      "error_message": null,
+      "similarity_score": 1.0,
+      "bleu_score": 1.0,
+      "rouge_scores": {
+        "rouge_1": 1.0,
+        "rouge_2": 1.0,
+        "rouge_l": 1.0
+      },
+      "semantic_similarity": 1.0,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "class_001",
+      "test_type": "classification",
+      "input_text": "Hello, how are you today?",
+      "expected_output": "Template: config.yaml, Category: general",
+      "actual_output": "Template: config.yaml, Category: config",
+      "classification_result": {
+        "template": "config.yaml",
+        "category": "config",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      },
+      "translation_result": null,
+      "rag_result": null,
+      "response_time": 1.2944869995117188,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": "general",
+      "predicted_category": "config"
+    },
+    {
+      "test_id": "class_002",
+      "test_type": "classification",
+      "input_text": "I want to know about your branch locations",
+      "expected_output": "Template: general_banking.yaml, Category: banking",
+      "actual_output": "Template: general_banking.yaml, Category: general_banking",
+      "classification_result": {
+        "template": "general_banking.yaml",
+        "category": "general_banking",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      },
+      "translation_result": null,
+      "rag_result": null,
+      "response_time": 0.45273423194885254,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": "banking",
+      "predicted_category": "general_banking"
+    },
+    {
+      "test_id": "class_003",
+      "test_type": "classification",
+      "input_text": "What's the interest rate for time deposits?",
+      "expected_output": "Template: savings_accounts.yaml, Category: savings",
+      "actual_output": "Template: savings_accounts.yaml, Category: time deposits",
+      "classification_result": {
+        "template": "savings_accounts.yaml",
+        "category": "time deposits",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      },
+      "translation_result": null,
+      "rag_result": null,
+      "response_time": 1.0311646461486816,
+      "success": false,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": "savings",
+      "predicted_category": "time deposits"
+    },
+    {
+      "test_id": "e2e_001",
+      "test_type": "end_to_end",
+      "input_text": "Magkano ang minimum balance sa savings account?",
+      "expected_output": "savings_accounts.yaml",
+      "actual_output": "savings_accounts.yaml",
+      "classification_result": null,
+      "translation_result": "Here's the translation:\n\n\"What is the minimum balance required for a savings account?\"\n\n(Note: \"Magkano\" is a Tagalog/Taglish word that means \"how much\" or \"what is the amount\", and \"minimum balance\" is a direct translation of \"minimum balance\" in English.)",
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "Magkano ang minimum balance sa savings account?",
+        "translated_message": "Here's the translation:\n\n\"What is the minimum balance required for a savings account?\"\n\n(Note: \"Magkano\" is a Tagalog/Taglish word that means \"how much\" or \"what is the amount\", and \"minimum balance\" is a direct translation of \"minimum balance\" in English.)",
+        "template_used": "savings_accounts.yaml",
+        "suggestions": [
+          {
+            "analysis": "balance_inquiry",
+            "category": "Account Comparison",
+            "suggestion": "Para sa savings account, may dalawang pangunahing opsyon: (1) #SaveUp Digital Savings – zero maintaining balance at zero initial deposit, available lang sa BPI Mobile App o BPI Online; (2) Regular Savings – ₱500 initial deposit at kailangan mong panatilihin ang ₱3,000 minimum monthly Average Daily Balance (ADB) para maiwasan ang ₱300 monthly service charge."
+          },
+          {
+            "analysis": "account_comparison",
+            "category": "Product Recommendation",
+            "suggestion": "Kung gusto mong iwasan ang maintaining balance, kunin mo ang #SaveUp. Kung mas gusto mo ang traditional na passbook at mas mataas na interest potential, Regular Savings ang para sa iyo—pero tandaan ang ₱3,000 ADB requirement."
+          },
+          {
+            "analysis": "requirements",
+            "category": "Requirements Clarification",
+            "suggestion": "Kung Regular Savings ang pipiliin mo, kailangan mo ng: (a) ₱500 opening deposit, (b) ₱3,000 ADB para maiwasan ang ₱300 fee, at (c) kahit anong valid government ID. Kung #SaveUp naman, zero opening deposit at zero maintaining balance; kailangan mo lang ng valid ID at smartphone para sa selfie verification."
+          }
+        ],
+        "processing_method": "rag",
+        "classification": {
+          "detected_category": "banking product inquiry",
+          "confidence": 0.95,
+          "method": "langchain_agent"
+        }
+      },
+      "response_time": 39.22690534591675,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "e2e_002",
+      "test_type": "end_to_end",
+      "input_text": "Paano mag-transfer ng pera sa ibang bansa?",
+      "expected_output": "remittances_ofw.yaml",
+      "actual_output": "remittances_ofw.yaml",
+      "classification_result": null,
+      "translation_result": "Here's the translation:\n\n\"How do I transfer money to another country?\"\n\n(Note: The text is asking about the process of transferring funds internationally, likely through a bank or financial institution.)",
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "Paano mag-transfer ng pera sa ibang bansa?",
+        "translated_message": "Here's the translation:\n\n\"How do I transfer money to another country?\"\n\n(Note: The text is asking about the process of transferring funds internationally, likely through a bank or financial institution.)",
+        "template_used": "remittances_ofw.yaml",
+        "suggestions": [
+          {
+            "analysis": "send_money",
+            "category": "Remittance Options",
+            "suggestion": "Gamitin ang BPI Online wire-transfer facility para magpadala ng pera mula Pilipinas patungong ibang bansa. Sa BPI Online o Mobile App, piliin 'Transfer Money' → 'Wire Transfer'. Kailangan ng SWIFT/BIC code ng beneficiary bank, exact account name at number. Processing time: 1-2 banking days. Fee: ₱600-₱1,000 depende sa destination at currency. Available ang USD, EUR, GBP, AUD, JPY, at iba pang major currencies."
+          },
+          {
+            "analysis": "foreign_currency",
+            "category": "Multi-currency account options",
+            "suggestion": "Kung may existing BPI US Dollar Savings o Maxi-Saver account, maaari ka nang mag-wire transfer ng USD diretso sa ibang bansa. Para sa ibang currencies, buksan ang BPI Multi-Currency account na may EUR, GBP, AUD, JPY, at CNY. Walang maintaining balance sa Maxi-Saver kung may bonus interest; ₱500 sa US Dollar Savings. Gamitin ang BPI Online para sa real-time FX rates bago mag-confirm ng transfer."
+          },
+          {
+            "analysis": "exchange_rates",
+            "category": "Exchange Rate Info",
+            "suggestion": "Real-time ang FX rates sa BPI Online bago mag-wire transfer. Para sa USD outward remittance, karaniwang spread ay 0.30-0.50 piso sa mid-market rate. Available ang 'Rate Alert' feature sa BPI Online - mag-set ng target rate at magno-notify ang app kapag nakuha na ang gusto mong conversion rate."
+          },
+          {
+            "analysis": "processing_time",
+            "category": "Processing Time",
+            "suggestion": "Wire transfer cut-off: 11:00 AM PHT para same-day processing. Kung ma-submit bago ang cut-off, 1-2 banking days ang transit time papuntang major destinations (US, Canada, Europe, Singapore, Hong Kong). Para sa ibang bansa, 2-3 banking days. I-check ang 'Transfer Status' sa BPI Online para sa real-time tracking."
+          },
+          {
+            "analysis": "documentation_requirements",
+            "category": "Documentation Requirements",
+            "suggestion": "Kailangan ng mga sumusunod: (1) SWIFT/BIC code ng beneficiary bank, (2) exact account name at number ng beneficiary, (3) complete address ng beneficiary bank, (4) purpose of remittance (tuition, medical, business, etc.). Para sa USD transfers above $10,000, kailangan ng supporting documents gaya ng invoice o enrollment form."
+          }
+        ],
+        "processing_method": "rag",
+        "classification": {
+          "detected_category": "remittances",
+          "confidence": 0.95,
+          "method": "langchain_agent"
+        }
+      },
+      "response_time": 43.3714017868042,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+    "rag_optimization": {
+        "description": "Optimized RAG configuration for BPI Product Data",
+        "version": "1.0",
+        "date": "2024-08-24",
+        "chunking_strategies": {
+            "precision": {
+                "chunk_size": 512,
+                "chunk_overlap": 50,
+                "use_case": "Precise Q&A, specific product details",
+                "recommended_for": [
+                    "specific_fees",
+                    "exact_requirements",
+                    "precise_limits"
+                ]
+            },
+            "balanced": {
+                "chunk_size": 1024,
+                "chunk_overlap": 100,
+                "use_case": "Optimal balance of context and precision",
+                "recommended_for": [
+                    "general_inquiries",
+                    "product_comparisons",
+                    "feature_explanations"
+                ],
+                "default": true
+            },
+            "context": {
+                "chunk_size": 1536,
+                "chunk_overlap": 150,
+                "use_case": "Context-heavy tasks, detailed explanations",
+                "recommended_for": [
+                    "complex_relationships",
+                    "detailed_procedures",
+                    "comprehensive_guides"
+                ]
+            },
+            "semantic": {
+                "chunk_size": "variable",
+                "method": "semantic_similarity",
+                "use_case": "Content-aware chunking based on meaning",
+                "recommended_for": [
+                    "topic_coherence",
+                    "natural_boundaries",
+                    "content_flow"
+                ]
+            }
+        },
+        "retrieval_settings": {
+            "top_k": 3,
+            "similarity_threshold": 0.7,
+            "response_mode": "compact",
+            "embedding_model": "sentence-transformers/all-MiniLM-L6-v2"
+        },
+        "banking_metadata": {
+            "product_categories": {
+                "deposits": [
+                    "savings",
+                    "deposit",
+                    "account",
+                    "checking"
+                ],
+                "credit": [
+                    "credit",
+                    "card",
+                    "loan",
+                    "borrowing"
+                ],
+                "investments": [
+                    "investment",
+                    "wealth",
+                    "fund",
+                    "portfolio"
+                ],
+                "general": [
+                    "service",
+                    "feature",
+                    "benefit",
+                    "requirement"
+                ]
+            },
+            "section_pattern": "\\d+\\.\\d+\\s+[A-Z]",
+            "extract_section_numbers": true,
+            "add_chunk_metadata": true
+        },
+        "performance_optimizations": {
+            "model_caching": true,
+            "cache_directory": "server/models",
+            "vector_store_naming": "{vector_store_path}_{user_id}_{strategy}.json",
+            "llm_settings": {
+                "temperature": 0.1,
+                "max_tokens": 800
+            }
+        },
+        "prompt_enhancements": {
+            "banking_specific": true,
+            "section_referencing": true,
+            "accuracy_requirements": true,
+            "limitation_handling": true
+        }
+    },
+    "deployment_instructions": {
+        "1": "Use 'balanced' strategy as default for production",
+        "2": "Implement strategy selection based on query type",
+        "3": "Monitor performance metrics and adjust as needed",
+        "4": "Consider user feedback for chunk size fine-tuning"
+    },
+    "usage_examples": {
+        "general_query": {
+            "strategy": "balanced",
+            "example": "What savings accounts does BPI offer?"
+        },
+        "specific_detail": {
+            "strategy": "precision",
+            "example": "What is the minimum balance for BPI Express Teller?"
+        },
+        "complex_explanation": {
+            "strategy": "context",
+            "example": "Explain the differences between BPI investment products"
+        }
+    }
+}

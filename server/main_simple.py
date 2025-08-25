@@ -84,7 +84,7 @@ async def get_suggestions(request: ChatRequest):
         # Call Groq API
         groq_client = Groq(api_key=groq_api_key)
         response = groq_client.chat.completions.create(
-            model="llama3-8b-8192",
+            model="moonshotai/kimi-k2-instruct",
             messages=[{"role": "user", "content": full_prompt}],
             temperature=0.7,
             max_tokens=1000

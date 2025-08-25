@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Control System Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .panel {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status.enabled {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.disabled {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .agent-requested {
+            animation: pulse 2s infinite;
+            border: 3px solid #ff6b6b !important;
+            background-color: #fff5f5 !important;
+        }
+        @keyframes pulse {
+            0% { border-color: #ff6b6b; }
+            50% { border-color: #ff0000; }
+            100% { border-color: #ff6b6b; }
+        }
+    </style>
+</head>
+<body>
+    <h1>🤖 Bot Control System Test Dashboard</h1>
+    <div class="container">
+        <!-- Customer Chat Simulation -->
+        <div class="panel">
+            <h2>📱 Customer Chat Simulation</h2>
+            <div id="botStatus" class="status enabled">🟢 Bot Enabled</div>
+            <button class="button" onclick="callAgent()">📞 Call Agent (Disable Bot)</button>
+            <button class="button" onclick="sendCustomerMessage()">💬 Send Customer Message</button>
+            
+            <h3>Chat Messages:</h3>
+            <div id="chatMessages" class="log"></div>
+        </div>
+
+        <!-- Admin Panel Simulation -->
+        <div class="panel">
+            <h2>👨‍💼 Admin Panel Simulation</h2>
+            <div id="adminStatus" class="status enabled">🟢 Bot Active</div>
+            <button class="button" onclick="useAIRecommendation()">🤖 Use AI Recommendation (Re-enable Bot)</button>
+            <button class="button" onclick="sendAgentMessage()">📝 Send Agent Message</button>
+            
+            <h3>Active Chats:</h3>
+            <div id="activeChatCard" class="panel" style="margin: 10px 0; border: 2px solid #dee2e6;">
+                <div id="chatCardContent">
+                    <strong>Customer: customer_test_123</strong><br>
+                    <span id="cardStatus">Status: active</span><br>
+                    <small id="cardTimestamp">Last activity: Just now</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Logs -->
+    <div class="panel" style="margin-top: 20px;">
+        <h2>📋 System Activity Log</h2>
+        <div id="systemLog" class="log"></div>
+        <button class="button" onclick="clearLog()">🗑️ Clear Log</button>
+    </div>
+
+    <script>
+        const customerId = 'customer_test_123';
+        let botEnabled = true;
+        let agentRequested = false;
+
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logDiv = document.getElementById('systemLog');
+            logDiv.innerHTML += `[${timestamp}] ${message}<br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function updateBotStatus(enabled) {
+            botEnabled = enabled;
+            const statusDiv = document.getElementById('botStatus');
+            const adminStatusDiv = document.getElementById('adminStatus');
+            
+            if (enabled) {
+                statusDiv.className = 'status enabled';
+                statusDiv.innerHTML = '🟢 Bot Enabled';
+                adminStatusDiv.className = 'status enabled';
+                adminStatusDiv.innerHTML = '🟢 Bot Active';
+                log('✅ Bot has been ENABLED');
+            } else {
+                statusDiv.className = 'status disabled';
+                statusDiv.innerHTML = '🔴 Bot Disabled (Agent Mode)';
+                adminStatusDiv.className = 'status disabled';
+                adminStatusDiv.innerHTML = '🔴 Bot Disabled (Agent Handling)';
+                log('❌ Bot has been DISABLED - Agent requested');
+            }
+        }
+
+        function updateChatCard(agentRequestedStatus) {
+            const cardDiv = document.getElementById('activeChatCard');
+            const statusSpan = document.getElementById('cardStatus');
+            
+            if (agentRequestedStatus) {
+                cardDiv.className = 'panel agent-requested';
+                statusSpan.innerHTML = '🚨 Status: AGENT REQUESTED';
+                log('🚨 Chat card is now HIGHLIGHTED - Agent needed!');
+            } else {
+                cardDiv.className = 'panel';
+                statusSpan.innerHTML = 'Status: active';
+                log('💬 Chat card returned to normal status');
+            }
+        }
+
+        async function callAgent() {
+            try {
+                log('📞 Customer clicked "Call Agent" button');
+                
+                // Simulate the API call to disable bot
+                const response = await fetch(`http://localhost:8000/chat/status/${customerId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        status: 'agent_requested',
+                        bot_enabled: false
+                    })
+                });
+
+                if (response.ok) {
+                    updateBotStatus(false);
+                    agentRequested = true;
+                    updateChatCard(true);
+                    
+                    // Add message to chat
+                    addChatMessage('system', '🚨 Agent has been requested. Bot responses are now disabled.');
+                    log('✅ Agent request successful - Bot disabled, admin notified');
+                } else {
+                    log('❌ Failed to request agent');
+                }
+            } catch (error) {
+                log(`❌ Error requesting agent: ${error.message}`);
+            }
+        }
+
+        async function useAIRecommendation() {
+            try {
+                log('🤖 Admin clicked "Use AI Recommendation" button');
+                
+                // Simulate using an AI recommendation which re-enables bot
+                const response = await fetch(`http://localhost:8000/chat/status/${customerId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        status: 'active',
+                        bot_enabled: true
+                    })
+                });
+
+                if (response.ok) {
+                    updateBotStatus(true);
+                    agentRequested = false;
+                    updateChatCard(false);
+                    log('✅ AI recommendation used - Bot re-enabled automatically');
+                } else {
+                    log('❌ Failed to use AI recommendation');
+                }
+            } catch (error) {
+                log(`❌ Error using AI recommendation: ${error.message}`);
+            }
+        }
+
+        function addChatMessage(sender, message) {
+            const chatDiv = document.getElementById('chatMessages');
+            const timestamp = new Date().toLocaleTimeString();
+            const senderIcon = sender === 'customer' ? '👤' : sender === 'bot' ? '🤖' : '⚠️';
+            chatDiv.innerHTML += `[${timestamp}] ${senderIcon} ${sender}: ${message}<br>`;
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        }
+
+        async function sendCustomerMessage() {
+            const message = prompt('Enter customer message:') || 'Hello, I need help with my account';
+            addChatMessage('customer', message);
+            log(`📨 Customer sent message: "${message}"`);
+
+            // Only respond with bot if bot is enabled
+            if (botEnabled && !agentRequested) {
+                setTimeout(() => {
+                    addChatMessage('bot', '🤖 Thank you for your message. How can I assist you today?');
+                    log('🤖 Bot responded automatically');
+                }, 1000);
+            } else {
+                log('🚫 Bot did not respond (disabled due to agent request)');
+            }
+        }
+
+        function sendAgentMessage() {
+            const message = prompt('Enter agent message:') || 'Hello! I\'m here to help you personally.';
+            addChatMessage('agent', `👨‍💼 ${message}`);
+            log(`👨‍💼 Agent sent message: "${message}"`);
+        }
+
+        function clearLog() {
+            document.getElementById('systemLog').innerHTML = '';
+            document.getElementById('chatMessages').innerHTML = '';
+        }
+
+        // Initialize
+        log('🚀 Bot Control System Test Dashboard initialized');
+        log('📋 Test the workflow: 1) Send customer message (bot responds), 2) Call agent (bot stops), 3) Use AI recommendation (bot re-enables)');
+    </script>
+</body>
+</html>

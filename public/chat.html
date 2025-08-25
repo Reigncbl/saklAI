@@ -302,24 +302,38 @@
     }
 
     async function callAgent() {
-      // Automatically send user message
-      appendMessage('user', 'I want to talk to an agent');
-      
-      // Show typing indicator
-      const typingDiv = showTypingIndicator();
-      
       try {
-        // Call the backend to set chat status to "assigned" (takeover)
-        const response = await fetch(`${API_BASE_URL}/chat/status/${userId}`, {
+        // First, send a message to chat history that user requested an agent
+        const agentRequestResponse = await fetch(`${API_BASE_URL}/chat/message/${userId}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ status: 'assigned' })
+          body: JSON.stringify({ 
+            message: "🔔 AGENT REQUESTED - Customer has requested to speak with a human agent" 
+          })
         });
 
-        if (!response.ok) {
-          throw new Error(`Failed to assign chat: ${response.status}`);
+        // Show user message
+        appendMessage('user', 'I want to talk to an agent');
+        
+        // Show typing indicator
+        const typingDiv = showTypingIndicator();
+        
+        // Call the backend to set chat status to "assigned" and disable bot
+        const statusResponse = await fetch(`${API_BASE_URL}/chat/status/${userId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            status: 'assigned',
+            bot_enabled: false  // Disable bot responses
+          })
+        });
+
+        if (!statusResponse.ok) {
+          throw new Error(`Failed to assign chat: ${statusResponse.status}`);
         }
 
         // Remove typing indicator and show success message
@@ -331,9 +345,15 @@
           appendMessage('bot', 'Your chat has been assigned to a human agent. They will be with you shortly!');
         }, 2000);
 
+        // Start more aggressive polling since agent interaction is expected
+        stopPolling();
+        pollingInterval = setInterval(pollForNewMessages, 500); // 0.5 second intervals
+
       } catch (error) {
         console.error('Error calling agent:', error);
-        removeTypingIndicator(typingDiv);
+        if (document.querySelector('.typing-indicator')) {
+          removeTypingIndicator(document.querySelector('.typing-indicator'));
+        }
         appendMessage('bot', 'Sorry, there was an error connecting you to an agent. Please try again later.');
       }
     }
@@ -479,27 +499,88 @@
                 appendMessage('bot', entry.message);
               }
             });
+            
+            // Set initial message count for polling
+            lastMessageCount = data.history.length;
           } else {
             // Show welcome message if no history
             appendMessage('bot', 'Hi! I\'m Saklay, your AI Assistant. How can I help you today?');
+            lastMessageCount = 0;
           }
         } else {
           console.log(`Chat history not found (status: ${response.status}), showing welcome message`);
           // If history not found, show welcome message
           appendMessage('bot', 'Hi! I\'m Saklay, your AI Assistant. How can I help you today?');
+          lastMessageCount = 0;
         }
       } catch (error) {
         console.error('Error loading chat history:', error);
+        lastMessageCount = 0;
         // Show welcome message on error - this is already in the HTML
       }
     }
     
+    // Real-time message polling for agent messages
+    let lastMessageCount = 0;
+    let pollingInterval;
+    
+    async function pollForNewMessages() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/chat/history/${userId}`);
+        if (response.ok) {
+          const data = await response.json();
+          
+          if (data.history && data.history.length > lastMessageCount) {
+            // New messages detected
+            const newMessages = data.history.slice(lastMessageCount);
+            
+            newMessages.forEach(entry => {
+              if (entry.type === 'assistant' && entry.message) {
+                // Only add if it's not already displayed
+                const messages = document.getElementById('chatMessages');
+                const lastBotMessage = [...messages.children].reverse().find(msg => msg.classList.contains('bot'));
+                
+                if (!lastBotMessage || lastBotMessage.textContent !== entry.message) {
+                  appendMessage('bot', entry.message);
+                }
+              }
+            });
+            
+            lastMessageCount = data.history.length;
+          }
+        }
+      } catch (error) {
+        console.log('Polling error (normal if server is down):', error);
+      }
+    }
+    
+    function startPolling() {
+      // Start aggressive polling every 1 second for real-time feel
+      pollingInterval = setInterval(pollForNewMessages, 1000);
+    }
+    
+    function stopPolling() {
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+      }
+    }
+
     // Load chat history when page loads (but keep the default message if no history)
     window.addEventListener('load', () => {
       // Only load history if we can connect to the server
       if (window.location.protocol !== 'file:' || API_BASE_URL) {
         loadChatHistory();
+        
+        // Start polling for new messages after loading history
+        setTimeout(() => {
+          startPolling();
+        }, 2000);
       }
+    });
+    
+    // Clean up polling when page unloads
+    window.addEventListener('beforeunload', () => {
+      stopPolling();
     });
   </script>
 </body>

@@ -134,6 +134,17 @@ function renderCard(card) {
       isYellow ? "percent yellow" :
         card.percent < 100 ? "percent low" : "percent";
 
+  // Check if agent was requested by looking for agent request messages
+  let isAgentRequested = false;
+  if (Array.isArray(card.history)) {
+    isAgentRequested = card.history.some(m => 
+      m.content && (
+        m.content.includes('AGENT REQUESTED') || 
+        m.content.includes('Customer has requested to speak with a human agent')
+      )
+    );
+  }
+
   // Render all chat bubbles from history if available
   let chatBubbles = "";
   if (Array.isArray(card.history)) {
@@ -164,7 +175,7 @@ function renderCard(card) {
   }
 
   return `
-    <div class="chat-card${isYellow ? " yellow" : ""}">
+    <div class="chat-card${isYellow ? " yellow" : ""}${isAgentRequested ? " agent-requested" : ""}">
       <div>
         <div class="chat-header">
           <div>
@@ -271,20 +282,27 @@ function renderChatPanel(chat) {
   let filteredMessages = chat.messages;
   if (chat.fullData && chat.fullData.status === "assigned" && chat.fullData.history) {
     // Only show messages from assigned chats
-    filteredMessages = chat.fullData.history.map(msg => ({
-      label: msg.role === 'user' ? 'Customer' : (msg.role === 'assistant' || msg.role === 'agent' ? 'Agent' : 'System'),
-      bubble: msg.content || (msg.response && msg.response.suggestions ? msg.response.suggestions[0]?.suggestion : ''),
-      agent: msg.role === 'assistant' || msg.role === 'agent'
-    }));
+    filteredMessages = chat.fullData.history.map(msg => {
+      const messageContent = msg.content || (msg.response && msg.response.suggestions ? msg.response.suggestions[0]?.suggestion : '');
+      const isAgentRequest = messageContent.includes('AGENT REQUESTED') || messageContent.includes('Customer has requested to speak with a human agent');
+      
+      return {
+        label: msg.role === 'user' ? 'Customer' : (msg.role === 'assistant' || msg.role === 'agent' ? 'Agent' : 'System'),
+        bubble: messageContent,
+        agent: msg.role === 'assistant' || msg.role === 'agent',
+        yellow: isAgentRequest || msg.role === 'system', // Highlight agent requests and system messages
+        urgent: isAgentRequest // Special flag for agent requests
+      };
+    });
   }
 
   return `
     <div class="chat-header">${chat.name || chat.user || 'Customer Chat'}</div>
     <div class="chat-messages">
       ${filteredMessages && filteredMessages.length > 0 ? filteredMessages.map(m => `
-        <div class="chat-row${m.agent ? " agent" : ""}">
+        <div class="chat-row${m.agent ? " agent" : ""}${m.urgent ? " urgent" : ""}">
           ${m.label ? `<div class="chat-label${m.agent ? " agent" : ""}">${m.label}</div>` : ""}
-          ${m.bubble ? `<div class="chat-bubble${m.agent ? " agent" : ""}${m.yellow ? " yellow" : ""}">${m.bubble}</div>` : ""}
+          ${m.bubble ? `<div class="chat-bubble${m.agent ? " agent" : ""}${m.yellow ? " yellow" : ""}${m.urgent ? " urgent" : ""}">${m.bubble}</div>` : ""}
         </div>`).join("") : '<div class="chat-row"><div class="chat-bubble">No messages available for assigned chats...</div></div>'}
     </div>
     <form class="chat-input-area" onsubmit="event.preventDefault(); sendMessage(this);">
@@ -457,11 +475,44 @@ async function sendMessage(form) {
 }
 
 // Use recommendation functionality
-function useRecommendation(text) {
+async function useRecommendation(text) {
   const chatInput = document.querySelector('.chat-input');
   if (chatInput) {
     chatInput.value = text;
     chatInput.focus();
+    
+    // Re-enable bot when admin uses AI recommendations
+    const activeChat = currentActiveChatSessions.find(c => c.active);
+    if (activeChat && activeChat.user) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/chat/status/${activeChat.user}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            status: 'assigned',  // Keep assigned status
+            bot_enabled: true    // Re-enable bot responses
+          })
+        });
+        
+        if (response.ok) {
+          console.log('Bot re-enabled for user:', activeChat.user);
+          
+          // Add a subtle visual indicator that bot is re-enabled
+          const button = event.target;
+          const originalText = button.textContent;
+          button.textContent = 'Bot Enabled ✓';
+          button.style.background = '#22c55e';
+          setTimeout(() => {
+            button.textContent = originalText;
+            button.style.background = '';
+          }, 2000);
+        }
+      } catch (error) {
+        console.error('Error re-enabling bot:', error);
+      }
+    }
   }
 }
 
@@ -670,4 +721,34 @@ document.addEventListener("click", (e) => {
       updateRecommendationsPanel();
     }
   }
+});
+
+// Initialize the admin panel when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Admin panel loading...');
+  
+  // Set initial active tab
+  const autoTab = document.getElementById('autoTab');
+  const activeTab = document.getElementById('activeTab');
+  
+  if (autoTab) {
+    autoTab.classList.add('active');
+    // Load the Auto Chats panel (Panel 1) by default
+    fetchActiveChats();
+  }
+  
+  if (activeTab) {
+    activeTab.classList.remove('active');
+  }
+  
+  // Set up automatic refresh every 5 seconds
+  setInterval(() => {
+    if (document.getElementById('autoTab').classList.contains('active')) {
+      fetchActiveChats();
+    } else if (document.getElementById('activeTab').classList.contains('active')) {
+      mountPanel2();
+    }
+  }, 5000);
+  
+  console.log('Admin panel initialized');
 });

@@ -231,6 +231,69 @@ body {
   border: 1px solid #ffd97a;
   text-align: left;
 }
+
+/* Urgent notification styles for agent requests */
+.chat-bubble.urgent {
+  background: #fff2f2;
+  color: #d10000;
+  font-weight: 600;
+  font-size: 0.97em;
+  margin-left: 0;
+  width: 92%;
+  border: 2px solid #ff6b6b;
+  text-align: left;
+  animation: urgentPulse 2s ease-in-out infinite;
+}
+
+.chat-row.urgent {
+  border-left: 4px solid #ff6b6b;
+  padding-left: 8px;
+  background: #fff8f8;
+}
+
+/* Highlight entire chat card when agent requested */
+.chat-card.agent-requested {
+  border: 3px solid #ff6b6b !important;
+  background: linear-gradient(135deg, #fff8f8 0%, #ffffff 100%) !important;
+  box-shadow: 0 4px 20px rgba(255, 107, 107, 0.3) !important;
+  animation: cardPulse 3s ease-in-out infinite;
+}
+
+.chat-card.agent-requested .chat-meta .user {
+  color: #d10000 !important;
+  font-weight: 700 !important;
+}
+
+.chat-card.agent-requested .chat-meta .user::after {
+  content: " 🔔";
+  animation: bellRing 1s ease-in-out infinite;
+}
+
+@keyframes urgentPulse {
+  0%, 100% { 
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4);
+  }
+  50% { 
+    border-color: #ff4757;
+    box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.2);
+  }
+}
+
+@keyframes cardPulse {
+  0%, 100% { 
+    box-shadow: 0 4px 20px rgba(255, 107, 107, 0.3);
+  }
+  50% { 
+    box-shadow: 0 6px 25px rgba(255, 107, 107, 0.5);
+  }
+}
+
+@keyframes bellRing {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+}
 .chat-footer {
   display: flex;
   justify-content: flex-end;

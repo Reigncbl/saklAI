@@ -133,7 +133,6 @@ class ChatResponse(BaseModel):
 
 class StatusUpdate(BaseModel):
     status: str
-    bot_enabled: Optional[bool] = None  # Add bot control field
 
 class AgentMessage(BaseModel):
     message: str
@@ -218,91 +217,45 @@ async def make_groq_request_async(api_key: str, conversation_context: str, knowl
     """Enhanced async GROQ API call for RAG-powered recommendations"""
     try:
         # Build enhanced prompt with RAG context
-        enhanced_prompt = f"""You are an expert AI assistant helping human banking agents provide personalized customer service for BPI (Bank of the Philippine Islands). You have access to detailed conversation context and knowledge base information to provide highly relevant, actionable recommendations.
+        enhanced_prompt = f"""You are an AI assistant helping human banking agents provide personalized customer service for BPI.
 
-=== CONTEXT ANALYSIS ===
-Customer Intent: {user_intent}
-Conversation Summary: {conversation_summary}
+Context Analysis:
+- User Intent: {user_intent}
+- Conversation Summary: {conversation_summary}
 
-=== RECENT CONVERSATION DETAILS ===
+Recent Conversation:
 {conversation_context}
 
-=== KNOWLEDGE BASE INSIGHTS ===
+Knowledge Base Context:
 {knowledge_context}
 
-=== MISSION ===
-Generate exactly 3 high-quality, contextually relevant message recommendations that will help the banking agent provide exceptional customer service. Each recommendation must be specific to this customer's situation and demonstrate understanding of their needs.
-
-=== REQUIRED OUTPUT FORMAT ===
+Generate exactly 3 contextual message recommendations in this JSON format:
 [
   {{
-    "category": "CLARIFY",
-    "message": "Specific, targeted question to gather crucial missing information",
-    "reasoning": "Clear explanation of why this information is essential for providing better service"
+    "type": "CLARIFY",
+    "message": "A specific clarifying question based on the conversation",
+    "reasoning": "Why this clarification would help"
   }},
   {{
-    "category": "PRODUCT_RECOMMENDATION", 
-    "message": "Tailored BPI product or service recommendation with specific benefits",
-    "reasoning": "Detailed connection between customer needs and product advantages"
+    "type": "PRODUCT_RECOMMENDATION", 
+    "message": "A BPI product recommendation tailored to their needs",
+    "reasoning": "Why this product fits their situation"
   }},
   {{
-    "category": "NEXT_STEPS",
-    "message": "Concrete, actionable next step that moves toward resolution",
-    "reasoning": "How this action directly progresses the customer's request"
+    "type": "NEXT_STEPS",
+    "message": "A specific next action to move toward resolution",
+    "reasoning": "How this progresses their request"
   }}
 ]
 
-=== CATEGORY GUIDELINES ===
+Guidelines:
+1. Be specific to this customer's conversation
+2. Reference conversation details when possible
+3. Suggest appropriate BPI products/services
+4. Maintain professional, helpful tone
+5. Focus on actionable responses
 
-🔍 CLARIFY Category:
-- Purpose: Gather essential information to provide better service
-- Approach: Ask specific, focused questions about missing details
-- Examples:
-  * "To recommend the best savings account for you, could you share your typical monthly deposit amount?"
-  * "For your loan application, what's your preferred loan term - 2, 3, or 5 years?"
-  * "Are you looking for a credit card for personal use, business expenses, or both?"
-- Quality Standards: Questions should be purposeful, not generic; should lead to actionable insights
-
-💰 PRODUCT_RECOMMENDATION Category:
-- Purpose: Suggest relevant BPI products/services that match customer needs
-- Approach: Connect specific products to their stated requirements
-- BPI Products Include:
-  * Savings: Regular Savings, High-Yield Savings, USD Savings
-  * Loans: Personal Loan, Auto Loan, Home Loan, Business Loan
-  * Credit Cards: Classic, Gold, Platinum, Cashback, Rewards Cards
-  * Investments: UITF, Mutual Funds, Insurance Products
-  * Digital: BPI Online, Mobile Banking, PayMaya integration
-- Quality Standards: Mention specific product names, highlight relevant benefits, explain why it fits
-
-⚡ NEXT_STEPS Category:
-- Purpose: Provide concrete actions to move toward resolution
-- Approach: Suggest specific, immediate actions the agent can take
-- Examples:
-  * "I can schedule a branch appointment for you this week to complete your account opening"
-  * "Let me send you the pre-qualification form via email right now"
-  * "I'll connect you with our loan specialist who can review your application today"
-- Quality Standards: Actions should be specific, time-bound when possible, immediately executable
-
-=== RESPONSE QUALITY STANDARDS ===
-✅ Leverage Knowledge Base: Use specific information from knowledge context to provide informed recommendations
-✅ Reference Conversation: Mention specific details from the customer conversation
-✅ Be Contextual: Ensure recommendations directly relate to customer's stated needs
-✅ Use BPI Language: Employ professional banking terminology and BPI-specific product names
-✅ Show Understanding: Demonstrate comprehension of customer's situation in reasoning
-✅ Provide Value: Each recommendation should offer clear benefit to customer experience
-✅ Be Actionable: All suggestions should be implementable by the banking agent
-
-=== ENHANCED GUIDELINES ===
-1. **Conversation Integration**: Reference specific details from the conversation context to show understanding
-2. **Knowledge Utilization**: Incorporate relevant information from the knowledge base to provide informed recommendations
-3. **Customer-Centric Focus**: Prioritize customer needs and pain points identified in the conversation
-4. **BPI Expertise**: Demonstrate knowledge of BPI products, services, and processes
-5. **Solution-Oriented**: Focus on resolving customer issues and achieving their goals
-6. **Professional Tone**: Maintain helpful, knowledgeable, and trustworthy communication style
-7. **Specificity**: Avoid generic responses; tailor each recommendation to this specific customer
-8. **Value Addition**: Each recommendation should add meaningful value to the customer interaction
-
-CRITICAL: Return ONLY the JSON array. No additional text, explanations, or formatting outside the JSON structure."""
+Return only valid JSON."""
 
         # Make async API call
         client = get_groq_client()
@@ -350,34 +303,34 @@ def get_fallback_recommendations(user_intent, last_message):
     base_recommendations = {
         "loan_inquiry": [
             {
-                "category": "CLARIFY",
+                "type": "CLARIFY",
                 "message": "What specific type of loan are you interested in? (Personal, Auto, Home, Business)",
                 "reasoning": "Understanding loan type helps provide targeted information"
             },
             {
-                "category": "PRODUCT_RECOMMENDATION",
+                "type": "PRODUCT_RECOMMENDATION",
                 "message": "Based on your inquiry, I'd recommend checking our Personal Loan with competitive rates starting at 5.99% annually.",
                 "reasoning": "Personal loans are most common and have competitive rates"
             },
             {
-                "category": "NEXT_STEPS",
+                "type": "NEXT_STEPS",
                 "message": "Would you like me to schedule a consultation with our loan specialist to discuss your specific requirements?",
                 "reasoning": "Personal consultation ensures proper loan matching"
             }
         ],
         "savings_investment": [
             {
-                "category": "CLARIFY",
+                "type": "CLARIFY",
                 "message": "Are you looking for short-term savings or long-term investment options?",
                 "reasoning": "Investment timeframe determines product recommendations"
             },
             {
-                "category": "PRODUCT_RECOMMENDATION",
+                "type": "PRODUCT_RECOMMENDATION",
                 "message": "Consider our BPI Save Up account with higher interest rates for your savings goals.",
                 "reasoning": "Save Up offers competitive returns for growing savings"
             },
             {
-                "category": "NEXT_STEPS",
+                "type": "NEXT_STEPS",
                 "message": "I can help you open a savings account online or schedule a branch visit. Which would you prefer?",
                 "reasoning": "Offering convenient options for account opening"
             }
@@ -453,71 +406,6 @@ async def get_suggestions(request: ChatRequest):
         
         from datetime import datetime
         
-        # Read chat history and check bot status
-        chat_history_dir = Path(__file__).parent.parent / "chat_history"
-        file_path = chat_history_dir / f"chat_history_{user_id}.json"
-        
-        # Check if bot is enabled for this user
-        bot_enabled = True  # Default to enabled
-        user_history = []
-        
-        if file_path.exists():
-            try:
-                data = await read_json_file_async(file_path)
-                
-                # Handle both old and new formats
-                if isinstance(data, list):
-                    history = data
-                    # Convert to new format with bot enabled by default
-                    data = {"history": data, "status": "active", "bot_enabled": True}
-                    await write_json_file_async(file_path, data)
-                else:
-                    history = data.get("history", [])
-                    bot_enabled = data.get("bot_enabled", True)
-                
-                # Get last 6 messages for context
-                user_history = history[-6:] if len(history) > 6 else history
-            except:
-                user_history = []
-        
-        # If bot is disabled (agent mode), save user message but don't generate bot response
-        if not bot_enabled:
-            # Save user message to history
-            user_entry = {
-                "timestamp": datetime.now().isoformat(),
-                "role": "user",
-                "content": request.message.strip(),
-                "response": None,
-                "template_used": None,
-                "processing_method": "agent_mode"
-            }
-            
-            # Read, update, and write back to file
-            if file_path.exists():
-                data = await read_json_file_async(file_path)
-                if isinstance(data, list):
-                    data = {"history": data, "status": "assigned", "bot_enabled": False}
-                
-                if "history" not in data:
-                    data["history"] = []
-                data["history"].append(user_entry)
-            else:
-                data = {
-                    "history": [user_entry],
-                    "status": "assigned",
-                    "bot_enabled": False
-                }
-            
-            await write_json_file_async(file_path, data)
-            
-            # Return message indicating agent mode
-            return {
-                "status": "agent_mode",
-                "message": "Your message has been saved. A human agent will respond shortly.",
-                "suggestions": [{"analysis": "agent_mode", "category": "Agent", "suggestion": "Your message has been saved. A human agent will respond shortly."}]
-            }
-        
-        # Bot is enabled - proceed with normal AI response generation
         # Get GROQ API key
         groq_api_key = os.getenv("GROQ_API_KEY")
         if not groq_api_key:
@@ -536,6 +424,26 @@ async def get_suggestions(request: ChatRequest):
             prompt_template = config.get("prompt", "You are a helpful banking assistant.")
         except:
             prompt_template = "You are SaklAI, a helpful banking assistant for BPI. Provide helpful and professional responses."
+        
+        # Read chat history asynchronously
+        chat_history_dir = Path(__file__).parent.parent / "chat_history"
+        file_path = chat_history_dir / f"chat_history_{user_id}.json"
+        
+        user_history = []
+        if file_path.exists():
+            try:
+                data = await read_json_file_async(file_path)
+                
+                # Handle both old and new formats
+                if isinstance(data, list):
+                    history = data
+                else:
+                    history = data.get("history", [])
+                
+                # Get last 6 messages for context
+                user_history = history[-6:] if len(history) > 6 else history
+            except:
+                user_history = []
         
         # Build conversation context
         context = ""
@@ -736,67 +644,41 @@ async def get_message_recommendations(user_id: str):
         else:
             conversation_context = "No conversation history found for this customer."
         
-        # Create an enhanced prompt for generating context-aware recommendations
-        prompt = f"""You are SaklAI, an expert AI assistant helping human banking agents at BPI (Bank of the Philippine Islands) provide exceptional customer service.
+        # Create a prompt for generating context-aware recommendations
+        prompt = f"""You are an AI assistant helping a human banking agent provide excellent customer service. 
+        
+Based on the customer's conversation history below, generate 3 relevant and helpful message recommendations that the human agent can use to continue the conversation effectively.
 
-CONTEXT ANALYSIS:
 Customer Conversation History:
 {conversation_context}
 
-TASK: Analyze this conversation and generate exactly 3 actionable message recommendations for the human agent.
-
-REQUIRED OUTPUT FORMAT (JSON only, no markdown or extra text):
+Generate exactly 3 recommendations in this JSON format:
 [
   {{
     "category": "CLARIFY",
-    "message": "[Specific clarifying question based on conversation]",
-    "reasoning": "[Why this question helps progress the conversation]"
+    "message": "A clarifying question to better understand the customer's needs",
+    "reasoning": "Why this response would be helpful"
   }},
   {{
     "category": "PRODUCT_RECOMMENDATION", 
-    "message": "[Specific BPI product/service recommendation]",
-    "reasoning": "[Why this product fits their situation]"
+    "message": "A relevant product or service recommendation based on the conversation",
+    "reasoning": "Why this product fits the customer's needs"
   }},
   {{
     "category": "NEXT_STEPS",
-    "message": "[Concrete next action to move forward]",
-    "reasoning": "[How this action resolves their need]"
+    "message": "A concrete next step to move the conversation forward",
+    "reasoning": "How this helps progress the customer's request"
   }}
 ]
 
-OPTIMIZATION GUIDELINES:
+Focus on:
+- Banking and financial services context
+- BPI (Bank of the Philippine Islands) products and services
+- Professional, helpful, and personalized responses
+- Actionable next steps
+- Building customer trust and satisfaction
 
-CLARIFY Category - Ask Strategic Questions:
-• Focus on gathering missing key information for better service
-• Understand specific financial goals, challenges, or preferences  
-• Clarify timeline, budget constraints, or decision factors
-• Examples: "What's your target loan amount and preferred repayment term?" / "Are you looking for short-term liquidity or long-term investment growth?"
-
-PRODUCT_RECOMMENDATION Category - Suggest Relevant BPI Solutions:
-• Personal Banking: Personal Loans, Auto Loans, Home Loans, Credit Cards, Savings Accounts, Time Deposits
-• Business Banking: SME Loans, Business Accounts, Trade Finance, Cash Management
-• Investments: UITF, Mutual Funds, Insurance Products, Retirement Plans
-• Digital Services: BPI Mobile App, Online Banking, Digital Payments
-• Match products to specific conversation context and customer profile
-• Use confident language: "I recommend our [specific product] because..."
-
-NEXT_STEPS Category - Propose Concrete Actions:
-• Schedule specific appointments (branch visit, phone consultation, video call)
-• Document requirements (send application forms, request financial statements)
-• Verification processes (identity confirmation, income verification)
-• Application processes (loan application, account opening, service activation)
-• Follow-up actions with specific timeframes
-• Offer multiple convenient options when possible
-
-QUALITY STANDARDS:
-✓ Reference specific conversation details and customer statements
-✓ Use professional, confident BPI banking language
-✓ Ensure each recommendation serves a unique purpose
-✓ Make recommendations actionable and time-sensitive
-✓ Build customer confidence and trust through expertise
-✓ Focus on moving toward concrete resolution or next steps
-
-Generate only the JSON array response."""
+Respond only with the JSON array, no additional text."""
 
         # Call Groq API asynchronously
         response_text = await async_groq_call(prompt, temperature=0.7, max_tokens=1500)
@@ -871,29 +753,15 @@ async def set_chat_status(user_id: str, status: dict):
         
         # Convert old format to new format if needed
         if isinstance(data, list):
-            data = {
-                "history": data, 
-                "status": status.get("status", "active"),
-                "bot_enabled": status.get("bot_enabled", True)
-            }
+            data = {"history": data, "status": status.get("status", "active")}
         else:
             data["status"] = status.get("status", "active")
-            # Handle bot_enabled field
-            if "bot_enabled" in status:
-                data["bot_enabled"] = status["bot_enabled"]
-            elif "bot_enabled" not in data:
-                data["bot_enabled"] = True  # Default to enabled
         
         # Write back to file asynchronously
         success = await write_json_file_async(file_path, data)
         
         if success:
-            return {
-                "status": "success", 
-                "user_id": user_id, 
-                "new_status": status.get("status", "active"),
-                "bot_enabled": data.get("bot_enabled", True)
-            }
+            return {"status": "success", "user_id": user_id, "new_status": status.get("status", "active")}
         else:
             raise HTTPException(status_code=500, detail="Failed to write status update")
     except Exception as e:
@@ -1065,7 +933,7 @@ async def get_ai_message_recommendations_with_rag(user_id: str):
 if __name__ == "__main__":
     # Run the FastAPI server
     uvicorn.run(
-        "main_simple:app",
+        "main_simple_optimized:app",
         host="0.0.0.0",
         port=8000,
         reload=True,

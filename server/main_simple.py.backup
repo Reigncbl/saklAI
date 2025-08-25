@@ -1,0 +1,1265 @@
+# Add these imports for database support
+from sqlalchemy import create_engine, Column, String, DateTime, Text, JSON
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy import or_, and_
+from datetime import datetime
+
+import asyncio
+import aiofiles
+from fastapi import FastAPI, HTTPException, Body
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from pydantic import BaseModel
+import uvicorn
+import os
+import json
+import yaml
+from pathlib import Path
+from groq import Groq
+from dotenv import load_dotenv
+from datetime import datetime
+from typing import List, Dict, Optional
+from concurrent.futures import ThreadPoolExecutor
+import logging
+
+# Load environment variables
+load_dotenv()
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Thread pool for CPU-bound operations
+thread_pool = ThreadPoolExecutor(max_workers=4)
+
+# Async file operations helpers
+async def read_json_file_async(file_path: Path) -> dict:
+    """Async JSON file reader with error handling"""
+    try:
+        if not file_path.exists():
+            return {"history": [], "status": "active"}
+        
+        async with aiofiles.open(file_path, "r", encoding="utf-8") as f:
+            content = await f.read()
+            return json.loads(content)
+    except Exception as e:
+        logger.error(f"Error reading file {file_path}: {e}")
+        return {"history": [], "status": "active"}
+
+async def write_json_file_async(file_path: Path, data: dict) -> bool:
+    """Async JSON file writer with error handling"""
+    try:
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        async with aiofiles.open(file_path, "w", encoding="utf-8") as f:
+            await f.write(json.dumps(data, ensure_ascii=False, indent=2))
+        return True
+    except Exception as e:
+        logger.error(f"Error writing file {file_path}: {e}")
+        return False
+
+# Groq API call optimization
+async def make_groq_request_async(prompt: str, api_key: str, model: str = "llama3-8b-8192") -> str:
+    """Async Groq API call with error handling"""
+    try:
+        def _groq_call():
+            client = Groq(api_key=api_key)
+            response = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.7,
+                max_tokens=1000
+            )
+            return response.choices[0].message.content.strip()
+        
+        # Run in thread pool to avoid blocking
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(thread_pool, _groq_call)
+    except Exception as e:
+        logger.error(f"Groq API error: {e}")
+        raise HTTPException(status_code=500, detail=f"AI service error: {str(e)}")
+
+# File batching for bulk operations
+async def read_multiple_chat_files_async(chat_history_dir: Path) -> List[dict]:
+    """Read multiple chat files concurrently"""
+    if not chat_history_dir.exists():
+        return []
+    
+    json_files = [f for f in chat_history_dir.glob("*.json") if f.name.startswith("chat_history_")]
+    
+    # Read files concurrently
+    tasks = []
+    for file_path in json_files:
+        task = asyncio.create_task(_read_single_chat_file(file_path))
+        tasks.append(task)
+    
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    
+    # Filter out exceptions and empty results
+    conversations = []
+    for result in results:
+        if isinstance(result, dict) and result.get("user_id"):
+            conversations.append(result)
+    
+    return conversations
+
+async def _read_single_chat_file(file_path: Path) -> dict:
+    """Helper to read a single chat file"""
+    try:
+        data = await read_json_file_async(file_path)
+        
+        # Handle both old and new formats
+        if isinstance(data, list):
+            history = data
+            status = "active"
+        else:
+            history = data.get("history", [])
+            status = data.get("status", "active")
+        
+        if not history:
+            return {}
+        
+        user_id = file_path.name.replace("chat_history_", "").replace(".json", "")
+        last_entry = history[-1] if history else {}
+        timestamp = last_entry.get("timestamp", "")
+        
+        # Find last user message
+        last_message = ""
+        for entry in reversed(history):
+            if entry.get("role") == "user":
+                last_message = entry.get("content", "")
+                break
+        
+        return {
+            "user_id": user_id,
+            "last_timestamp": timestamp,
+            "last_message": last_message,
+            "message_count": len(history),
+            "status": status,
+            "history": history
+        }
+    except Exception as e:
+        logger.error(f"Error reading chat file {file_path}: {e}")
+        return {}
+
+# Load environment variables
+load_dotenv()
+
+# Caching for frequently accessed data
+from functools import lru_cache
+import time
+
+# Cache for chat history (in-memory cache with expiration)
+chat_cache = {}
+cache_expiry = {}
+CACHE_TTL = 300  # 5 minutes
+
+def get_cached_chat_history(user_id: str):
+    """Get chat history from cache or file"""
+    current_time = time.time()
+    
+    # Check if cache is valid
+    if (user_id in chat_cache and 
+        user_id in cache_expiry and 
+        cache_expiry[user_id] > current_time):
+        return chat_cache[user_id]
+    
+    # Cache miss or expired - load from file
+    chat_history_dir = Path(__file__).parent.parent / "chat_history"
+    file_path = chat_history_dir / f"chat_history_{user_id}.json"
+    
+    if file_path.exists():
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            
+            # Cache the data
+            chat_cache[user_id] = data
+            cache_expiry[user_id] = current_time + CACHE_TTL
+            return data
+        except Exception as e:
+            print(f"Error reading chat history: {e}")
+            return {"history": [], "status": "active"}
+    
+    return {"history": [], "status": "active"}
+
+def invalidate_chat_cache(user_id: str):
+    """Invalidate cache for a specific user"""
+    if user_id in chat_cache:
+        del chat_cache[user_id]
+    if user_id in cache_expiry:
+        del cache_expiry[user_id]
+
+# Simple data models
+class ChatRequest(BaseModel):
+    user_id: str
+    message: str
+
+class ChatResponse(BaseModel):
+    status: str
+    suggestions: list
+
+class StatusUpdate(BaseModel):
+    status: str
+
+class AgentMessage(BaseModel):
+    message: str
+
+# Input validation helpers
+def validate_user_id(user_id: str) -> str:
+    """Validate and sanitize user ID"""
+    if not user_id or len(user_id) > 50:
+        raise HTTPException(status_code=400, detail="Invalid user ID")
+    # Remove any potentially dangerous characters
+    import re
+    sanitized = re.sub(r'[^a-zA-Z0-9_-]', '', user_id)
+    if not sanitized:
+        raise HTTPException(status_code=400, detail="Invalid user ID format")
+    return sanitized
+
+# Connection pooling for Groq API
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+
+# Thread pool for blocking operations
+thread_pool = ThreadPoolExecutor(max_workers=4)
+
+@lru_cache(maxsize=1)
+def get_groq_client():
+    """Create a singleton Groq client"""
+    api_key = os.getenv("GROQ_API_KEY")
+    if not api_key:
+        raise ValueError("GROQ_API_KEY not configured")
+    return Groq(api_key=api_key)
+
+async def async_groq_call(prompt: str, temperature: float = 0.7, max_tokens: int = 1000):
+    """Async wrapper for Groq API calls"""
+    try:
+        client = get_groq_client()
+        
+        # Run the blocking API call in thread pool
+        response = await asyncio.get_event_loop().run_in_executor(
+            thread_pool,
+            lambda: client.chat.completions.create(
+                model="llama3-8b-8192",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=temperature,
+                max_tokens=max_tokens
+            )
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        print(f"Groq API error: {e}")
+        raise
+
+# Create FastAPI app
+app = FastAPI(title="SaklAI Simple Chat", version="1.0.0")
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Mount static files
+current_dir = Path(__file__).parent
+public_dir = current_dir.parent / "public"
+app.mount("/static", StaticFiles(directory=public_dir), name="static")
+
+# Also serve files directly from public directory
+app.mount("/css", StaticFiles(directory=public_dir / "css"), name="css")
+app.mount("/js", StaticFiles(directory=public_dir / "js"), name="js")
+
+# Simple chat history storage (in-memory)
+chat_history = {}
+
+@app.get("/")
+async def root():
+    """Serve the chat interface"""
+    chat_path = public_dir / "chat.html"
+    if chat_path.exists():
+        return FileResponse(chat_path)
+    return {"message": "Chat interface not found"}
+
+@app.get("/admin")
+async def admin():
+    """Serve the admin interface"""
+    admin_path = public_dir / "admin.html"
+    if admin_path.exists():
+        return FileResponse(admin_path)
+    return {"message": "Admin interface not found"}
+
+@app.get("/admin.html")
+async def admin_html():
+    """Serve admin.html directly"""
+    return await admin()
+
+@app.get("/favicon.ico")
+async def favicon():
+    """Return empty response for favicon to prevent 404 errors"""
+    return {"message": "No favicon"}
+
+@app.get("/chat.html")
+async def chat_html():
+    """Serve chat.html directly"""
+    return await root()
+
+@app.post("/rag/suggestions")
+async def get_suggestions(request: ChatRequest):
+    """Simple chat endpoint that returns AI responses and appends to chat history"""
+    try:
+        from datetime import datetime
+        
+        # Get GROQ API key
+        groq_api_key = os.getenv("GROQ_API_KEY")
+        if not groq_api_key:
+            return {
+                "status": "error",
+                "message": "GROQ API key not configured",
+                "suggestions": [{"suggestion": "Please configure the GROQ API key."}]
+            }
+        
+        # Load simple prompt
+        prompt_path = current_dir / "Prompts" / "config.yaml"
+        try:
+            with open(prompt_path, "r", encoding="utf-8") as f:
+                config = yaml.safe_load(f)
+            prompt_template = config.get("prompt", "You are a helpful banking assistant.")
+        except:
+            prompt_template = "You are SaklAI, a helpful banking assistant for BPI. Provide helpful and professional responses."
+        
+        # Read from actual chat history files
+        chat_history_dir = Path(__file__).parent.parent / "chat_history"
+        file_path = chat_history_dir / f"chat_history_{request.user_id}.json"
+        
+        user_history = []
+        if file_path.exists():
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                
+                # Handle both old and new formats
+                if isinstance(data, list):
+                    history = data
+                else:
+                    history = data.get("history", [])
+                
+                # Get last 3 conversations for context
+                user_history = history[-6:] if len(history) > 6 else history
+            except:
+                user_history = []
+        
+        # Build conversation context
+        context = ""
+        for entry in user_history:
+            role = entry.get("role", "")
+            content = entry.get("content", "")
+            if role == "user":
+                context += f"User: {content}\n"
+            elif role in ["assistant", "agent"]:
+                context += f"Assistant: {content}\n"
+        
+        # Create prompt
+        full_prompt = f"{prompt_template}\n\nConversation Context:\n{context}\n\nUser message: \"{request.message}\"\n\nProvide your response as a JSON array with this format: [{{\"analysis\": \"inquiry\", \"category\": \"Information\", \"suggestion\": \"your helpful response\"}}]"
+        
+        # Call Groq API
+        groq_client = Groq(api_key=groq_api_key)
+        response = groq_client.chat.completions.create(
+            model="llama3-8b-8192",
+            messages=[{"role": "user", "content": full_prompt}],
+            temperature=0.7,
+            max_tokens=1000
+        )
+        
+        response_text = response.choices[0].message.content.strip()
+        
+        # Parse JSON response
+        try:
+            if response_text.startswith("```"):
+                response_text = response_text.strip("`").lstrip("json").strip()
+            suggestions = json.loads(response_text)
+        except:
+            # Fallback if JSON parsing fails
+            suggestions = [{"analysis": "response", "category": "Information", "suggestion": response_text}]
+        
+        # Append to actual chat history file
+        timestamp = datetime.now().isoformat()
+        
+        # Prepare the data structure
+        if file_path.exists():
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            
+            # Convert old format to new format if needed
+            if isinstance(data, list):
+                data = {"history": data, "status": "active"}
+        else:
+            data = {"history": [], "status": "active"}
+        
+        # Add user message
+        user_entry = {
+            "timestamp": timestamp,
+            "role": "user",
+            "content": request.message,
+            "response": None,
+            "template_used": None,
+            "processing_method": None
+        }
+        data["history"].append(user_entry)
+        
+        # Add assistant response
+        assistant_content = suggestions[0].get("suggestion", response_text) if suggestions else response_text
+        assistant_entry = {
+            "timestamp": datetime.now().isoformat(),
+            "role": "assistant",
+            "content": assistant_content,
+            "response": {
+                "status": "success",
+                "user_id": request.user_id,
+                "message": request.message,
+                "translated_message": None,
+                "template_used": "config.yaml",
+                "suggestions": suggestions,
+                "processing_method": "direct_groq"
+            },
+            "template_used": "config.yaml",
+            "processing_method": "direct_groq"
+        }
+        data["history"].append(assistant_entry)
+        
+        # Keep only last 50 messages
+        if len(data["history"]) > 50:
+            data["history"] = data["history"][-50:]
+        
+        # Write back to file
+        chat_history_dir.mkdir(exist_ok=True)
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        
+        return {
+            "status": "success",
+            "suggestions": suggestions
+        }
+        
+    except Exception as e:
+        print(f"Chat error: {e}")
+        return {
+            "status": "error",
+            "message": f"Error: {str(e)}",
+            "suggestions": [{"suggestion": "I'm experiencing technical difficulties. Please try again."}]
+        }
+
+@app.get("/chat/history/{user_id}")
+async def get_chat_history(user_id: str):
+    """Get chat history for a user"""
+    try:
+        chat_history_dir = Path(__file__).parent.parent / "chat_history"
+        file_path = chat_history_dir / f"chat_history_{user_id}.json"
+        
+        if not file_path.exists():
+            return {
+                "user_id": user_id,
+                "history": [],
+                "total_count": 0
+            }
+        
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        
+        # Handle both old and new formats
+        if isinstance(data, list):
+            history = data
+        else:
+            history = data.get("history", [])
+        
+        # Format for frontend
+        formatted_history = []
+        for entry in history:
+            role = entry.get("role", "")
+            content = entry.get("content", "")
+            timestamp = entry.get("timestamp", "")
+            
+            formatted_history.append({
+                "type": role,
+                "message": content,
+                "timestamp": timestamp
+            })
+        
+        return {
+            "user_id": user_id,
+            "history": formatted_history,
+            "total_count": len(formatted_history)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to retrieve chat history: {str(e)}")
+
+@app.delete("/chat/history/{user_id}")
+async def clear_chat_history(user_id: str):
+    """Clear chat history for a user"""
+    try:
+        chat_history_dir = Path(__file__).parent.parent / "chat_history"
+        file_path = chat_history_dir / f"chat_history_{user_id}.json"
+        
+        if file_path.exists():
+            # Clear the history but keep the file structure
+            data = {"history": [], "status": "active"}
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+        
+        return {"status": "success", "message": f"Chat history cleared for user {user_id}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to clear chat history: {str(e)}")
+
+@app.post("/chat/recommendations/{user_id}")
+async def get_message_recommendations(user_id: str):
+    """Get context-aware AI message recommendations for agents based on user conversation history"""
+    try:
+        from datetime import datetime
+        
+        # Get GROQ API key
+        groq_api_key = os.getenv("GROQ_API_KEY")
+        if not groq_api_key:
+            return {
+                "status": "error",
+                "message": "GROQ API key not configured",
+                "recommendations": []
+            }
+        
+        # Read user's conversation history
+        chat_history_dir = Path(__file__).parent.parent / "chat_history"
+        file_path = chat_history_dir / f"chat_history_{user_id}.json"
+        
+        conversation_context = ""
+        if file_path.exists():
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                
+                # Handle both old and new formats
+                if isinstance(data, list):
+                    history = data
+                else:
+                    history = data.get("history", [])
+                
+                # Build comprehensive conversation context
+                for entry in history:
+                    role = entry.get("role", "")
+                    content = entry.get("content", "")
+                    timestamp = entry.get("timestamp", "")
+                    
+                    if role == "user":
+                        conversation_context += f"Customer ({timestamp}): {content}\n"
+                    elif role in ["assistant", "agent"]:
+                        agent_type = "AI Assistant" if role == "assistant" else "Human Agent"
+                        conversation_context += f"{agent_type} ({timestamp}): {content}\n"
+                
+            except Exception as e:
+                print(f"Error reading chat history: {e}")
+                conversation_context = "No conversation history available."
+        else:
+            conversation_context = "No conversation history found for this customer."
+        
+        # Create a prompt for generating context-aware recommendations
+        prompt = f"""You are an AI assistant helping a human banking agent provide excellent customer service. 
+        
+Based on the customer's conversation history below, generate 3 relevant and helpful message recommendations that the human agent can use to continue the conversation effectively.
+
+Customer Conversation History:
+{conversation_context}
+
+Generate exactly 3 recommendations in this JSON format:
+[
+  {{
+    "category": "CLARIFY",
+    "message": "A clarifying question to better understand the customer's needs",
+    "reasoning": "Why this response would be helpful"
+  }},
+  {{
+    "category": "PRODUCT_RECOMMENDATION", 
+    "message": "A relevant product or service recommendation based on the conversation",
+    "reasoning": "Why this product fits the customer's needs"
+  }},
+  {{
+    "category": "NEXT_STEPS",
+    "message": "A concrete next step to move the conversation forward",
+    "reasoning": "How this helps progress the customer's request"
+  }}
+]
+
+Focus on:
+- Banking and financial services context
+- BPI (Bank of the Philippine Islands) products and services
+- Professional, helpful, and personalized responses
+- Actionable next steps
+- Building customer trust and satisfaction
+
+Respond only with the JSON array, no additional text."""
+
+        # Call Groq API asynchronously
+        response_text = await async_groq_call(prompt, temperature=0.7, max_tokens=1500)
+        
+        # Parse JSON response
+        try:
+            if response_text.startswith("```"):
+                response_text = response_text.strip("`").lstrip("json").strip()
+            recommendations = json.loads(response_text)
+        except Exception as e:
+            print(f"JSON parsing error: {e}")
+            # Fallback recommendations if parsing fails
+            recommendations = [
+                {
+                    "category": "CLARIFY",
+                    "message": "Could you provide more details about your specific banking needs so I can assist you better?",
+                    "reasoning": "Gathering more information helps provide personalized service"
+                },
+                {
+                    "category": "PRODUCT_RECOMMENDATION",
+                    "message": "Based on your inquiry, I'd recommend exploring our comprehensive banking solutions.",
+                    "reasoning": "Offering relevant products based on customer interest"
+                },
+                {
+                    "category": "NEXT_STEPS", 
+                    "message": "Would you like me to schedule a consultation or provide more information about our services?",
+                    "reasoning": "Moving the conversation toward concrete action"
+                }
+            ]
+        
+        return {
+            "status": "success",
+            "user_id": user_id,
+            "recommendations": recommendations,
+            "conversation_summary": f"Analyzed {len(conversation_context.split('Customer'))-1 if conversation_context else 0} customer messages",
+            "timestamp": datetime.now().isoformat()
+        }
+        
+    except Exception as e:
+        print(f"Recommendation error: {e}")
+        return {
+            "status": "error",
+            "message": f"Error generating recommendations: {str(e)}",
+            "recommendations": []
+        }
+
+@app.get("/chat/active")
+async def get_active_chats():
+    """Get active chats for admin interface - optimized version"""
+    try:
+        chat_history_dir = Path(__file__).parent.parent / "chat_history"
+        conversations = await read_multiple_chat_files_async(chat_history_dir)
+        
+        # Sort by last_timestamp descending (newest first)
+        conversations.sort(key=lambda c: c.get("last_timestamp", ""), reverse=True)
+        return conversations
+        
+    except Exception as e:
+        logger.error(f"Error reading chat histories: {e}")
+        return []
+
+@app.post("/chat/status/{user_id}")
+async def set_chat_status(user_id: str, status: dict):
+    """Set chat status for a user - optimized version"""
+    try:
+        chat_history_dir = Path(__file__).parent.parent / "chat_history"
+        file_path = chat_history_dir / f"chat_history_{user_id}.json"
+        
+        # Read existing file asynchronously
+        data = await read_json_file_async(file_path)
+        
+        # Convert old format to new format if needed
+        if isinstance(data, list):
+            data = {"history": data, "status": status.get("status", "active")}
+        else:
+            data["status"] = status.get("status", "active")
+        
+        # Write back to file asynchronously
+        success = await write_json_file_async(file_path, data)
+        
+        if success:
+            return {"status": "success", "user_id": user_id, "new_status": status.get("status", "active")}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to write status update")
+    except Exception as e:
+        logger.error(f"Error setting chat status for {user_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to set chat status: {str(e)}")
+
+@app.post("/chat/message/{user_id}")
+async def add_agent_message(user_id: str, message: AgentMessage):
+    """Add an agent message to chat history"""
+    try:
+        # Validate inputs
+        user_id = validate_user_id(user_id)
+        if not message.message or len(message.message.strip()) == 0:
+            raise HTTPException(status_code=400, detail="Message cannot be empty")
+        if len(message.message) > 10000:
+            raise HTTPException(status_code=400, detail="Message too long")
+        
+        from datetime import datetime
+        
+        message_text = message.message.strip()
+        chat_history_dir = Path(__file__).parent.parent / "chat_history"
+        file_path = chat_history_dir / f"chat_history_{user_id}.json"
+        
+        if not file_path.exists():
+            # Create new file with empty history
+            data = {"history": [], "status": "assigned"}
+        else:
+            # Read existing file asynchronously
+            data = await read_json_file_async(str(file_path))
+            
+            # Convert old format to new format if needed
+            if isinstance(data, list):
+                data = {"history": data, "status": "assigned"}
+        
+        # Append the new message with enhanced metadata
+        data["history"].append({
+            "role": "assistant",
+            "content": message_text,
+            "timestamp": datetime.now().isoformat(),
+            "type": "agent_message"
+        })
+        
+        # Write back to file asynchronously
+        await write_json_file_async(str(file_path), data)
+        
+        return {
+            "status": "success", 
+            "message": "Agent message added successfully",
+            "timestamp": datetime.now().isoformat()
+        }
+        
+    except Exception as e:
+        print(f"Error adding agent message: {e}")
+        raise HTTPException(status_code=500, detail="Failed to add agent message")
+
+@app.get("/chat/recommendations-rag/{user_id}")
+async def get_ai_message_recommendations_with_rag(user_id: str):
+    """Get context-aware AI message recommendations using RAG pipeline and user conversation"""
+    try:
+        # Validate user ID
+        user_id = validate_user_id(user_id)
+        
+        from datetime import datetime
+        
+        # Get GROQ API key
+        groq_api_key = os.getenv("GROQ_API_KEY")
+        if not groq_api_key:
+            return {
+                "status": "error",
+                "message": "GROQ API key not configured",
+                "recommendations": []
+            }
+        
+        # Read user's conversation history asynchronously
+        chat_history_dir = Path(__file__).parent.parent / "chat_history"
+        file_path = chat_history_dir / f"chat_history_{user_id}.json"
+        
+        conversation_context = ""
+        user_intent = "general_inquiry"
+        last_user_message = ""
+        conversation_summary = ""
+        
+        if file_path.exists():
+            try:
+                data = await read_json_file_async(str(file_path))
+                
+                # Handle both old and new formats
+                if isinstance(data, dict) and "history" in data:
+                    messages = data["history"]
+                elif isinstance(data, list):
+                    messages = data
+                else:
+                    messages = []
+                
+                # Extract conversation context
+                if messages:
+                    # Get last few messages for context
+                    recent_messages = messages[-10:] if len(messages) > 10 else messages
+                    conversation_context = "\n".join([
+                        f"{'User' if msg.get('role') == 'user' else 'Agent'}: {msg.get('content', '')}"
+                        for msg in recent_messages if msg.get('content')
+                    ])
+                    
+                    # Get last user message
+                    user_messages = [msg for msg in messages if msg.get('role') == 'user']
+                    if user_messages:
+                        last_user_message = user_messages[-1].get('content', '')
+                    
+                    # Create conversation summary
+                    conversation_summary = f"Conversation with {len(messages)} total messages. "
+                    if user_messages:
+                        conversation_summary += f"User's last message: {last_user_message[:100]}..."
+                
+            except Exception as e:
+                print(f"Error reading chat history: {e}")
+                # Continue with empty context
+        
+        # Read RAG store files concurrently for knowledge base
+        rag_files = [
+            f"c:/Users/John Carlo/saklAI-1/rag_store_customer_{user_id}.json"
+        ]
+        
+        # Also include some general RAG files for broader context
+        base_dir = Path(__file__).parent.parent
+        general_rag_files = list(base_dir.glob("rag_store_customer_*.json"))[:5]  # Limit to 5 for performance
+        rag_files.extend([str(f) for f in general_rag_files if str(f) not in rag_files])
+        
+        # Read RAG data concurrently
+        rag_data_list = await read_multiple_chat_files_async(rag_files)
+        knowledge_context = ""
+        
+        for rag_data in rag_data_list:
+            if rag_data and isinstance(rag_data, dict):
+                # Extract relevant information from RAG data
+                if "conversations" in rag_data:
+                    for conv in rag_data["conversations"][:3]:  # Limit for context size
+                        if "summary" in conv:
+                            knowledge_context += f"Knowledge: {conv['summary']}\n"
+                elif "knowledge" in rag_data:
+                    knowledge_context += f"Knowledge: {str(rag_data['knowledge'])[:200]}\n"
+        
+        # Determine user intent based on context
+        if "problem" in last_user_message.lower() or "issue" in last_user_message.lower():
+            user_intent = "technical_support"
+        elif "question" in last_user_message.lower() or "how" in last_user_message.lower():
+            user_intent = "information_request"
+        elif "thank" in last_user_message.lower() or "bye" in last_user_message.lower():
+            user_intent = "conversation_closing"
+        
+        # Make async GROQ API request
+        response_data = await make_groq_request_async(
+            groq_api_key, 
+            conversation_context, 
+            knowledge_context, 
+            user_intent, 
+            conversation_summary
+        )
+        
+        return response_data
+        
+    except Exception as e:
+        print(f"Error getting AI recommendations: {e}")
+        return {
+            "status": "error",
+            "message": f"Failed to get recommendations: {str(e)}",
+            "recommendations": []
+        }
+                if isinstance(data, list):
+                    history = data
+                else:
+                    history = data.get("history", [])
+                
+                # Build conversation context and summary
+                recent_history = history[-10:] if len(history) > 10 else history
+                user_messages = []
+                
+                for entry in recent_history:
+                    role = entry.get("role", "")
+                    content = entry.get("content", "")
+                    if role == "user":
+                        conversation_context += f"Customer: {content}\n"
+                        user_messages.append(content)
+                        last_user_message = content
+                    elif role in ["assistant", "agent"]:
+                        conversation_context += f"Assistant: {content}\n"
+                
+                # Create conversation summary for RAG query
+                conversation_summary = " ".join(user_messages[-3:])  # Last 3 user messages
+                
+                # Analyze conversation for intent
+                conversation_lower = conversation_context.lower()
+                if any(word in conversation_lower for word in ["loan", "credit", "borrow", "financing"]):
+                    user_intent = "loan_inquiry"
+                elif any(word in conversation_lower for word in ["save", "deposit", "investment", "savings"]):
+                    user_intent = "savings_investment"
+                elif any(word in conversation_lower for word in ["account", "open", "close", "balance"]):
+                    user_intent = "account_services"
+                elif any(word in conversation_lower for word in ["business", "sme", "company", "commercial"]):
+                    user_intent = "business_banking"
+                elif any(word in conversation_lower for word in ["remit", "transfer", "send money", "ofw"]):
+                    user_intent = "remittance"
+                
+            except Exception as e:
+                print(f"Error reading conversation history: {e}")
+        
+        # Try to read user's RAG store for personalized context
+        rag_context = ""
+        rag_file_path = Path(__file__).parent.parent / f"rag_store_{user_id}.json"
+        
+        if rag_file_path.exists():
+            try:
+                with open(rag_file_path, "r", encoding="utf-8") as f:
+                    rag_data = json.load(f)
+                
+                # Extract relevant information from RAG store
+                if isinstance(rag_data, dict):
+                    # Look for relevant context based on conversation
+                    if "documents" in rag_data:
+                        documents = rag_data["documents"]
+                        # Find most relevant documents (simple keyword matching)
+                        relevant_docs = []
+                        search_terms = conversation_summary.lower().split()
+                        
+                        for doc in documents[:5]:  # Check first 5 documents
+                            doc_text = str(doc).lower()
+                            if any(term in doc_text for term in search_terms if len(term) > 3):
+                                relevant_docs.append(str(doc)[:200])  # First 200 chars
+                        
+                        if relevant_docs:
+                            rag_context = "\nRelevant User Information:\n" + "\n".join(relevant_docs[:2])
+                
+            except Exception as e:
+                print(f"Error reading RAG store: {e}")
+        
+        # Create enhanced prompt with RAG context
+        recommendation_prompt = f"""
+You are an AI assistant helping human agents provide personalized customer service for BPI banking.
+
+Analyze this customer conversation and provide 3 specific, actionable message recommendations for the human agent.
+
+Customer Conversation History:
+{conversation_context}
+
+Customer Intent: {user_intent}
+Last Customer Message: "{last_user_message}"
+{rag_context}
+
+Based on this conversation context and any available customer information, provide exactly 3 message recommendations in this JSON format:
+[
+  {{
+    "type": "CLARIFY",
+    "message": "A specific clarifying question based on the conversation and customer context",
+    "reasoning": "Why this clarification would help progress the conversation"
+  }},
+  {{
+    "type": "PRODUCT_RECOMMENDATION", 
+    "message": "A specific BPI product recommendation tailored to their demonstrated needs",
+    "reasoning": "Why this product fits their specific situation and conversation"
+  }},
+  {{
+    "type": "NEXT_STEPS",
+    "message": "A specific next action that moves toward resolution",
+    "reasoning": "Why this next step is the most appropriate given the context"
+  }}
+]
+
+Guidelines:
+1. Make recommendations highly specific to this customer's conversation
+2. Use any available customer information to personalize suggestions
+3. Focus on moving the conversation toward a positive resolution
+4. Ensure recommendations are actionable for the human agent
+5. Consider the customer's apparent knowledge level and communication style
+
+Respond only with the JSON array, no additional text.
+"""
+
+        # Call Groq API for enhanced recommendations
+        groq_client = Groq(api_key=groq_api_key)
+        response = groq_client.chat.completions.create(
+            model="llama3-8b-8192",
+            messages=[{"role": "user", "content": recommendation_prompt}],
+            temperature=0.2,  # Lower temperature for more consistent recommendations
+            max_tokens=1200
+        )
+        
+        response_text = response.choices[0].message.content.strip()
+        
+        # Parse JSON response
+        try:
+            if response_text.startswith("```"):
+                response_text = response_text.strip("`").lstrip("json").strip()
+            recommendations = json.loads(response_text)
+        except Exception as e:
+            print(f"Error parsing recommendations: {e}")
+            # Fallback to context-aware recommendations
+            recommendations = get_contextual_fallback_recommendations(user_intent, last_user_message, conversation_context)
+        
+        return {
+            "status": "success",
+            "user_id": user_id,
+            "user_intent": user_intent,
+            "rag_context_available": bool(rag_context),
+            "conversation_summary": conversation_summary,
+            "recommendations": recommendations,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+    except Exception as e:
+        print(f"Error generating RAG recommendations: {e}")
+        return {
+            "status": "error",
+            "message": f"Error generating recommendations: {str(e)}",
+            "recommendations": []
+        }
+
+def get_contextual_fallback_recommendations(user_intent: str, last_message: str, conversation_context: str):
+    """Provide context-aware fallback recommendations"""
+    
+    # Analyze conversation for more specific context
+    context_lower = conversation_context.lower()
+    
+    if user_intent == "loan_inquiry":
+        if "business" in context_lower or "company" in context_lower:
+            return [
+                {
+                    "type": "CLARIFY",
+                    "message": "For your business loan application, I'll need to understand your company's annual revenue and how long you've been operating. Could you share these details?",
+                    "reasoning": "Business loan requirements differ from personal loans"
+                },
+                {
+                    "type": "PRODUCT_RECOMMENDATION", 
+                    "message": "Based on your business needs, our SME Business Growth Loan offers competitive rates and flexible repayment terms that could work well for your situation.",
+                    "reasoning": "Tailored to business customers mentioned in conversation"
+                },
+                {
+                    "type": "NEXT_STEPS",
+                    "message": "I can arrange for our SME banking specialist to review your application and provide a preliminary assessment. Would tomorrow or the day after work better for you?",
+                    "reasoning": "Business loans require specialist attention"
+                }
+            ]
+        else:
+            return [
+                {
+                    "type": "CLARIFY",
+                    "message": "To provide you with the most suitable loan options, could you tell me the loan amount you're considering and what you plan to use it for?",
+                    "reasoning": "Loan purpose affects product recommendations"
+                },
+                {
+                    "type": "PRODUCT_RECOMMENDATION",
+                    "message": "Our Personal Loan might be perfect for your needs, with loan amounts up to ₱2M and flexible payment terms from 12 to 60 months.",
+                    "reasoning": "Addresses personal loan inquiry mentioned in conversation"
+                },
+                {
+                    "type": "NEXT_STEPS",
+                    "message": "I can start your pre-qualification process right now if you have your ID and recent payslips available. Shall we proceed?",
+                    "reasoning": "Immediate action available for personal loans"
+                }
+            ]
+    
+    # Add more contextual recommendations for other intents...
+    return get_fallback_recommendations(user_intent, last_message)
+
+@app.get("/chat/recommendations/{user_id}")
+async def get_ai_message_recommendations(user_id: str):
+    """Get context-aware AI message recommendations for a specific user conversation"""
+    try:
+        from datetime import datetime
+        
+        # Get GROQ API key
+        groq_api_key = os.getenv("GROQ_API_KEY")
+        if not groq_api_key:
+            return {
+                "status": "error",
+                "message": "GROQ API key not configured",
+                "recommendations": []
+            }
+        
+        # Read user's conversation history
+        chat_history_dir = Path(__file__).parent.parent / "chat_history"
+        file_path = chat_history_dir / f"chat_history_{user_id}.json"
+        
+        conversation_context = ""
+        user_intent = "general_inquiry"
+        last_user_message = ""
+        
+        if file_path.exists():
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                
+                # Handle both old and new formats
+                if isinstance(data, list):
+                    history = data
+                else:
+                    history = data.get("history", [])
+                
+                # Build conversation context from last 10 messages
+                recent_history = history[-10:] if len(history) > 10 else history
+                
+                for entry in recent_history:
+                    role = entry.get("role", "")
+                    content = entry.get("content", "")
+                    if role == "user":
+                        conversation_context += f"Customer: {content}\n"
+                        last_user_message = content  # Keep track of last user message
+                    elif role in ["assistant", "agent"]:
+                        conversation_context += f"Assistant: {content}\n"
+                
+                # Analyze conversation for intent detection
+                conversation_lower = conversation_context.lower()
+                if any(word in conversation_lower for word in ["loan", "credit", "borrow", "financing"]):
+                    user_intent = "loan_inquiry"
+                elif any(word in conversation_lower for word in ["save", "deposit", "investment", "savings"]):
+                    user_intent = "savings_investment"
+                elif any(word in conversation_lower for word in ["account", "open", "close", "balance"]):
+                    user_intent = "account_services"
+                elif any(word in conversation_lower for word in ["business", "sme", "company", "commercial"]):
+                    user_intent = "business_banking"
+                elif any(word in conversation_lower for word in ["remit", "transfer", "send money", "ofw"]):
+                    user_intent = "remittance"
+                
+            except Exception as e:
+                print(f"Error reading conversation history: {e}")
+        
+        # Create context-aware prompt for recommendations
+        recommendation_prompt = f"""
+You are an AI assistant helping human agents provide better customer service for BPI banking.
+
+Analyze this customer conversation and provide 3 specific, actionable message recommendations for the human agent.
+
+Customer Conversation:
+{conversation_context}
+
+Customer Intent: {user_intent}
+Last Customer Message: "{last_user_message}"
+
+Based on this conversation context, provide exactly 3 message recommendations in this JSON format:
+[
+  {{
+    "type": "CLARIFY",
+    "message": "A specific clarifying question based on the conversation context",
+    "reasoning": "Why this clarification would help"
+  }},
+  {{
+    "type": "PRODUCT_RECOMMENDATION", 
+    "message": "A specific BPI product recommendation based on their needs",
+    "reasoning": "Why this product fits their situation"
+  }},
+  {{
+    "type": "NEXT_STEPS",
+    "message": "A specific next action to move the conversation forward",
+    "reasoning": "Why this next step is appropriate"
+  }}
+]
+
+Make sure each recommendation is:
+1. Specific to this customer's conversation
+2. Contextually relevant to their inquiry
+3. Actionable for the human agent
+4. Professional and helpful
+
+Respond only with the JSON array, no additional text.
+"""
+
+        # Call Groq API for recommendations
+        groq_client = Groq(api_key=groq_api_key)
+        response = groq_client.chat.completions.create(
+            model="llama3-8b-8192",
+            messages=[{"role": "user", "content": recommendation_prompt}],
+            temperature=0.3,  # Lower temperature for more consistent recommendations
+            max_tokens=1000
+        )
+        
+        response_text = response.choices[0].message.content.strip()
+        
+        # Parse JSON response
+        try:
+            if response_text.startswith("```"):
+                response_text = response_text.strip("`").lstrip("json").strip()
+            recommendations = json.loads(response_text)
+        except Exception as e:
+            print(f"Error parsing recommendations: {e}")
+            # Fallback recommendations based on intent
+            recommendations = get_fallback_recommendations(user_intent, last_user_message)
+        
+        return {
+            "status": "success",
+            "user_id": user_id,
+            "user_intent": user_intent,
+            "conversation_context": conversation_context[:500] + "..." if len(conversation_context) > 500 else conversation_context,
+            "recommendations": recommendations,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+    except Exception as e:
+        print(f"Error generating recommendations: {e}")
+        return {
+            "status": "error",
+            "message": f"Error generating recommendations: {str(e)}",
+            "recommendations": []
+        }
+
+def get_fallback_recommendations(user_intent: str, last_message: str):
+    """Provide fallback recommendations when AI parsing fails"""
+    fallback_map = {
+        "loan_inquiry": [
+            {
+                "type": "CLARIFY",
+                "message": "To help you get the best loan terms, I'll need to review your financial statements and bank records. Do you have 2023–2024 income records available?",
+                "reasoning": "Financial documentation is required for loan applications"
+            },
+            {
+                "type": "PRODUCT_RECOMMENDATION",
+                "message": "Based on your inquiry, I'd recommend exploring our Personal Loan or SME Business Growth Loan with flexible payment terms.",
+                "reasoning": "These products offer competitive rates and flexible terms"
+            },
+            {
+                "type": "NEXT_STEPS",
+                "message": "Would you like me to schedule a detailed consultation call or prepare a pre-qualification assessment?",
+                "reasoning": "Moving to formal assessment is the logical next step"
+            }
+        ],
+        "business_banking": [
+            {
+                "type": "CLARIFY",
+                "message": "Could you tell me more about your business type and current banking needs?",
+                "reasoning": "Understanding business structure helps tailor recommendations"
+            },
+            {
+                "type": "PRODUCT_RECOMMENDATION",
+                "message": "For business clients, I'd recommend our SME Business Account with online banking and payroll services.",
+                "reasoning": "Comprehensive business banking solution"
+            },
+            {
+                "type": "NEXT_STEPS",
+                "message": "I can arrange for our business banking specialist to contact you this week. What's your preferred time?",
+                "reasoning": "Specialist consultation provides better service"
+            }
+        ],
+        "savings_investment": [
+            {
+                "type": "CLARIFY",
+                "message": "What's your investment timeline and risk tolerance level?",
+                "reasoning": "Investment recommendations depend on risk profile"
+            },
+            {
+                "type": "PRODUCT_RECOMMENDATION",
+                "message": "Consider our BPI Save Up or UITF products based on your investment goals.",
+                "reasoning": "Range of investment options for different risk levels"
+            },
+            {
+                "type": "NEXT_STEPS",
+                "message": "Shall I connect you with our investment advisor for a portfolio review?",
+                "reasoning": "Professional advice ensures appropriate investment choice"
+            }
+        ]
+    }
+    
+    return fallback_map.get(user_intent, [
+        {
+            "type": "CLARIFY",
+            "message": "Could you provide more details about what specific banking service you're looking for?",
+            "reasoning": "Understanding specific needs helps provide better assistance"
+        },
+        {
+            "type": "PRODUCT_RECOMMENDATION",
+            "message": "Based on your inquiry, let me suggest some BPI products that might interest you.",
+            "reasoning": "General product awareness helps customer decision-making"
+        },
+        {
+            "type": "NEXT_STEPS",
+            "message": "Would you like me to schedule a call with our specialist to discuss your options?",
+            "reasoning": "Personal consultation provides the best customer experience"
+        }
+    ])
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    return {"status": "ok", "message": "Server is running"}
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")

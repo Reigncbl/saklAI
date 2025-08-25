@@ -56,6 +56,65 @@ const recommendations = [
   { title: "NEXT STEPS", text: "Would you like me to schedule a detailed consultation call or prepare a pre-qualification assessment?" }
 ];
 
+// Global variable to store current AI recommendations
+let currentAIRecommendations = [];
+
+// Function to fetch AI recommendations for a specific user
+async function fetchAIRecommendations(userId) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/chat/recommendations/${userId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    
+    const data = await response.json();
+    console.log("AI Recommendations received:", data);
+    
+    if (data.status === 'success' && data.recommendations) {
+      // Format recommendations for the UI
+      currentAIRecommendations = data.recommendations.map(rec => ({
+        title: rec.category || rec.type || "GENERAL", // Handle both category and type fields
+        text: rec.message,
+        reasoning: rec.reasoning || ''
+      }));
+      
+      // Update the recommendations panel
+      updateRecommendationsPanel();
+      return currentAIRecommendations;
+    } else {
+      console.warn("Failed to get AI recommendations:", data.message);
+      return recommendations; // Fallback to static recommendations
+    }
+  } catch (error) {
+    console.error("Error fetching AI recommendations:", error);
+    return recommendations; // Fallback to static recommendations
+  }
+}
+
+// Function to update the recommendations panel
+function updateRecommendationsPanel() {
+  const recPanel = el("recPanel");
+  if (recPanel) {
+    const recommendationsToShow = currentAIRecommendations.length > 0 ? currentAIRecommendations : recommendations;
+    recPanel.innerHTML = renderRecPanel(recommendationsToShow);
+  }
+}
+
+// Function to refresh recommendations for the currently selected user
+async function refreshRecommendations() {
+  const activeChat = currentActiveChatSessions.find(c => c.active);
+  if (activeChat && activeChat.fullData && activeChat.fullData.status === "assigned") {
+    // The user field already contains the correct user_id format (customer_xxxxx)
+    const userId = activeChat.user;
+    console.log("Fetching recommendations for user ID:", userId);
+    await fetchAIRecommendations(userId);
+  }
+}
+
 /********************
  * RENDER HELPERS
  ********************/
@@ -236,13 +295,19 @@ function renderChatPanel(chat) {
 
 function renderRecPanel(list) {
   return `
-    <div class="rec-header">AI Message Recommendations</div>
+    <div class="rec-header">
+      AI Message Recommendations
+      <button class="rec-refresh-btn" onclick="refreshRecommendations()" title="Get fresh AI recommendations">
+        🔄
+      </button>
+    </div>
     <div class="rec-list">
       ${list.map(r => `
         <div class="rec-item">
           <div class="rec-title">${r.title}</div>
           <div class="rec-text">${r.text}</div>
-          <button class="rec-use-btn" type="button" onclick="useRecommendation('${r.text}')">Use</button>
+          ${r.reasoning ? `<div class="rec-reasoning">💡 ${r.reasoning}</div>` : ''}
+          <button class="rec-use-btn" type="button" onclick="useRecommendation('${r.text.replace(/'/g, "\\'")}')">Use</button>
         </div>`).join("")}
     </div>`;
 }
@@ -272,12 +337,19 @@ async function mountPanel2() {
       })) : []
     };
     el("chatPanel").innerHTML = renderChatPanel(chatData);
+    
+    // Fetch AI recommendations for the active chat
+    const userId = activeChat.user.replace('User #', 'customer_');
+    fetchAIRecommendations(userId);
   } else if (currentActiveChatSessions.length === 0) {
     // No assigned chats available
     el("chatPanel").innerHTML = renderChatPanel({
       name: 'No Assigned Chats',
       messages: [{ label: "System", bubble: "No assigned chats available. Only chats with 'assigned' status are shown here.", agent: false }]
     });
+    // Reset to default recommendations
+    currentAIRecommendations = [];
+    updateRecommendationsPanel();
   } else {
     // Fallback to first available assigned chat
     const firstAssigned = currentActiveChatSessions[0];
@@ -293,11 +365,16 @@ async function mountPanel2() {
         })) : []
       };
       el("chatPanel").innerHTML = renderChatPanel(chatData);
+      
+      // Fetch AI recommendations for the first chat
+      const userId = firstAssigned.user.replace('User #', 'customer_');
+      fetchAIRecommendations(userId);
     }
   }
 
-  // Render recommendations
-  el("recPanel").innerHTML = renderRecPanel(recommendations);
+  // Render recommendations (will show default ones initially)
+  const recommendationsToShow = currentAIRecommendations.length > 0 ? currentAIRecommendations : recommendations;
+  el("recPanel").innerHTML = renderRecPanel(recommendationsToShow);
 }
 
 // Message sending functionality
@@ -524,6 +601,10 @@ document.addEventListener("click", (e) => {
         })) : []
       };
       el("chatPanel").innerHTML = renderChatPanel(chatData);
+      
+      // Fetch AI recommendations for this user
+      const userId = selectedChat.user.replace('User #', 'customer_');
+      fetchAIRecommendations(userId);
     } else {
       // Show message for non-assigned chats
       const chatData = {
@@ -531,6 +612,10 @@ document.addEventListener("click", (e) => {
         messages: [{ label: "System", bubble: "This chat is not assigned to human agents. Only assigned chats are shown in this panel.", agent: false }]
       };
       el("chatPanel").innerHTML = renderChatPanel(chatData);
+      
+      // Reset to default recommendations
+      currentAIRecommendations = [];
+      updateRecommendationsPanel();
     }
   }
 });

@@ -62,6 +62,22 @@
       "response": null,
       "template_used": null,
       "processing_method": "human_agent"
+    },
+    {
+      "timestamp": "2025-08-25T20:05:31.183544",
+      "role": "agent",
+      "content": "hi",
+      "response": null,
+      "template_used": null,
+      "processing_method": "human_agent"
+    },
+    {
+      "timestamp": "2025-08-25T20:35:02.282036",
+      "role": "agent",
+      "content": "To help you get the best loan terms, I'll need to review your financial statements and bank records. Do you have 2023–2024 income records available?",
+      "response": null,
+      "template_used": null,
+      "processing_method": "human_agent"
     }
   ],
   "status": "assigned"

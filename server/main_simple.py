@@ -548,7 +548,16 @@ async def get_suggestions(request: ChatRequest):
                 context += f"Assistant: {content}\n"
         
         # Create prompt
-        full_prompt = f"{prompt_template}\n\nConversation Context:\n{context}\n\nUser message: \"{request.message.strip()}\"\n\nProvide your response as a JSON array with this format: [{{\"analysis\": \"inquiry\", \"category\": \"Information\", \"suggestion\": \"your helpful response\"}}]"
+        full_prompt = f"{prompt_template}\n\nConversation Context:\n{context}\n\nUser message: \"{request.message}\"\n\nProvide your response as a JSON array with this format: [{{\"analysis\": \"inquiry\", \"category\": \"Information\", \"suggestion\": \"your helpful response\"}}]"
+        
+        # Call Groq API
+        groq_client = Groq(api_key=groq_api_key)
+        response = groq_client.chat.completions.create(
+            model="moonshotai/kimi-k2-instruct",
+            messages=[{"role": "user", "content": full_prompt}],
+            temperature=0.7,
+            max_tokens=1000
+        )
         
         # Call Groq API asynchronously
         response_text = await async_groq_call(full_prompt, temperature=0.7, max_tokens=1000)

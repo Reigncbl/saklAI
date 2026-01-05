@@ -1,0 +1,561 @@
+{
+  "timestamp": "2025-08-24T22:31:56.834743",
+  "config": {
+    "vector_store_path": "./rag_store_eval",
+    "test_user_id": "eval_user_001",
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "similarity_threshold": 0.6,
+    "timeout_seconds": 30,
+    "evaluation_settings": {
+      "run_translation_tests": true,
+      "run_classification_tests": true,
+      "run_rag_tests": true,
+      "run_end_to_end_tests": true,
+      "verbose_output": true,
+      "save_intermediate_results": true
+    },
+    "thresholds": {
+      "minimum_success_rate": 0.8,
+      "maximum_response_time": 10.0,
+      "minimum_similarity_score": 0.7,
+      "classification_confidence_threshold": 0.6
+    },
+    "output_settings": {
+      "save_json": true,
+      "save_csv": true,
+      "include_detailed_logs": true,
+      "timestamp_format": "%Y-%m-%d_%H-%M-%S"
+    }
+  },
+  "summary": {
+    "total_tests": 14,
+    "successful_tests": 11,
+    "failed_tests": 3,
+    "success_rate": 0.7857142857142857,
+    "average_response_time": 6.935651540756226,
+    "test_type_breakdown": {
+      "rag": {
+        "total": 5,
+        "successful": 4,
+        "success_rate": 0.8,
+        "average_response_time": 13.78786325454712
+      },
+      "classification": {
+        "total": 3,
+        "successful": 3,
+        "success_rate": 1.0,
+        "average_response_time": 0.5214356581370035
+      },
+      "translation": {
+        "total": 4,
+        "successful": 4,
+        "success_rate": 1.0,
+        "average_response_time": 0.40416085720062256
+      },
+      "end_to_end": {
+        "total": 2,
+        "successful": 0,
+        "success_rate": 0.0,
+        "average_response_time": 12.48942744731903
+      }
+    },
+    "classification_accuracy": 0.6,
+    "translation_accuracy": 0.6666666666666666,
+    "quantitative_metrics": {
+      "bleu_score": 0.5050946559549667,
+      "rouge_1_score": 0.9303030303030303,
+      "rouge_2_score": 0.8954545454545455,
+      "rouge_l_score": 0.9303030303030303,
+      "semantic_similarity_score": 0.9911873774095015,
+      "lexical_diversity": 0.9454545454545454,
+      "avg_response_time": 6.935651540756226,
+      "median_response_time": 6.351280570030212,
+      "p95_response_time": 15.63494348526001,
+      "p99_response_time": 15.63494348526001,
+      "throughput_qps": 0.0,
+      "exact_match_accuracy": 0.7857142857142857,
+      "fuzzy_match_accuracy": 0.0,
+      "classification_precision": 0.0,
+      "classification_recall": 0.0,
+      "classification_f1": 0.0,
+      "retrieval_precision_at_k": 0.0,
+      "retrieval_recall_at_k": 0.0,
+      "retrieval_mrr": 0.0,
+      "context_relevance_score": 0.0,
+      "answer_faithfulness": 0.0,
+      "translation_adequacy": 0.0,
+      "translation_fluency": 0.0,
+      "character_error_rate": 0.0,
+      "word_error_rate": 0.0,
+      "confidence_interval_lower": 0.558106426624088,
+      "confidence_interval_upper": 1.0133221448044833,
+      "standard_deviation": 6.790990240765273,
+      "variance": 46.11754845016919,
+      "task_completion_rate": 0.7857142857142857,
+      "user_satisfaction_proxy": 0.0,
+      "error_rate": 0.2142857142857143,
+      "system_reliability": 0.7857142857142857
+    }
+  },
+  "detailed_results": [
+    {
+      "test_id": "rag_001",
+      "test_type": "rag",
+      "input_text": "What are the requirements for opening a savings account?",
+      "expected_output": "savings_accounts.yaml",
+      "actual_output": "savings_accounts.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "What are the requirements for opening a savings account?",
+        "translated_message": "What are the necessary documents and information needed to open a savings account?",
+        "template_used": "savings_accounts.yaml",
+        "suggestions": [
+          {
+            "analysis": "new_savings",
+            "category": "Best_Match_Product",
+            "suggestion": "Open a #SaveUp Peso Savings Account. Initial deposit: Php 1. Maintaining ADB: Php 0. Daily balance to earn interest: Php 5,000. Interest rate: 0.0925% p.a. No maintaining balance required, ideal for remittances and digital banking. Next step: visit any BPI branch with 1 valid ID or apply online at https://www.bpi.com.ph/personal/bank/savings-accounts/digital-saveup."
+          },
+          {
+            "analysis": "account_comparison",
+            "category": "Rate_Comparison",
+            "suggestion": "If you prefer a higher-yield option, consider #MySaveUp with identical requirements: Php 1 initial deposit, Php 0 maintaining ADB, Php 5,000 daily balance to earn 0.0925% p.a. Both accounts support digital banking and remittance credits. Apply via the BPI Mobile app or at https://www.bpi.com.ph/personal/bank/savings-accounts/digital-saveup."
+          },
+          {
+            "analysis": "digital_features",
+            "category": "Digital_Setup",
+            "suggestion": "Both #SaveUp and #MySaveUp are fully integrated with BPI Online and Mobile Banking. After account opening, enroll immediately in BPI Online to receive OFW remittances directly into your savings account and monitor balances in real time."
+          }
+        ],
+        "processing_method": "rag",
+        "classification": {
+          "detected_category": "savings accounts",
+          "confidence": 0.95,
+          "method": "langchain_agent"
+        }
+      },
+      "response_time": 14.952664136886597,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "rag_002",
+      "test_type": "rag",
+      "input_text": "How can I apply for a credit card?",
+      "expected_output": "credit_cards.yaml",
+      "actual_output": "credit_cards.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "How can I apply for a credit card?",
+        "translated_message": null,
+        "template_used": "credit_cards.yaml",
+        "suggestions": [
+          {
+            "analysis": "first_time_applicant | monthly income ≥ Php 15,000 | looking for a starter card with low income threshold and straightforward rewards",
+            "category": "Best_Match_Card",
+            "suggestion": "Apply for the BPI Rewards Card—minimum monthly income requirement is exactly Php 15,000. You earn 1 point for every Php 35 spent, get free travel insurance up to Php 2 million, and can convert purchases to flexible installment terms. Annual fee is Php 1,550/year for the principal card, but BPI periodically runs “waived-fee” promotions that may cover the first year. Start your application online at https://www2.bpi.com.ph/creditcards/apply; approval typically takes 5–7 banking days once documents (one government ID + proof of income) are uploaded."
+          }
+        ],
+        "processing_method": "rag",
+        "classification": {
+          "detected_category": "credit_cards",
+          "confidence": 0.95,
+          "method": "langchain_agent"
+        }
+      },
+      "response_time": 13.400461435317993,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "rag_003",
+      "test_type": "rag",
+      "input_text": "What loans do you offer for small businesses?",
+      "expected_output": "loans.yaml",
+      "actual_output": "loans.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "What loans do you offer for small businesses?",
+        "translated_message": null,
+        "template_used": "loans.yaml",
+        "suggestions": [
+          {
+            "analysis": "loan_application",
+            "category": "Loan Recommendation",
+            "suggestion": "For your small-business needs, BPI offers the Personal Loan (up to ₱2 million, payable 12–36 months) and the Auto Loan (for business-use vehicles, with NEXT-client perks if you qualify).  Housing Loan is also available if you need to purchase or construct commercial property.  Each product has dedicated pages with current rates and terms."
+          },
+          {
+            "analysis": "eligibility_check",
+            "category": "Eligibility Assessment",
+            "suggestion": "Personal Loan: Filipino citizen, 21–60 years old at loan maturity, minimum gross monthly income of ₱25,000 (₱300,000 annual).  Auto & Housing Loans: same age range, but income requirement varies by loan amount and collateral value.  If you are an overseas Filipino worker (OFW), conditional rules apply—submit additional proof of remittance and contract."
+          },
+          {
+            "analysis": "requirements",
+            "category": "Documentation Requirements",
+            "suggestion": "Personal Loan: 1) fully-accomplished application form, 2) photocopy of two valid IDs, 3) latest ITR or BIR Form 2316, 4) latest three months’ payslips or audited financial statements for self-employed.  Auto Loan: add OR/CR of vehicle to be purchased and down-payment proof.  Housing Loan: add TCT/CCT, building plans, and contractor’s quotation."
+          },
+          {
+            "analysis": "interest_rates",
+            "category": "Rate Comparison",
+            "suggestion": "Current posted rates are on the BPI ‘Deposit Rates for Savings and Checking Accounts’ page and the individual loan pages.  For exact figures, visit https://www.bpi.com.ph/personal/loans and select the loan type; rates are updated regularly and displayed before application."
+          },
+          {
+            "analysis": "payment_terms",
+            "category": "Payment Structure",
+            "suggestion": "Personal Loan: fixed monthly amortization over 12–36 months.  Auto Loan: 12–60 months, with optional balloon payment.  Housing Loan: up to 20 years for commercial property, with repricing options every 1, 3, or 5 years."
+          },
+          {
+            "analysis": "processing_timeline",
+            "category": "Processing Timeline",
+            "suggestion": "Standard processing is 5–7 banking days for Personal Loan once complete documents are in.  Auto and Housing Loans may require field investigation; allow 10–15 banking days.  NEXT clients receive priority handling and may get faster turnaround."
+          }
+        ],
+        "processing_method": "rag",
+        "classification": {
+          "detected_category": "loans",
+          "confidence": 0.95,
+          "method": "langchain_agent"
+        }
+      },
+      "response_time": 12.057150602340698,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "rag_004",
+      "test_type": "rag",
+      "input_text": "How do I send money to Philippines through remittance?",
+      "expected_output": "remittances_ofw.yaml",
+      "actual_output": "remittances_ofw.yaml",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "success",
+        "user_id": "eval_user_001",
+        "message": "How do I send money to Philippines through remittance?",
+        "translated_message": "How do I send money to the Philippines through a remittance?",
+        "template_used": "remittances_ofw.yaml",
+        "suggestions": [
+          {
+            "analysis": "customer_intent: send_money",
+            "category": "Remittance Options",
+            "suggestion": "Gamitin ang BPI Pamana Padala: zero maintaining balance requirement basta may minimum 4 remittances kada taon. Magpadala sa PHP o USD; kung USD, automatic ilalagay sa Pamana USD Savings na may free life insurance para sa beneficiary. Sa BPI Mobile App, piliin 'Send Money' → 'To Another BPI Account' o 'Remittance via InstaPay/PESONet' para sa same-day credit hanggang 3:30 PM cut-off. Fee: ₱0 sa InstaPay/PESONet kung BPI-to-BPI; ₱15-₱50 kung ibang bank."
+          },
+          {
+            "analysis": "customer_intent: ofw_account",
+            "category": "OFW account Benefits",
+            "suggestion": "Buksan ang Pamana Padala Savings: zero maintaining balance, libreng life insurance coverage = average daily balance × 2 (max ₱2 M). Kailangan: 2 valid IDs, latest contract, proof of remittance. Online application via BPI Online → 'Open an Account' → piliin 'Pamana Padala'. Processing: 1-2 banking days; card delivery 5-7 days sa PH address ng beneficiary."
+          },
+          {
+            "analysis": "customer_intent: foreign_currency",
+            "category": "Multi-currency account options",
+            "suggestion": "Kung gusto mong i-maintain ang remittance sa USD, buksan ang BPI US Dollar Savings o Maxi-Saver USD. Minimum $500 (Savings) o $2,500 (Maxi-Saver) para sa bonus interest. Mag-convert sa PHP sa real-time BPI FX rate (tingnan sa BPI Mobile → 'Rates'). Walang conversion fee kung USD-USD; ₱0.125 spread lang sa FX kung USD-PHP."
+          },
+          {
+            "analysis": "customer_intent: exchange_rates",
+            "category": "Exchange Rate Info",
+            "suggestion": "Real-time BPI USD/PHP rate ay available sa BPI Mobile app araw-araw hanggang 11 PM. Halimbawa: 1 USD = ₱55.20 (indicative). Lock-in rate sa 24 hrs kung mag-send ng USD tapos i-convert sa PHP sa pag-receive. Walang rate lock fee."
+          },
+          {
+            "analysis": "customer_intent: beneficiary_setup",
+            "category": "Documentation Requirements",
+            "suggestion": "Para sa beneficiary setup: kailangan ng beneficiary ay 1 valid ID (passport, UMID, o driver's license) at PH mobile number. Sa BPI Online, piliin 'Manage Beneficiaries' → 'Add' → ilagay ang pangalan, account number, at address. Cut-off: 11 AM para same-day credit; after 11 AM, next banking day. Maximum padala: ₱500,000 kada araw."
+          }
+        ],
+        "processing_method": "rag",
+        "classification": {
+          "detected_category": "remittances_ofw",
+          "confidence": 0.95,
+          "method": "langchain_agent"
+        }
+      },
+      "response_time": 15.63494348526001,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "rag_005",
+      "test_type": "rag",
+      "input_text": "Can you help me with online banking setup?",
+      "expected_output": "digital_banking.yaml",
+      "actual_output": "",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "error",
+        "message": "RAG processing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `moonshotai/kimi-k2-instruct` in organization `org_01k1sx7ym0eb3td53s0zqs82jx` service tier `on_demand` on tokens per day (TPD): Limit 300000, Used 298046, Requested 2396. Please try again in 2m7.048s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+        "fallback_suggestions": [
+          {
+            "analysis": "Error",
+            "category": "System",
+            "suggestion": "I'm having trouble processing your request right now. Please try again or contact support."
+          }
+        ]
+      },
+      "response_time": 12.894096612930298,
+      "success": false,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "trans_001",
+      "test_type": "translation",
+      "input_text": "Paano mag-open ng savings account?",
+      "expected_output": "How to open a savings account?",
+      "actual_output": "How do I open a savings account?",
+      "classification_result": null,
+      "translation_result": "How do I open a savings account?",
+      "rag_result": null,
+      "response_time": 0.44738125801086426,
+      "success": true,
+      "error_message": null,
+      "similarity_score": 0.6666666666666666,
+      "bleu_score": 0.4347208719449915,
+      "rouge_scores": {
+        "rouge_1": 0.8333333333333334,
+        "rouge_2": 0.6,
+        "rouge_l": 0.8333333333333334
+      },
+      "semantic_similarity": 0.9880104660987854,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "trans_002",
+      "test_type": "translation",
+      "input_text": "Pwede ba mag-apply ng credit card online?",
+      "expected_output": "Can I apply for a credit card online?",
+      "actual_output": "Can I apply for a credit card online?",
+      "classification_result": null,
+      "translation_result": "Can I apply for a credit card online?",
+      "rag_result": null,
+      "response_time": 0.5160348415374756,
+      "success": true,
+      "error_message": null,
+      "similarity_score": 1.0,
+      "bleu_score": 1.0,
+      "rouge_scores": {
+        "rouge_1": 1.0,
+        "rouge_2": 1.0,
+        "rouge_l": 1.0
+      },
+      "semantic_similarity": 1.0,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "trans_003",
+      "test_type": "translation",
+      "input_text": "Ano ang requirements para sa personal loan?",
+      "expected_output": "What are the requirements for a personal loan?",
+      "actual_output": "What are the requirements for a personal loan?",
+      "classification_result": null,
+      "translation_result": "What are the requirements for a personal loan?",
+      "rag_result": null,
+      "response_time": 0.33530426025390625,
+      "success": true,
+      "error_message": null,
+      "similarity_score": 1.0,
+      "bleu_score": 1.0,
+      "rouge_scores": {
+        "rouge_1": 1.0,
+        "rouge_2": 1.0,
+        "rouge_l": 1.0
+      },
+      "semantic_similarity": 1.0000001192092896,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "trans_004",
+      "test_type": "translation",
+      "input_text": "May online banking ba kayo?",
+      "expected_output": "Do you have online banking?",
+      "actual_output": "Do you have online banking?",
+      "classification_result": null,
+      "translation_result": "Do you have online banking?",
+      "rag_result": null,
+      "response_time": 0.31792306900024414,
+      "success": true,
+      "error_message": null,
+      "similarity_score": 1.0,
+      "bleu_score": 1.0,
+      "rouge_scores": {
+        "rouge_1": 1.0,
+        "rouge_2": 1.0,
+        "rouge_l": 1.0
+      },
+      "semantic_similarity": 1.0,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "class_001",
+      "test_type": "classification",
+      "input_text": "Hello, how are you today?",
+      "expected_output": "Template: config.yaml, Category: general",
+      "actual_output": "Template: config.yaml, Category: config",
+      "classification_result": {
+        "template": "config.yaml",
+        "category": "config",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      },
+      "translation_result": null,
+      "rag_result": null,
+      "response_time": 0.4588615894317627,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": "general",
+      "predicted_category": "config"
+    },
+    {
+      "test_id": "class_002",
+      "test_type": "classification",
+      "input_text": "I want to know about your branch locations",
+      "expected_output": "Template: general_banking.yaml, Category: banking",
+      "actual_output": "Template: general_banking.yaml, Category: general_banking",
+      "classification_result": {
+        "template": "general_banking.yaml",
+        "category": "general_banking",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      },
+      "translation_result": null,
+      "rag_result": null,
+      "response_time": 0.4600348472595215,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": "banking",
+      "predicted_category": "general_banking"
+    },
+    {
+      "test_id": "class_003",
+      "test_type": "classification",
+      "input_text": "What's the interest rate for time deposits?",
+      "expected_output": "Template: savings_accounts.yaml, Category: savings",
+      "actual_output": "Template: savings_accounts.yaml, Category: savings_accounts",
+      "classification_result": {
+        "template": "savings_accounts.yaml",
+        "category": "savings_accounts",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      },
+      "translation_result": null,
+      "rag_result": null,
+      "response_time": 0.6454105377197266,
+      "success": true,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": "savings",
+      "predicted_category": "savings_accounts"
+    },
+    {
+      "test_id": "e2e_001",
+      "test_type": "end_to_end",
+      "input_text": "Magkano ang minimum balance sa savings account?",
+      "expected_output": "savings_accounts.yaml",
+      "actual_output": "",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "error",
+        "message": "RAG processing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `moonshotai/kimi-k2-instruct` in organization `org_01k1sx7ym0eb3td53s0zqs82jx` service tier `on_demand` on tokens per day (TPD): Limit 300000, Used 297990, Requested 2525. Please try again in 2m28.082s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+        "fallback_suggestions": [
+          {
+            "analysis": "Error",
+            "category": "System",
+            "suggestion": "I'm having trouble processing your request right now. Please try again or contact support."
+          }
+        ]
+      },
+      "response_time": 12.839371681213379,
+      "success": false,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    },
+    {
+      "test_id": "e2e_002",
+      "test_type": "end_to_end",
+      "input_text": "Paano mag-transfer ng pera sa ibang bansa?",
+      "expected_output": "remittances_ofw.yaml",
+      "actual_output": "",
+      "classification_result": null,
+      "translation_result": null,
+      "rag_result": {
+        "status": "error",
+        "message": "RAG processing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `moonshotai/kimi-k2-instruct` in organization `org_01k1sx7ym0eb3td53s0zqs82jx` service tier `on_demand` on tokens per day (TPD): Limit 300000, Used 297947, Requested 2346. Please try again in 1m24.38s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+        "fallback_suggestions": [
+          {
+            "analysis": "Error",
+            "category": "System",
+            "suggestion": "I'm having trouble processing your request right now. Please try again or contact support."
+          }
+        ]
+      },
+      "response_time": 12.139483213424683,
+      "success": false,
+      "error_message": null,
+      "similarity_score": null,
+      "bleu_score": null,
+      "rouge_scores": null,
+      "semantic_similarity": null,
+      "expected_category": null,
+      "predicted_category": null
+    }
+  ]
+}

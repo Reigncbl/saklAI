@@ -105,6 +105,6 @@ if __name__ == "__main__":
         app, 
         host="0.0.0.0", 
         port=8000,
-        reload=False,  # Set to True for development
+        reload=True,  # Set to True for development
         log_level="info"
     )

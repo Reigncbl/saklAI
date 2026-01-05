@@ -9,16 +9,18 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 
 # LlamaIndex imports
-from llama_index.core import VectorStoreIndex, StorageContext
+from llama_index.core import VectorStoreIndex, StorageContext, Settings
 from llama_index.readers.file import PDFReader  # Updated to use PDFReader
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.groq import Groq
 from llama_index.core.vector_stores import SimpleVectorStore
+from llama_index.core.node_parser import SentenceSplitter
+from llama_index.core.schema import MetadataMode
 from dotenv import load_dotenv
 load_dotenv()
 
 api_key = os.getenv("api_key")
-model = os.getenv("model")
+model = os.getenv("model", "moonshotai/kimi-k2-instruct")  # Default to kimi-k2-instruct
 
 
 # ------------------------------
@@ -67,7 +69,12 @@ async def suggestion_generation(
     """
 
     # --- LLM (Groq) + Embeddings (HuggingFace) ---
-    llm = Groq(model=model, api_key=groq_api_key)
+    llm = Groq(
+        model=model, 
+        api_key=groq_api_key,
+        temperature=0.1,  # Lower temperature for more consistent responses
+        max_tokens=800    # Reduced token limit for faster responses
+    )
     
     # Store embedding model locally in server folder (dynamic path)
     current_dir = Path(__file__).parent  # services folder
@@ -79,6 +86,10 @@ async def suggestion_generation(
         model_name=embedding_model,
         cache_folder=str(model_cache_dir)
     )
+
+    # Set global settings for consistency
+    Settings.llm = llm
+    Settings.embed_model = embed_model
 
     # --- Load documents from BPI PDF ---
     # Define the path to the BPI PDF file
@@ -96,7 +107,7 @@ async def suggestion_generation(
     loader = PDFReader()
     documents = loader.load_data(pdf_file_path)
 
-    # --- Simple Vector Store with file persistence ---
+    # --- Optimized Vector Store with enhanced chunking ---
     vector_store_file = f"{vector_store_path}_{user_id}.json"
     
     if reset_index and os.path.exists(vector_store_file):
@@ -110,13 +121,54 @@ async def suggestion_generation(
 
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
-    # --- Build Index ---
-    index = VectorStoreIndex.from_documents(
-        documents,
-        storage_context=storage_context,
-        llm=llm,
-        embed_model=embed_model,
-    )
+    # --- Build Index with Optimized Chunking ---
+    if not os.path.exists(vector_store_file):
+        print("🔧 Building optimized index with enhanced chunking...")
+        
+        # Use optimized sentence splitter for banking content
+        node_parser = SentenceSplitter(
+            chunk_size=1024,  # Balanced size based on analysis
+            chunk_overlap=100,  # Good context preservation
+            paragraph_separator="\n\n",
+            secondary_chunking_regex=r"\d+\.\d+\s+[A-Z]",  # Split on section headers
+        )
+        
+        # Parse documents into nodes
+        nodes = node_parser.get_nodes_from_documents(documents)
+        
+        # Add banking-specific metadata for better retrieval
+        for i, node in enumerate(nodes):
+            content = node.get_content(metadata_mode=MetadataMode.NONE)
+            
+            # Categorize content by banking product type
+            if any(term in content.lower() for term in ['savings', 'deposit', 'account']):
+                node.metadata['product_category'] = 'deposits'
+            elif any(term in content.lower() for term in ['credit', 'card', 'loan']):
+                node.metadata['product_category'] = 'credit'
+            elif any(term in content.lower() for term in ['investment', 'wealth', 'fund']):
+                node.metadata['product_category'] = 'investments'
+            else:
+                node.metadata['product_category'] = 'general'
+            
+            # Extract section numbers for reference
+            import re
+            section_match = re.search(r'(\d+\.\d+)', content[:100])
+            if section_match:
+                node.metadata['section'] = section_match.group(1)
+            
+            node.metadata['chunk_index'] = i
+            node.metadata['optimized'] = True
+        
+        index = VectorStoreIndex(
+            nodes,
+            storage_context=storage_context,
+            embed_model=embed_model,
+        )
+    else:
+        index = VectorStoreIndex.from_vector_store(
+            vector_store,
+            embed_model=embed_model,
+        )
     
     # Persist the vector store
     vector_store.persist(persist_path=vector_store_file)
@@ -124,11 +176,28 @@ async def suggestion_generation(
     # --- Query with YAML Prompt ---
     prompt = load_prompt(yaml_path)
     
-    # Add conversation context if available
+    # Optimize prompt with conversation context for better performance
     if conversation_context:
-        prompt = f"{prompt}\n\nConversation Context:\n{conversation_context}\n\nPlease consider this context when generating your response."
+        # Truncate context to prevent token overflow and improve speed
+        context_preview = conversation_context[:500] if len(conversation_context) > 500 else conversation_context
+        prompt = f"{prompt}\n\nRECENT CONTEXT: {context_preview}\n\nConsider this context for personalized responses."
     
-    query_engine = index.as_query_engine(similarity_top_k=top_k, llm=llm)
+    # Add performance optimization instructions with banking focus
+    prompt += """
+
+BANKING RAG OPTIMIZATION:
+- Reference specific BPI products, fees, and requirements from retrieved context
+- Use section numbers when available for precise information sourcing
+- Focus on accurate financial details and eligibility criteria
+- If information isn't in context, clearly state limitations
+- Prioritize most relevant and recent product information
+"""
+    
+    query_engine = index.as_query_engine(
+        similarity_top_k=top_k, 
+        llm=llm,
+        response_mode="compact"  # Use compact mode for faster responses
+    )
     response = query_engine.query(prompt)
 
     # --- Parse JSON output ---

@@ -1,0 +1,288 @@
+{
+  "pdf_analysis": {
+    "total_pages": 22,
+    "total_characters": 41761,
+    "total_words": 4902,
+    "average_page_length": 1898.2272727272727,
+    "content_structure": [
+      {
+        "page": 1,
+        "total_lines": 269,
+        "content_lines": 139,
+        "avg_line_length": 9.877697841726619,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 2,
+        "total_lines": 435,
+        "content_lines": 229,
+        "avg_line_length": 8.882096069868995,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 3,
+        "total_lines": 101,
+        "content_lines": 78,
+        "avg_line_length": 12.076923076923077,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 4,
+        "total_lines": 262,
+        "content_lines": 140,
+        "avg_line_length": 11.307142857142857,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 5,
+        "total_lines": 126,
+        "content_lines": 79,
+        "avg_line_length": 16.27848101265823,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 6,
+        "total_lines": 76,
+        "content_lines": 75,
+        "avg_line_length": 9.986666666666666,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 7,
+        "total_lines": 335,
+        "content_lines": 176,
+        "avg_line_length": 9.482954545454545,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 8,
+        "total_lines": 369,
+        "content_lines": 200,
+        "avg_line_length": 9.55,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 9,
+        "total_lines": 175,
+        "content_lines": 94,
+        "avg_line_length": 13.606382978723405,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 10,
+        "total_lines": 66,
+        "content_lines": 51,
+        "avg_line_length": 24.49019607843137,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": false
+      },
+      {
+        "page": 11,
+        "total_lines": 120,
+        "content_lines": 71,
+        "avg_line_length": 14.211267605633802,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": false
+      },
+      {
+        "page": 12,
+        "total_lines": 109,
+        "content_lines": 71,
+        "avg_line_length": 16.197183098591548,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 13,
+        "total_lines": 212,
+        "content_lines": 114,
+        "avg_line_length": 12.631578947368421,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 14,
+        "total_lines": 45,
+        "content_lines": 39,
+        "avg_line_length": 35.69230769230769,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": false
+      },
+      {
+        "page": 15,
+        "total_lines": 247,
+        "content_lines": 131,
+        "avg_line_length": 12.114503816793894,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 16,
+        "total_lines": 237,
+        "content_lines": 131,
+        "avg_line_length": 11.870229007633588,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 17,
+        "total_lines": 369,
+        "content_lines": 193,
+        "avg_line_length": 9.538860103626943,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 18,
+        "total_lines": 369,
+        "content_lines": 190,
+        "avg_line_length": 9.368421052631579,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 19,
+        "total_lines": 373,
+        "content_lines": 193,
+        "avg_line_length": 13.512953367875648,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": true
+      },
+      {
+        "page": 20,
+        "total_lines": 5,
+        "content_lines": 5,
+        "avg_line_length": 577.6,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": false
+      },
+      {
+        "page": 21,
+        "total_lines": 35,
+        "content_lines": 22,
+        "avg_line_length": 119.22727272727273,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": false
+      },
+      {
+        "page": 22,
+        "total_lines": 11,
+        "content_lines": 7,
+        "avg_line_length": 92.85714285714286,
+        "has_bullets": false,
+        "has_numbers": true,
+        "has_headers": false
+      }
+    ],
+    "recommended_chunk_sizes": {
+      "small_chunks": {
+        "size": 512,
+        "overlap": 50,
+        "use_case": "Precise information retrieval, Q&A"
+      },
+      "medium_chunks": {
+        "size": 1024,
+        "overlap": 100,
+        "use_case": "Balanced context and precision"
+      },
+      "large_chunks": {
+        "size": 1898,
+        "overlap": 200,
+        "use_case": "Context-heavy tasks, summarization"
+      },
+      "semantic_chunks": {
+        "size": "variable",
+        "method": "semantic_similarity",
+        "use_case": "Content-aware chunking based on meaning"
+      }
+    },
+    "sample_content": [
+      {
+        "page": 1,
+        "preview": " \nBPI  Products  and  Services:  A  Structured  \nAnalysis\n \nfor\n \nRAG\n \nSystem\n \nIngestion\n \n \n \n1.0  Executive  Summary:  Strategic  Overview  of  the  BPI  \nEcosystem\n \n \n \n1.1  Core  Business  Segments  \n \nThe  Bank  of  the  Philippine  Islands  (BPI)  operates  a  comprehensive  financial  ecosystem  \nsegmented\n \ninto\n \nfour\n \nprimary\n \npillars:\n \nPersonal\n \nBanking,\n \nWealth\n \nManagement,\n \nSME\n \nBanking,\n \nand\n \nInstitutional\n \nBanking.\n1\n Within  the  scope  of  this  analysis,  the  foc...",
+        "char_count": 1794,
+        "word_count": 210
+      },
+      {
+        "page": 2,
+        "preview": "physical  branch  visits.\n3  \n \n1.3  A  Tiered  Product  and  Demographic-Centric  Approach  \n \nBPI's  product  portfolio  is  meticulously  structured  to  serve  a  broad  range  of  client  \ndemographics.\n \nThis\n \nis\n \nparticularly\n \nvisible\n \nin\n \nits\n \ntiered\n \nofferings\n \nfor\n \ndeposit\n \naccounts\n \nand\n \ncredit\n \ncards.\n \nProducts\n \nlike\n \nthe\n \nJumpstart\n \nSavings\n \naccount\n \nare\n \nspecifically\n \nfor\n \nstudents\n \nand\n \nyoung\n \nsavers,\n \nwhile\n \n#SaveUp\n \nand\n \n#MySaveUp\n \nare\n \ndesigned\n ...",
+        "char_count": 2707,
+        "word_count": 312
+      },
+      {
+        "page": 3,
+        "preview": "2.0  Personal  Banking:  Deposit  Accounts  \n \n \n2.1  Peso  Savings  Accounts  \n \n \n2.1.1  Product  Features  and  Financial  Parameters   \nThe  BPI  suite  of  Peso  Savings  Accounts  is  designed  to  meet  a  spectrum  of  financial  needs,  \nfrom\n \nentry-level\n \nbanking\n \nto\n \nhigh-yield\n \nsavings.\n \nA\n \ndetailed\n \nbreakdown\n \nof\n \ntheir\n \nfinancial\n \nparameters\n \nis\n \nprovided\n \nin\n \nthe\n \ntable\n \nbelow.\n \n Account  Type  Required  Initial  Deposit  \nRequired  Minimum  Monthly  ADB  \nRequi...",
+        "char_count": 1185,
+        "word_count": 162
+      }
+    ]
+  },
+  "chunking_strategies": {
+    "sentence_512": {
+      "node_count": 37,
+      "avg_node_size": 1143.6216216216217,
+      "sample_node": "BPI  Products  and  Services:  A  Structured  \nAnalysis\n \nfor\n \nRAG\n \nSystem\n \nIngestion\n \n \n \n1.0  Executive  Summary:  Strategic  Overview  of  the  BPI  \nEcosystem\n \n \n \n1.1  Core  Business  Segmen..."
+    },
+    "token_256": {
+      "node_count": 87,
+      "avg_node_size": 575.448275862069,
+      "sample_node": "BPI  Products  and  Services:  A  Structured  \nAnalysis\n \nfor\n \nRAG\n \nSystem\n \nIngestion\n \n \n \n1.0  Executive  Summary:  Strategic  Overview  of  the  BPI  \nEcosystem\n \n \n \n1.1  Core  Business  Segmen..."
+    },
+    "sentence_1024": {
+      "node_count": 23,
+      "avg_node_size": 1820.3478260869565,
+      "sample_node": "BPI  Products  and  Services:  A  Structured  \nAnalysis\n \nfor\n \nRAG\n \nSystem\n \nIngestion\n \n \n \n1.0  Executive  Summary:  Strategic  Overview  of  the  BPI  \nEcosystem\n \n \n \n1.1  Core  Business  Segmen..."
+    },
+    "semantic": {
+      "node_count": 44,
+      "avg_node_size": 949.1136363636364,
+      "sample_node": " \nBPI  Products  and  Services:  A  Structured  \nAnalysis\n \nfor\n \nRAG\n \nSystem\n \nIngestion\n \n \n \n1.0  Executive  Summary:  Strategic  Overview  of  the  BPI  \nEcosystem\n \n \n \n1.1  Core  Business  Segm..."
+    }
+  },
+  "recommendations": {
+    "optimal_strategy": "sentence_balanced",
+    "reasoning": "Balanced page length. Standard chunking approach recommended.",
+    "configuration": {
+      "chunk_size": 1024,
+      "chunk_overlap": 100,
+      "method": "SentenceSplitter"
+    },
+    "implementation_notes": [
+      "Use SentenceSplitter for natural language boundaries",
+      "Consider semantic chunking for complex documents",
+      "Monitor retrieval quality and adjust chunk size if needed",
+      "Use overlap to maintain context between chunks",
+      "Recommended top_k retrieval: 10"
+    ]
+  }
+}

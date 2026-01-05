@@ -8,7 +8,7 @@ import yaml
 from groq import Groq
 from dotenv import load_dotenv
 load_dotenv()
-model = os.getenv('model')   
+model = os.getenv('model', 'moonshotai/kimi-k2-instruct')  # Default to kimi-k2-instruct
 
 async def generate_direct_groq_response(message: str, yaml_path: str, groq_api_key: str, conversation_context: str = "") -> list:
     """
@@ -36,8 +36,8 @@ async def generate_direct_groq_response(message: str, yaml_path: str, groq_api_k
         response = groq_client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": full_prompt}],
-            temperature=0.7,
-            max_tokens=1000
+            temperature=0.3,  # Slightly reduced for more consistent responses
+            max_tokens=600    # Reduced for faster response times
         )
         
         response_text = response.choices[0].message.content.strip()

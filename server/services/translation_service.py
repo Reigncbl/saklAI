@@ -19,17 +19,24 @@ def translate_to_english(text: str, api_key: str) -> str:
         # Use Groq for direct translation
         groq_client = Groq(api_key=api_key)
         
-        translation_prompt = f"""Translate the following Tagalog/Taglish text to clear English. Keep the banking/financial context intact.
+        translation_prompt = f"""Translate the following Tagalog/Taglish text to clear, natural English. Preserve the banking/financial context and intent exactly.
 
-Text: "{text}"
+TRANSLATION GUIDELINES:
+1. Maintain the original meaning and context precisely
+2. Use natural, conversational English 
+3. Preserve banking terminology and intent
+4. Keep the tone and formality level consistent
+5. Ensure the translation sounds natural to English speakers
 
-Translation:"""
+Text to translate: "{text}"
+
+Provide ONLY the English translation without any additional explanation, commentary, or formatting."""
 
         response = groq_client.chat.completions.create(
-            model="llama3-8b-8192",
+            model="moonshotai/kimi-k2-instruct",
             messages=[{"role": "user", "content": translation_prompt}],
-            temperature=0.1,
-            max_tokens=200
+            temperature=0.0,  # Zero temperature for consistent translation
+            max_tokens=100    # Reduced for faster translation
         )
         
         translated = response.choices[0].message.content.strip()

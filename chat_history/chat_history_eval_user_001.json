@@ -1,0 +1,372 @@
+[
+  {
+    "timestamp": "2025-08-24T22:31:15.001517",
+    "role": "assistant",
+    "content": "Gamitin ang BPI Pamana Padala: zero maintaining balance requirement basta may minimum 4 remittances kada taon. Magpadala sa PHP o USD; kung USD, automatic ilalagay sa Pamana USD Savings na may free life insurance para sa beneficiary. Sa BPI Mobile App, piliin 'Send Money' → 'To Another BPI Account' o 'Remittance via InstaPay/PESONet' para sa same-day credit hanggang 3:30 PM cut-off. Fee: ₱0 sa InstaPay/PESONet kung BPI-to-BPI; ₱15-₱50 kung ibang bank.",
+    "response": {
+      "status": "success",
+      "user_id": "eval_user_001",
+      "message": "How do I send money to Philippines through remittance?",
+      "translated_message": "How do I send money to the Philippines through a remittance?",
+      "template_used": "remittances_ofw.yaml",
+      "suggestions": [
+        {
+          "analysis": "customer_intent: send_money",
+          "category": "Remittance Options",
+          "suggestion": "Gamitin ang BPI Pamana Padala: zero maintaining balance requirement basta may minimum 4 remittances kada taon. Magpadala sa PHP o USD; kung USD, automatic ilalagay sa Pamana USD Savings na may free life insurance para sa beneficiary. Sa BPI Mobile App, piliin 'Send Money' → 'To Another BPI Account' o 'Remittance via InstaPay/PESONet' para sa same-day credit hanggang 3:30 PM cut-off. Fee: ₱0 sa InstaPay/PESONet kung BPI-to-BPI; ₱15-₱50 kung ibang bank."
+        },
+        {
+          "analysis": "customer_intent: ofw_account",
+          "category": "OFW account Benefits",
+          "suggestion": "Buksan ang Pamana Padala Savings: zero maintaining balance, libreng life insurance coverage = average daily balance × 2 (max ₱2 M). Kailangan: 2 valid IDs, latest contract, proof of remittance. Online application via BPI Online → 'Open an Account' → piliin 'Pamana Padala'. Processing: 1-2 banking days; card delivery 5-7 days sa PH address ng beneficiary."
+        },
+        {
+          "analysis": "customer_intent: foreign_currency",
+          "category": "Multi-currency account options",
+          "suggestion": "Kung gusto mong i-maintain ang remittance sa USD, buksan ang BPI US Dollar Savings o Maxi-Saver USD. Minimum $500 (Savings) o $2,500 (Maxi-Saver) para sa bonus interest. Mag-convert sa PHP sa real-time BPI FX rate (tingnan sa BPI Mobile → 'Rates'). Walang conversion fee kung USD-USD; ₱0.125 spread lang sa FX kung USD-PHP."
+        },
+        {
+          "analysis": "customer_intent: exchange_rates",
+          "category": "Exchange Rate Info",
+          "suggestion": "Real-time BPI USD/PHP rate ay available sa BPI Mobile app araw-araw hanggang 11 PM. Halimbawa: 1 USD = ₱55.20 (indicative). Lock-in rate sa 24 hrs kung mag-send ng USD tapos i-convert sa PHP sa pag-receive. Walang rate lock fee."
+        },
+        {
+          "analysis": "customer_intent: beneficiary_setup",
+          "category": "Documentation Requirements",
+          "suggestion": "Para sa beneficiary setup: kailangan ng beneficiary ay 1 valid ID (passport, UMID, o driver's license) at PH mobile number. Sa BPI Online, piliin 'Manage Beneficiaries' → 'Add' → ilagay ang pangalan, account number, at address. Cut-off: 11 AM para same-day credit; after 11 AM, next banking day. Maximum padala: ₱500,000 kada araw."
+        }
+      ],
+      "processing_method": "rag",
+      "classification": {
+        "detected_category": "remittances_ofw",
+        "confidence": 0.95,
+        "method": "langchain_agent"
+      }
+    },
+    "template_used": "remittances_ofw.yaml",
+    "processing_method": "rag"
+  },
+  {
+    "timestamp": "2025-08-24T22:31:15.410587",
+    "role": "user",
+    "content": "Can you help me with online banking setup?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-24T22:31:27.899378",
+    "role": "assistant",
+    "content": "I'm having trouble processing your request right now. Please try again or contact support.",
+    "response": {
+      "status": "error",
+      "message": "RAG processing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `moonshotai/kimi-k2-instruct` in organization `org_01k1sx7ym0eb3td53s0zqs82jx` service tier `on_demand` on tokens per day (TPD): Limit 300000, Used 298046, Requested 2396. Please try again in 2m7.048s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "fallback_suggestions": [
+        {
+          "analysis": "Error",
+          "category": "System",
+          "suggestion": "I'm having trouble processing your request right now. Please try again or contact support."
+        }
+      ]
+    },
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-24T22:31:31.836589",
+    "role": "user",
+    "content": "Magkano ang minimum balance sa savings account?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-24T22:31:44.023035",
+    "role": "assistant",
+    "content": "I'm having trouble processing your request right now. Please try again or contact support.",
+    "response": {
+      "status": "error",
+      "message": "RAG processing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `moonshotai/kimi-k2-instruct` in organization `org_01k1sx7ym0eb3td53s0zqs82jx` service tier `on_demand` on tokens per day (TPD): Limit 300000, Used 297990, Requested 2525. Please try again in 2m28.082s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "fallback_suggestions": [
+        {
+          "analysis": "Error",
+          "category": "System",
+          "suggestion": "I'm having trouble processing your request right now. Please try again or contact support."
+        }
+      ]
+    },
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-24T22:31:44.424706",
+    "role": "user",
+    "content": "Paano mag-transfer ng pera sa ibang bansa?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-24T22:31:56.159947",
+    "role": "assistant",
+    "content": "I'm having trouble processing your request right now. Please try again or contact support.",
+    "response": {
+      "status": "error",
+      "message": "RAG processing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `moonshotai/kimi-k2-instruct` in organization `org_01k1sx7ym0eb3td53s0zqs82jx` service tier `on_demand` on tokens per day (TPD): Limit 300000, Used 297947, Requested 2346. Please try again in 1m24.38s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "fallback_suggestions": [
+        {
+          "analysis": "Error",
+          "category": "System",
+          "suggestion": "I'm having trouble processing your request right now. Please try again or contact support."
+        }
+      ]
+    },
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-25T10:26:24.169992",
+    "role": "user",
+    "content": "What are the requirements for opening a savings account?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-25T10:26:24.705782",
+    "role": "assistant",
+    "content": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs.",
+    "response": {
+      "status": "success",
+      "user_id": "eval_user_001",
+      "message": "What are the requirements for opening a savings account?",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "error",
+          "category": "System Error",
+          "suggestion": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs."
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "general",
+        "confidence": 0.3,
+        "method": "error_fallback"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  },
+  {
+    "timestamp": "2025-08-25T10:26:24.718762",
+    "role": "user",
+    "content": "How can I apply for a credit card?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-25T10:26:25.255877",
+    "role": "assistant",
+    "content": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs.",
+    "response": {
+      "status": "success",
+      "user_id": "eval_user_001",
+      "message": "How can I apply for a credit card?",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "error",
+          "category": "System Error",
+          "suggestion": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs."
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "general",
+        "confidence": 0.3,
+        "method": "error_fallback"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  },
+  {
+    "timestamp": "2025-08-25T10:26:25.269918",
+    "role": "user",
+    "content": "What loans do you offer for small businesses?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-25T10:26:25.734032",
+    "role": "assistant",
+    "content": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs.",
+    "response": {
+      "status": "success",
+      "user_id": "eval_user_001",
+      "message": "What loans do you offer for small businesses?",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "error",
+          "category": "System Error",
+          "suggestion": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs."
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "general",
+        "confidence": 0.3,
+        "method": "error_fallback"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  },
+  {
+    "timestamp": "2025-08-25T10:26:26.012912",
+    "role": "user",
+    "content": "How do I send money to Philippines through remittance?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-25T10:26:26.492485",
+    "role": "assistant",
+    "content": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs.",
+    "response": {
+      "status": "success",
+      "user_id": "eval_user_001",
+      "message": "How do I send money to Philippines through remittance?",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "error",
+          "category": "System Error",
+          "suggestion": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs."
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "general",
+        "confidence": 0.3,
+        "method": "error_fallback"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  },
+  {
+    "timestamp": "2025-08-25T10:26:26.675964",
+    "role": "user",
+    "content": "Can you help me with online banking setup?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-25T10:26:27.178586",
+    "role": "assistant",
+    "content": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs.",
+    "response": {
+      "status": "success",
+      "user_id": "eval_user_001",
+      "message": "Can you help me with online banking setup?",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "error",
+          "category": "System Error",
+          "suggestion": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs."
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "general",
+        "confidence": 0.3,
+        "method": "error_fallback"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  },
+  {
+    "timestamp": "2025-08-25T10:26:29.493417",
+    "role": "user",
+    "content": "Magkano ang minimum balance sa savings account?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-25T10:26:29.957527",
+    "role": "assistant",
+    "content": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs.",
+    "response": {
+      "status": "success",
+      "user_id": "eval_user_001",
+      "message": "Magkano ang minimum balance sa savings account?",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "error",
+          "category": "System Error",
+          "suggestion": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs."
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "general",
+        "confidence": 0.3,
+        "method": "error_fallback"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  },
+  {
+    "timestamp": "2025-08-25T10:26:30.150073",
+    "role": "user",
+    "content": "Paano mag-transfer ng pera sa ibang bansa?",
+    "response": null,
+    "template_used": null,
+    "processing_method": null
+  },
+  {
+    "timestamp": "2025-08-25T10:26:30.618930",
+    "role": "assistant",
+    "content": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs.",
+    "response": {
+      "status": "success",
+      "user_id": "eval_user_001",
+      "message": "Paano mag-transfer ng pera sa ibang bansa?",
+      "translated_message": null,
+      "template_used": "config.yaml",
+      "suggestions": [
+        {
+          "analysis": "error",
+          "category": "System Error",
+          "suggestion": "I'm having trouble processing your request. Please try again or let me know how I can help with your banking needs."
+        }
+      ],
+      "processing_method": "direct_groq",
+      "classification": {
+        "detected_category": "general",
+        "confidence": 0.3,
+        "method": "error_fallback"
+      }
+    },
+    "template_used": "config.yaml",
+    "processing_method": "direct_groq"
+  }
+]

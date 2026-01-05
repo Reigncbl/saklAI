@@ -1,0 +1,28 @@
+{
+    "vector_store_path": "./rag_store_eval",
+    "test_user_id": "eval_user_001",
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "top_k": 5,
+    "similarity_threshold": 0.6,
+    "timeout_seconds": 30,
+    "evaluation_settings": {
+        "run_translation_tests": true,
+        "run_classification_tests": true,
+        "run_rag_tests": true,
+        "run_end_to_end_tests": true,
+        "verbose_output": true,
+        "save_intermediate_results": true
+    },
+    "thresholds": {
+        "minimum_success_rate": 0.8,
+        "maximum_response_time": 10.0,
+        "minimum_similarity_score": 0.7,
+        "classification_confidence_threshold": 0.6
+    },
+    "output_settings": {
+        "save_json": true,
+        "save_csv": true,
+        "include_detailed_logs": true,
+        "timestamp_format": "%Y-%m-%d_%H-%M-%S"
+    }
+}

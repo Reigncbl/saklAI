@@ -178,7 +178,7 @@ async def _process_rag_response(request, yaml_path, api_key, conversation_contex
             groq_api_key=api_key,
             vector_store_path=RAG_STORE_PATH,
             reset_index=False,  # Don't reset index by default for better performance
-            top_k=5,
+            top_k=3,  # Reduced from 5 to 3 for faster retrieval
             embedding_model=embedding_model,
             conversation_context=context  # Pass context to RAG
         )

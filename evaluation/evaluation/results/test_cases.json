@@ -1,0 +1,239 @@
+{
+    "test_suites": {
+        "rag_comprehensive": [
+            {
+                "id": "rag_savings_basic",
+                "input_text": "What are the benefits of opening a savings account with BPI?",
+                "expected_category": "savings",
+                "expected_template": "savings_accounts.yaml",
+                "test_type": "rag",
+                "priority": "high"
+            },
+            {
+                "id": "rag_savings_requirements",
+                "input_text": "What documents do I need to open a savings account?",
+                "expected_category": "savings",
+                "expected_template": "savings_accounts.yaml",
+                "test_type": "rag",
+                "priority": "high"
+            },
+            {
+                "id": "rag_credit_application",
+                "input_text": "How long does credit card approval take?",
+                "expected_category": "credit",
+                "expected_template": "credit_cards.yaml",
+                "test_type": "rag",
+                "priority": "medium"
+            },
+            {
+                "id": "rag_loan_business",
+                "input_text": "What are the requirements for a business loan?",
+                "expected_category": "loan",
+                "expected_template": "loans.yaml",
+                "test_type": "rag",
+                "priority": "high"
+            },
+            {
+                "id": "rag_remittance_fees",
+                "input_text": "What are the fees for sending money abroad?",
+                "expected_category": "remittance",
+                "expected_template": "remittances_ofw.yaml",
+                "test_type": "rag",
+                "priority": "medium"
+            },
+            {
+                "id": "rag_digital_mobile",
+                "input_text": "How do I download and set up the BPI mobile app?",
+                "expected_category": "digital",
+                "expected_template": "digital_banking.yaml",
+                "test_type": "rag",
+                "priority": "high"
+            }
+        ],
+        "translation_comprehensive": [
+            {
+                "id": "trans_banking_basic",
+                "input_text": "Paano mag-open ng account?",
+                "expected_translation": "How to open an account?",
+                "language": "tl",
+                "test_type": "translation",
+                "priority": "high"
+            },
+            {
+                "id": "trans_loan_inquiry",
+                "input_text": "Pwede ba makakuha ng loan kahit walang collateral?",
+                "expected_translation": "Can I get a loan even without collateral?",
+                "language": "taglish",
+                "test_type": "translation",
+                "priority": "medium"
+            },
+            {
+                "id": "trans_remittance_question",
+                "input_text": "Magkano ang bayad kapag nagpadala ng pera sa Pilipinas?",
+                "expected_translation": "How much is the fee when sending money to the Philippines?",
+                "language": "tl",
+                "test_type": "translation",
+                "priority": "high"
+            },
+            {
+                "id": "trans_credit_card_taglish",
+                "input_text": "May annual fee ba ang credit card ninyo?",
+                "expected_translation": "Does your credit card have an annual fee?",
+                "language": "taglish",
+                "test_type": "translation",
+                "priority": "medium"
+            },
+            {
+                "id": "trans_digital_banking",
+                "input_text": "Paano gamitin ang online banking?",
+                "expected_translation": "How to use online banking?",
+                "language": "tl",
+                "test_type": "translation",
+                "priority": "high"
+            },
+            {
+                "id": "trans_complex_sentence",
+                "input_text": "Gusto ko sanang mag-apply ng personal loan para sa negosyo ko, ano ang mga requirements?",
+                "expected_translation": "I would like to apply for a personal loan for my business, what are the requirements?",
+                "language": "tl",
+                "test_type": "translation",
+                "priority": "high"
+            }
+        ],
+        "classification_edge_cases": [
+            {
+                "id": "class_greeting_english",
+                "input_text": "Good morning!",
+                "expected_template": "config.yaml",
+                "expected_category": "general",
+                "test_type": "classification",
+                "priority": "high"
+            },
+            {
+                "id": "class_greeting_tagalog",
+                "input_text": "Kumusta ka?",
+                "expected_template": "config.yaml",
+                "expected_category": "general",
+                "test_type": "classification",
+                "priority": "medium"
+            },
+            {
+                "id": "class_branch_location",
+                "input_text": "Where is the nearest BPI branch?",
+                "expected_template": "general_banking.yaml",
+                "expected_category": "banking",
+                "test_type": "classification",
+                "priority": "medium"
+            },
+            {
+                "id": "class_contact_info",
+                "input_text": "What is your customer service number?",
+                "expected_template": "general_banking.yaml",
+                "expected_category": "banking",
+                "test_type": "classification",
+                "priority": "medium"
+            },
+            {
+                "id": "class_ambiguous_banking",
+                "input_text": "I need help with my account",
+                "expected_template": "account_services.yaml",
+                "expected_category": "account",
+                "test_type": "classification",
+                "priority": "low"
+            }
+        ],
+        "end_to_end_complex": [
+            {
+                "id": "e2e_savings_tagalog",
+                "input_text": "Ano ang minimum balance ng savings account at paano mag-maintain?",
+                "expected_category": "savings",
+                "expected_template": "savings_accounts.yaml",
+                "language": "tl",
+                "test_type": "end_to_end",
+                "priority": "high"
+            },
+            {
+                "id": "e2e_credit_card_taglish",
+                "input_text": "May promo ba kayo ngayon sa credit card applications?",
+                "expected_category": "credit",
+                "expected_template": "credit_cards.yaml",
+                "language": "taglish",
+                "test_type": "end_to_end",
+                "priority": "medium"
+            },
+            {
+                "id": "e2e_loan_complex",
+                "input_text": "Kailangan ko ng pautang para sa bahay, ano ang mga options ninyo?",
+                "expected_category": "loan",
+                "expected_template": "loans.yaml",
+                "language": "tl",
+                "test_type": "end_to_end",
+                "priority": "high"
+            },
+            {
+                "id": "e2e_remittance_detailed",
+                "input_text": "Paano magpadala ng pera sa probinsya using BPI remittance service?",
+                "expected_category": "remittance",
+                "expected_template": "remittances_ofw.yaml",
+                "language": "taglish",
+                "test_type": "end_to_end",
+                "priority": "high"
+            }
+        ],
+        "error_handling": [
+            {
+                "id": "error_empty_input",
+                "input_text": "",
+                "test_type": "error_handling",
+                "priority": "low"
+            },
+            {
+                "id": "error_very_long_input",
+                "input_text": "This is a very long input text that contains multiple sentences and might test the system's ability to handle lengthy inputs that could potentially cause issues with token limits or processing timeouts. The text continues with more banking-related content about various services and products that the bank offers including savings accounts, credit cards, loans, remittances, and digital banking services.",
+                "test_type": "error_handling",
+                "priority": "low"
+            },
+            {
+                "id": "error_special_characters",
+                "input_text": "What about @#$%^&*() special characters in banking queries?",
+                "test_type": "error_handling",
+                "priority": "low"
+            },
+            {
+                "id": "error_mixed_language",
+                "input_text": "Hello kumusta, I want to mag-apply for a loan sa bank ninyo please.",
+                "test_type": "error_handling",
+                "priority": "medium"
+            }
+        ]
+    },
+    "test_categories": {
+        "core_functionality": [
+            "rag_comprehensive",
+            "translation_comprehensive"
+        ],
+        "classification_accuracy": [
+            "classification_edge_cases"
+        ],
+        "integration_tests": [
+            "end_to_end_complex"
+        ],
+        "robustness_tests": [
+            "error_handling"
+        ]
+    },
+    "performance_benchmarks": {
+        "response_time_targets": {
+            "translation": 2.0,
+            "classification": 3.0,
+            "rag": 8.0,
+            "end_to_end": 10.0
+        },
+        "accuracy_targets": {
+            "translation": 0.85,
+            "classification": 0.80,
+            "rag": 0.75,
+            "end_to_end": 0.70
+        }
+    }
+}
